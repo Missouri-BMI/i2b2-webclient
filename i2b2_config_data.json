@@ -11,6 +11,7 @@
             "registrationMethod": "",
             "loginType": "local",
             "showRegistration": false,
+            "adminOnly": false,
             "debug": true
         }
     ]
