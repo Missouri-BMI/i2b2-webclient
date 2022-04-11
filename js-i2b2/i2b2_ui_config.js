@@ -15,9 +15,9 @@ i2b2.UI.cfg = {
     titleLogoSrc: "assets/images/title.gif", /* [Default: "assets/images/title.gif"] 246x26 pixel logo */
     loginHeaderText: "i2b2 Login", /* [Default: "i2b2 Login"] Text in the header bar of the login box */
     loginUsernameText: "Username:", /* [Default: "Username:"] Text for the username input of the login box */
-    loginDefaultUsername: "demo", /* [Default: "demo"] Default text inside the username input */
+    loginDefaultUsername: "", /* [Default: "demo"] Default text inside the username input */
     loginPasswordText: "Password:", /* [Default: "Password:"] Text for the password input of the login box */
-    loginDefaultPassword: "demouser", /* [Default: "demouser"] Default text inside the password input */
+    loginDefaultPassword: "", /* [Default: "demouser"] Default text inside the password input */
     loginHostText: "i2b2 Host:", /* [Default: "i2b2 Host:"] Text for the PM cell dropdown of the login box */
     loginIdp: "SimpleSAMLphp", /* Text for federated login button */
     loginIdpIcon: "assets/images/login.png", /* Location of the 16x16 icon */

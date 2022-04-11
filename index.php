@@ -78,6 +78,7 @@ $WHITELIST = array(
     "http://localhost:8080",
     "http://localhost:9090",
     "http://localhost",
+    "http://i2b2-wildfly:8080",
     "http://i2b2-core-server-saml-demo:8080",
     "http://i2b2-core-server-saml-demo:9090",
     "http://i2b2-core-server-saml-demo"
