@@ -472,7 +472,7 @@ i2b2.PM.view.modal.projectDialog = {
         if (i2b2.PM.model.isAdmin) {
             pno = document.createElement('OPTION');
             pno.setAttribute('value', 'admin_HY!5Axu&');
-            var pnt = document.createTextNode('Administrator');
+            var pnt = document.createTextNode('NextGen BMI Administrator');
             pno.appendChild(pnt);
             pli.appendChild(pno);
         }
