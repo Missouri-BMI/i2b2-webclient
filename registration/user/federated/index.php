@@ -23,8 +23,9 @@ if ($username) {
         $_SESSION['error_msg'] = "You have already registered.";
 
         $hostname = filter_input(INPUT_SERVER, 'SERVER_NAME', FILTER_SANITIZE_STRING);
-        $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-
+        ## server hosted in ECS FARGATE AND SSL in application loadbalancer
+        // $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        $actual_link = ("https") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
         header("Location: ${actual_link}/../../../../logout.php");
         
     } else {
@@ -53,9 +54,10 @@ if ($username) {
                 $_SESSION['success_msg'] = "Thank you for signing up!  We will contact you after your registration has been reviewed.";
             }
 
-
-	    $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-            header("Location: ${actual_link}/../../../../logout.php");
+        ## server hosted in ECS FARGATE AND SSL in application loadbalancer
+	    // $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        $actual_link = ("https") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        header("Location: ${actual_link}/../../../../logout.php");
 
         } else {
             ?>
@@ -143,9 +145,9 @@ if ($username) {
 } else {
     $hostname = filter_input(INPUT_SERVER, 'SERVER_NAME', FILTER_SANITIZE_STRING);
     $shib_handler = filter_input(INPUT_SERVER, 'AJP_Shib-Handler', FILTER_SANITIZE_STRING);
-
-    $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-
+    ## server hosted in ECS FARGATE AND SSL in application loadbalancer
+    // $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    $actual_link = ("https") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     $url = "${shib_handler}/Login?target=${actual_link}";
     header("Location: ${url}");
 }

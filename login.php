@@ -8,7 +8,10 @@ $shib_handler = filter_input(INPUT_SERVER, 'AJP_Shib-Handler', FILTER_SANITIZE_S
 
 $scriptFilename = basename($script);
 $path = str_replace($scriptFilename, '', $requestUri);
-$url = (isset($https) && $https === 'on' ? "https" : "http") . "://${hostname}${path}";
+
+## server hosted in ECS FARGATE AND SSL in application loadbalancer
+// $url = (isset($https) && $https === 'on' ? "https" : "http") . "://${hostname}${path}";
+$url = ("https") . "://${hostname}${path}";
 $redir_url = rtrim($url, '/');
 
 header("Location: ${shib_handler}/Login?target=${redir_url}");
