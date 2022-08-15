@@ -380,13 +380,13 @@ if (!empty($PostBody)) {
                 }
                 .btn-idp {
                     color: #fff;
-                    background-color: #d54736;
-                    border-color: #d54736;
+                    background-color: #273346;
+                    border-color: #273346;
                 }
                 .btn-idp:hover {
                     color: #fff;
-                    background-color: #bb3c2e;
-                    border-color: #d54736;
+                    background-color: #0201B8;
+                    border-color: #0201B8;
                 }
 
                 .fw-bold {

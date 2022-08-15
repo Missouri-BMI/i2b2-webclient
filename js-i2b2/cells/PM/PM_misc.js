@@ -167,7 +167,7 @@ i2b2.PM.model.html.loginDialog = '<div id="i2b2_login_modal_dialog" style="displ
 '                </div>\n' +
 '            </form>\n' +
 '        </div>\n' +
-'        <div class="pb-3 px-3 user_reg" style="display: block">Don\'t have an account? <a href="#" data-toggle="modal" data-target="#signup">Sign Up!</a></div>\n' +
+'        <div class="pb-3 px-3 user_reg" style="display: block">Don\'t have an account? <a href="https://showmeportal.missouri.edu/redcap/surveys/?s=MCY9TRFEFPWDJ3EF" target="_blank" rel="noopener noreferrer">Request Here!</a></div>\n' +
 '    </div>\n' +
 '</div>\n';
 

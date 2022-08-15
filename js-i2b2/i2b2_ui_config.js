@@ -19,7 +19,7 @@ i2b2.UI.cfg = {
     loginPasswordText: "Password:", /* [Default: "Password:"] Text for the password input of the login box */
     loginDefaultPassword: "", /* [Default: "demouser"] Default text inside the password input */
     loginHostText: "i2b2 Host:", /* [Default: "i2b2 Host:"] Text for the PM cell dropdown of the login box */
-    loginIdp: "SimpleSAMLphp", /* Text for federated login button */
+    loginIdp: "University of Missouri", /* Text for federated login button */
     loginIdpIcon: "assets/images/login.png", /* Location of the 16x16 icon */
     obfuscatedDisplayNumber: 3, /* [Default: 3] Display number after plus/minus for obfuscated results.
      Control the real obfuscation value from server in CRC properties. */
