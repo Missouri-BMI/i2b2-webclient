@@ -7,7 +7,7 @@
 	"plugin_version" : "3.5",
 	"changes" : "Fixed issue with the plugin&#39;s manifest.",
 	"i2b2_version" : "1.7.07",
-	"roles" : "[ 'DATA_LDS', 'DATA_DEID', 'DATA_PROT' ]", 
+	"roles" : "[ 'DATA_PROT' ]", 
 	"authors" : "[ 'Mauro Bucalo', 'S. Wayne Chan', 'Axel Newe', 'PARIS Nicolas' ]",
 	"institutions" : "[ 'Universit&agrave; di Pavia', 'University of Massachusetts Medical School', 'FAU Erlangen-Nuremberg', 'H&ocirc;pital Ambroise-Par&eacute;' ]",
 	"keywords" : "[ 'export', 'webclient' ]",

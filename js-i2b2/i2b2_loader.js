@@ -44,7 +44,7 @@ i2b2.hive.tempCellsList = [
 		{ code:	"ExportXLS",
 		   forceLoading: true,
 		   forceConfigMsg: { params: [] },
-		   roles: [ "DATA_LDS", "DATA_DEID", "DATA_PROT" ],
+		   roles: [ "DATA_PROT" ],
 		   forceDir: "cells/plugins/community"
 		},
 		{ code:	"Timeline",
