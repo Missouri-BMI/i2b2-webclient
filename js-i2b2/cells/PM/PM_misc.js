@@ -167,7 +167,7 @@ i2b2.PM.model.html.loginDialog = '<div id="i2b2_login_modal_dialog" style="displ
 '                </div>\n' +
 '            </form>\n' +
 '        </div>\n' +
-'        <div class="pb-3 px-3 user_reg" style="display: block">Don\'t have an account? <a href="https://showmeportal.missouri.edu/redcap/surveys/?s=MCY9TRFEFPWDJ3EF" target="_blank" rel="noopener noreferrer">Request Here!</a></div>\n' +
+'        <div class="pb-3 px-3 user_reg" style="display: block">New User? Request access using our <a href="https://nextgenbmi.umsystem.edu/intake-form/" target="_blank" rel="noopener noreferrer">Intake Form</a></div>\n' +
 '    </div>\n' +
 '</div>\n';
 
