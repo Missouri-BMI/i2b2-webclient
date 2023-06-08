@@ -149,7 +149,8 @@ i2b2.PM.model.html.loginDialog = '<div id="i2b2_login_modal_dialog" style="displ
 '                    <div class="card-body">\n' +
 '                        <div class="federated_login">\n' +
 '                            <button class="btn btn-sm btn-block btn-idp" type="button" onclick="location.href = \'login.php\';">\n' +
-'                                <img role="img" src="' + i2b2.UI.cfg.loginIdpIcon + '" alt="' + i2b2.UI.cfg.loginIdp + '" width="16" height="16" /> Sign In ' + i2b2.UI.cfg.loginIdp + '\n' +
+// '                                <img role="img" src="' + i2b2.UI.cfg.loginIdpIcon + '" alt="' + i2b2.UI.cfg.loginIdp + '" width="16" height="16" /> Sign In ' + i2b2.UI.cfg.loginIdp + '\n' +
+'                                 SIGN IN' + '\n' +
 '                            </button>\n' +
 '                        </div>\n' +
 '                        <div class="local_login">\n' +
