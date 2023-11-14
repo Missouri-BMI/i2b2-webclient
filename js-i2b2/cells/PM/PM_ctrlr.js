@@ -641,7 +641,7 @@ i2b2.PM._processLaunchFramework = function () {
     for (var i = 0; i < l; i++) {
         if (i2b2.PM.model.userRoles.indexOf(roles[i].nodeValue) == -1)
             i2b2.PM.model.userRoles.push(roles[i].nodeValue);
-        if (roles[i].nodeValue == "DATA_AGG")
+        if (roles[i].nodeValue == "DATA_PROT")//obfuscate to  access to DATA_DEID USER
         {
             i2b2.PM.model.isObfuscated = false;
         }
