@@ -2509,7 +2509,7 @@ function QueryToolController() {
 						var name = params[i2].getAttribute("name"); // snm0 - here for prev query
 						// BUG FIX: WEBCLIENT-147
 						if (i2b2.PM.model.isObfuscated) {
-							if (params[i2].firstChild.nodeValue < 4)
+							if (params[i2].firstChild.nodeValue < i2b2.UI.cfg.obfuscatedDisplayNumber)
 							{
 								var value = "<"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
 							} else {
@@ -4237,7 +4237,7 @@ function QueryToolController() {
 		patientNumItem.each(function(item){
 			var itemValue = item.value;
 			if (i2b2.PM.model.isObfuscated) {
-				if (itemValue < 4){
+				if (itemValue < i2b2.UI.cfg.obfuscatedDisplayNumber){
 					itemValue = i2b2.CRC.view.graphs.sObfuscatedText;
 				} else {
 					itemValue += i2b2.CRC.view.graphs.sObfuscatedEnding;
@@ -4356,7 +4356,7 @@ function QueryToolController() {
 					//Populate results table
 					var itemValue = item.value;
 					if (i2b2.PM.model.isObfuscated) {
-						if (itemValue < 4){
+						if (itemValue < i2b2.UI.cfg.obfuscatedDisplayNumber){
 							itemValue = i2b2.CRC.view.graphs.sObfuscatedText;
 						} else {
 							itemValue += i2b2.CRC.view.graphs.sObfuscatedEnding;

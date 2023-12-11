@@ -275,7 +275,7 @@ i2b2.CRC.ctrlr.QueryStatus.prototype = function() {
 					for (var i2 = 0; i2 < params.length; i2++) {
 						var name = params[i2].getAttribute("name");
 						if (i2b2.PM.model.isObfuscated) {
-							if ( params[i2].firstChild.nodeValue < 4) {
+							if ( params[i2].firstChild.nodeValue < i2b2.UI.cfg.obfuscatedDisplayNumber) {
 								var value = "<"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString();	
 							} else {
 								var value = params[i2].firstChild.nodeValue + "&plusmn;"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString() ;
@@ -478,7 +478,7 @@ i2b2.CRC.ctrlr.QueryStatus.prototype = function() {
 				for (var i2 = 0; i2 < xml_v.childNodes.length; i2++) {
 					try { 
 						if (i2b2.PM.model.isObfuscated) {
-							if (i2b2.h.XPath(xml_v, 'descendant::total_time_second/text()/..')[i2].firstChild.nodeValue < 4)
+							if (i2b2.h.XPath(xml_v, 'descendant::total_time_second/text()/..')[i2].firstChild.nodeValue < i2b2.UI.cfg.obfuscatedDisplayNumber)
 							{
 							    var value = "<"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
 							} else {
