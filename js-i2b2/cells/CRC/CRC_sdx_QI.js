@@ -245,7 +245,7 @@ i2b2.sdx.TypeControllers.QI.getChildRecords = function(sdxParentNode, onComplete
 					if(parseInt(i2b2.h.getXNodeVal(ps[i1],'query_result_instance/set_size')) < i2b2.UI.cfg.obfuscatedDisplayNumber){
 						o.title += " is <span style='background: #C9F3C9;font-weight:bold;padding: 2px;color: #0C5D0C;'>&lt;"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+"</span>";
 					} else {
-						o.title += " is <span style='background: #C9F3C9;font-weight:bold;padding: 2px;color: #0C5D0C;'>" + i2b2.h.getXNodeVal(ps[i1],'query_result_instance/set_size') + "&plusmn;"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+"</span>";
+						o.title += " is <span style='background: #C9F3C9;font-weight:bold;padding: 2px;color: #0C5D0C;'>" + i2b2.h.getXNodeVal(ps[i1],'query_result_instance/set_size') +"</span>";
 					}
 					
 				} else {

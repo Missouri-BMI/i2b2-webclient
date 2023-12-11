@@ -2513,7 +2513,7 @@ function QueryToolController() {
 							{
 								var value = "<"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
 							} else {
-								var value = params[i2].firstChild.nodeValue + "&plusmn;"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
+								var value = params[i2].firstChild.nodeValue;
 							}
 						} else {
 							var value = params[i2].firstChild.nodeValue;

@@ -22,15 +22,11 @@ i2b2.CRC.ctrlr.QueryStatus._GetTitle = function(resultType, oRecord, oXML) {
 			}
 			if (!t) { t = "Encounter Set"; }
 			// create the title using shrine setting
-			if (oRecord.size >= 10) {
-				if (i2b2.PM.model.isObfuscated) {
-					title = t+" - "+oRecord.size+"&plusmn;"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" encounters";
-				} else {
-					title = t; //+" - "+oRecord.size+" encounters";
-				}
+			if (oRecord.size >= i2b2.UI.cfg.obfuscatedDisplayNumber) {
+				title = t; //+" - "+oRecord.size+" encounters";
 			} else {
 				if (i2b2.PM.model.isObfuscated) {
-					title = t+" - 10 encounters or less";
+					title = t+" - 11 encounters or less";
 				} else {
 					title = t; //+" - "+oRecord.size+" encounters";
 				}
@@ -45,15 +41,11 @@ i2b2.CRC.ctrlr.QueryStatus._GetTitle = function(resultType, oRecord, oXML) {
 			}
 			if (!t) { t = "Patient Set"; }
 			// create the title using shrine setting
-			if (oRecord.size >= 10) {
-				if (i2b2.PM.model.isObfuscated) {
-					title = t+" - "+oRecord.size+"&plusmn;"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" patients";
-				} else {
-					title = t; //+" - "+oRecord.size+" patients";
-				}
+			if (oRecord.size >= i2b2.UI.cfg.obfuscatedDisplayNumber) {
+				title = t; //+" - "+oRecord.size+" patients";
 			} else {
 				if (i2b2.PM.model.isObfuscated) {
-					title = t+" - 10 patients or less";
+					title = t+" - 11 patients or less";
 				} else {
 					title = t; //+" - "+oRecord.size+" patients";
 				}
@@ -68,15 +60,11 @@ i2b2.CRC.ctrlr.QueryStatus._GetTitle = function(resultType, oRecord, oXML) {
 			}
 			if (!t) { t="Patient Count"; }
 			// create the title using shrine setting
-			if (oRecord.size >= 10) {
-				if (i2b2.PM.model.isObfuscated) {
-					title = t+" - "+oRecord.size+"&plusmn;"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" patients";
-				} else {
-					title = t+" - "+oRecord.size+" patients";
-				}
+			if (oRecord.size >= i2b2.UI.cfg.obfuscatedDisplayNumber) {
+				title = t+" - "+oRecord.size+" patients";
 			} else {
 				if (i2b2.PM.model.isObfuscated) {
-					title = t+" - 10 patients or less";
+					title = t+" - 11 patients or less";
 				} else {
 					title = t+" - "+oRecord.size+" patients";
 				}
@@ -278,7 +266,7 @@ i2b2.CRC.ctrlr.QueryStatus.prototype = function() {
 							if ( params[i2].firstChild.nodeValue < i2b2.UI.cfg.obfuscatedDisplayNumber) {
 								var value = "<"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString();	
 							} else {
-								var value = params[i2].firstChild.nodeValue + "&plusmn;"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString() ;
+								var value = params[i2].firstChild.nodeValue;
 							}
 						} else
 						{
@@ -482,7 +470,7 @@ i2b2.CRC.ctrlr.QueryStatus.prototype = function() {
 							{
 							    var value = "<"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
 							} else {
-								var value = i2b2.h.XPath(xml_v, 'descendant::total_time_second/text()/..')[i2].firstChild.nodeValue + "&plusmn;"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
+								var value = i2b2.h.XPath(xml_v, 'descendant::total_time_second/text()/..')[i2].firstChild.nodeValue;
 							}
 						} else
 						{

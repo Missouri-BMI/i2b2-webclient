@@ -41,7 +41,7 @@ i2b2.CRC.view.graphs.visible = false;
 i2b2.CRC.view.graphs.iObfuscatedFloorNumber = i2b2.UI.cfg.obfuscatedDisplayNumber;  // this is the amount reported that the numbers are obfuscated by
 i2b2.CRC.view.graphs.sObfuscatedText = "<"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString();  // this is the text that is replaced for a small number in obfuscated mode
 //                            so that it can be cleaned up before the next display
-i2b2.CRC.view.graphs.sObfuscatedEnding = "&plusmn;"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString();  //this is the text that is added to all numbers in obfuscated mode
+i2b2.CRC.view.graphs.sObfuscatedEnding = "";//"&plusmn;"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString();  //this is the text that is added to all numbers in obfuscated mode
 i2b2.CRC.view.graphs.bIsSHRINE = false;  // this changes the way the graphs are made if the file is being run in SHRINE mode
 //                            NOTE THAT THIS IS DEMO ONLY IN THIS VERSION - IT DOES NOT REALLY WORK
 i2b2.CRC.view.graphs.asTitleOfShrineGroup = ["patient age count breakdown", "patient gender count breakdown", "patient race count breakdown", 
