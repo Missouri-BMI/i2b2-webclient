@@ -6,8 +6,8 @@
 	// THESE ARE ALL THE DOMAINS A USER CAN LOGIN TO
 	lstDomains: [
                 {
-                        domain: "i2b2demo",
-                        name: "HarvardDemo",
+                        name: "NextGen BMI",
+                        domain: "nextgenbmi.umsystem.edu",
                         allowAnalysis: true,
                         urlCellPM: "http://i2b2-wildfly:8080/i2b2/services/PMService/",
                         registrationMethod: "",
