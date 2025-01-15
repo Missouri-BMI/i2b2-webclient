@@ -7,8 +7,8 @@
 	lstDomains: [
           
                {
-                       name: "NextGen BMI",
-                       domain: "nextgenbmi.umsystem.edu",
+                       name: "wustl.edu",
+                       domain: "wustl.edu",
                        urlCellPM: "http://127.0.0.1/i2b2/services/PMService/",
                        allowAnalysis: true,
                        registrationMethod: "local",
