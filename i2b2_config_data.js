@@ -11,9 +11,9 @@
                        domain: "nextgenbmi.umsystem.edu",
                        urlCellPM: "http://127.0.0.1/i2b2/services/PMService/",
                        allowAnalysis: true,
-                       registrationMethod: "saml",
-                       loginType: "federated",
-                       adminOnly: false,
+                       registrationMethod: "local",
+                       loginType: "local",
+                       adminOnly: true,
                        showRegistration: true,
                        debug: true
                }
