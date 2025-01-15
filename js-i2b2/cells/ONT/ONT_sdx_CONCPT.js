@@ -204,7 +204,13 @@ i2b2.sdx.TypeControllers.CONCPT.RenderHTML= function(sdxData, options, targetDiv
 	{
 		if (!Object.isUndefined(sdxData.origData.total_num) && (sdxData.origData.total_num != 'undefined')) // tdw9: 1710: fixing 'undefined' showing up after concept drop
 		{
-			retHtml += " - <span style=\"color:#900;\">" + sdxData.origData.total_num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "</span>";
+			if (i2b2.PM.model.isObfuscated) {
+				retHtml += sdxData.origData.total_num >= i2b2.UI.cfg.obfuscatedDisplayNumber ? " - <span style=\"color:#900;\">" + sdxData.origData.total_num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "</span>" : " - <span style=\"color:#900;\">" + "< " + i2b2.UI.cfg.obfuscatedDisplayNumber.toString() + "</span>";	
+			}
+			else {
+				retHtml += " - <span style=\"color:#900;\">" + sdxData.origData.total_num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "</span>";
+			}
+			
 		}
 		if (sdxData.origData.total_num == 0)
 		{

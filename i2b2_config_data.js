@@ -8,7 +8,7 @@
           
                {
                        name: "NextGen BMI",
-                       domain: "i2b2demo",
+                       domain: "nextgenbmi.umsystem.edu",
                        urlCellPM: "http://127.0.0.1/i2b2/services/PMService/",
                        allowAnalysis: true,
                        registrationMethod: "saml",
