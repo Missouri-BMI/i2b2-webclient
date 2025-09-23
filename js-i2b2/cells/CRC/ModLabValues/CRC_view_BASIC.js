@@ -9,7 +9,7 @@
 
 i2b2.CRC.view.BASIC = {
 	// ================================================================================================== //
-	showDialog: function (sdxConcept, valueMetadata, queryPanelController, groupIdx, eventIdx) {
+	showDialog: function(sdxConcept, valueMetadata, queryPanelController, groupIdx, eventIdx, pluginCallBack) {
 		if (valueMetadata) {
 			let extractedLabValues = valueMetadata;
 
@@ -35,6 +35,18 @@ i2b2.CRC.view.BASIC = {
 						isString: false
 					};
 
+					// populate an empty LabValue entry to the callback function on cancel/close of modal
+					$(labValuesModal).off("hidden.bs.modal"); // prevent multiple bindings
+					$(labValuesModal).on("hidden.bs.modal", function () {
+						if (pluginCallBack) {
+							if (sdxConcept.LabValues === undefined) {
+								pluginCallBack({...sdxConcept, "LabValues": {}});
+							} else {
+								pluginCallBack(sdxConcept);
+							}
+						}
+					});
+
 					$("#labValuesModal div").eq(0).modal("show");
 
 					$("#labValuesModal .dropdown-menu li").click(function () {
@@ -55,7 +67,13 @@ i2b2.CRC.view.BASIC = {
 									validData = false;
 								}
 								if (["POSFLOAT", "FLOAT"].includes(dataType)) {
-									if (String(parseFloat(val)) !== val) validData = false;
+									let t = parseFloat(val);
+									if (String(t) !== val) {
+										// see if we have a zero fractional component
+										if (parseFloat(val.substring(String(t).length)) !== 0) {
+											validData = false;
+										}
+									}
 								}
 								if (["POSINT", "INT"].includes(dataType)) {
 									if (String(parseInt(val)) !== val) validData = false;
@@ -118,15 +136,18 @@ i2b2.CRC.view.BASIC = {
 						}
 
 						// clear out the range values if we have switch away from using "BETWEEN" filter
-						if (newLabValues.ValueOperator !== "BETWEEN") {
+						if (newLabValues.ValueType !== undefined && newLabValues.ValueOperator !== "BETWEEN") {
 							newLabValues.ValueLow = null;
 							newLabValues.ValueHigh = null;
 						}
 
 						sdxConcept.LabValues = newLabValues;
 
-						i2b2.CRC.view.BASIC.updateDisplayValue(sdxConcept, extractedLabValues, groupIdx, eventIdx);
-						queryPanelController.redrawConcept(sdxConcept, groupIdx, eventIdx);
+						if (groupIdx !== undefined) {
+							i2b2.CRC.view.BASIC.updateDisplayValue(sdxConcept, extractedLabValues, groupIdx, eventIdx);
+							queryPanelController.redrawConcept(sdxConcept, groupIdx, eventIdx);
+						}
+						if (pluginCallBack) pluginCallBack(sdxConcept);
 					});
 
 					// UI event handler
@@ -544,6 +565,17 @@ i2b2.CRC.view.BASIC = {
 			rangeInfo: {},
 			enumInfo: {}
 		};
+
+		//allow XML in string format
+		if (typeof valueMetaDataXml === 'string') {
+			try {
+				let parser = new DOMParser();
+				let test = parser.parseFromString(valueMetaDataXml, "text/xml");
+				valueMetaDataXml = test.documentElement;
+			} catch(e) {
+				return extractedModel;
+			}
+		}
 
 		const flagsToUse = i2b2.h.getXNodeVal(valueMetaDataXml, "Flagstouse");
 

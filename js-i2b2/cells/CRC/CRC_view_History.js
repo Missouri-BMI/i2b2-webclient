@@ -241,7 +241,8 @@ i2b2.CRC.view.history.clickSearchName = function() {
         crc_find_category: crc_find_category,
         crc_find_strategy: crc_find_strategy,
         crc_create_date: "",
-        crc_find_string: $("#querySearchTermText").val()
+        crc_find_string: $("#querySearchTermText").val(),
+        master_type_cd_xml: ""
     };
     i2b2.CRC.ajax.getNameInfo("CRC:History", options, scopeCB);
 };
@@ -410,7 +411,9 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
     let options = {
         crc_max_records: max + 1,
         crc_user_type: request_type,
-        crc_user_by: user_type
+        crc_user_by: user_type,
+        include_query_instance: false,
+        master_type_cd_xml: ""
     };
     i2b2.CRC.ajax.getQueryMasterList_fromUserId("CRC:History", options,  scopedCallback);
 };
@@ -515,15 +518,12 @@ i2b2.CRC.view.history.showDateListingView = function() {
     i2b2.CRC.view.history.treeviewFinder.treeview('clear');
 
     // set the initial date to today
-    let today = moment();
-    i2b2.CRC.view.history.viewDate = today.format("MM/DD/YYYY");
+    let today = luxon.DateTime.now();
+    i2b2.CRC.view.history.viewDate = today.toFormat("MM/dd/yyyy");
     $('#historyDateStart').val(i2b2.CRC.view.history.viewDate);
     // reformat date
-    today.hour(23);
-    today.minute(59);
-    today.second(59);
-    today.millisecond(999);
-    today = today.format();
+    today = today.set({hour:23, minute: 59, second: 59, millisecond: 999});
+    today = today.toISO();
 
     i2b2.CRC.view.history.searchByDate(today);
 };
@@ -534,16 +534,16 @@ i2b2.CRC.view.history._loadUsersInOptions =  function() {
         // get all user roles call
         // parse thru the list and add them to the drop down
         let loadUsers = function(){
-            let tmp = {};
+            let users = {};
             for (let i=0; i<i2b2.CRC.view.history.allUsers.model.length; i++) {
                 if(typeof i2b2.CRC.view.history.allUsers.model[i].username !== 'undefined'){
-                    tmp[i2b2.CRC.view.history.allUsers.model[i].username] = i2b2.CRC.view.history.allUsers.model[i];
+                    users[i2b2.CRC.view.history.allUsers.model[i].username] = i2b2.CRC.view.history.allUsers.model[i];
                 }
             }
 
-            $.each(tmp, function (idx, obj) {
-                $('#HISTUser').append($('<option>', {value:idx, text:idx}));
-            });
+            Object.entries(users).sort().forEach(
+                ([key, value]) => $('#HISTUser').append($('<option>', {value:key, text:key}))
+            );
 
             if (i2b2.CRC.view.history.params.userBy !== undefined) {
                 $('#HISTUser').val(i2b2.CRC.view.history.params.userBy);
@@ -608,12 +608,13 @@ i2b2.events.afterCellInit.add((cell) => {
                                         if (newDate !== i2b2.CRC.view.history.viewDate) {
                                             i2b2.CRC.view.history.viewDate = newDate;
                                             // reformat date
-                                            let startDate = moment(Date.parse(newDate));
-                                            startDate.hour(23);
+                                            let startDate = luxon.DateTime.fromMillis(Date.parse(newDate));
+                                            startDate = startDate.set({hour: 23, minute: 59, second: 59, millisecond:999});
+                                            /*startDate.hour(23);
                                             startDate.minute(59);
                                             startDate.second(59);
-                                            startDate.millisecond(999);
-                                            startDate = startDate.format();
+                                            startDate.millisecond(999);*/
+                                            startDate = startDate.toISO();
 
                                             // refresh the treeview
                                             i2b2.CRC.view.history.treeviewFinder.treeview('clear');
@@ -846,13 +847,14 @@ i2b2.events.afterCellInit.add((cell) => {
                         },
                         error: (error) => { console.error("Could not retrieve template: CRCContextMenuDialog.html"); }
                     });
-                    container.on( 'tab', function( tab ){
-                        if(tab.element.text() === 'Queries') {
-                            //add unique id to the term tab
+                    container.on('tab', (tab) => {
+                        if (tab.contentItem.componentName === "i2b2.CRC.view.history") {
+                            // add unique id to the term tab [TECH DEBT: is this used?]
                             let elemId = "queryHistoryTab";
                             $(tab.element).attr("id", elemId);
 
-                            let optionsBtn = $('<div id="queryHistoryOptions" class="menuOptions"><i class="bi bi-chevron-down" title="Query History Options"></i></div>');
+                            let title = tab.contentItem.config.title;
+                            let optionsBtn = $('<div id="queryHistoryOptions" class="menuOptions"><i class="bi bi-chevron-down" title="' + title + ' Options"></i></div>');
                             $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));
 
                             i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#queryHistoryOptions", {

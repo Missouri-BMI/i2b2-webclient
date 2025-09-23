@@ -14,6 +14,10 @@ i2b2.CRC.view.QueryReport = {
         };
         this.dataExport  = {
             resultTable: [],
+            requestInfo: {
+                email: {},
+                emailMsg: {}
+            }
         };
         this.hasZeroPatients = false;
 
@@ -68,7 +72,7 @@ i2b2.CRC.view.QueryReport = {
                         let initializationData = {};
                         initializationData.patientSet = sdxData;
                         initializationData.concepts = concepts;
-                        i2b2.PLUGIN.view.list.loadPlugin("Timeline", initializationData);
+                        i2b2.PLUGIN.view.newInstance("Timeline", initializationData);
                     }
                 }
             }
@@ -169,7 +173,24 @@ i2b2.CRC.view.QueryReport = {
                 if (breakdown.title) {
                     if (isPatientCount) {
                         i2b2.CRC.view.QueryReport.breakdowns.resultTable.unshift(breakdown);
-                    } else if(visualAttr === 'LR' || visualAttr === 'LX') {
+                    } else if(visualAttr === "LR" || visualAttr === "LX" || visualAttr === "LU" || visualAttr === "LP") {
+                        breakdown.result = breakdown.result.filter(breakdownItem =>
+                            breakdownItem.name === 'EMAIL' || breakdownItem.name === 'RequestEmail');
+                        breakdown.result.forEach(breakdownItem => {
+                            if(breakdownItem.name.toUpperCase() === "EMAIL") {
+                                i2b2.CRC.view.QueryReport.dataExport.requestInfo.email.name = "Requested By Email";
+                                i2b2.CRC.view.QueryReport.dataExport.requestInfo.email.value = breakdownItem.value;
+                            }
+
+                            if(breakdownItem.name.toUpperCase() === "REQUESTEMAIL") {
+                                i2b2.CRC.view.QueryReport.dataExport.requestInfo.emailMsg.name = "Request Message";
+                                i2b2.CRC.view.QueryReport.dataExport.requestInfo.emailMsg.value = breakdownItem.value;
+                            }
+
+                            if(!(breakdownItem.name.toUpperCase() === "EMAIL" && breakdownItem.name.toUpperCase() === "REQUESTEMAIL")) {
+                                breakdown = {title: breakdown.title};
+                            }
+                        });
                         i2b2.CRC.view.QueryReport.dataExport.resultTable.push(breakdown);
                     } else {
                         i2b2.CRC.view.QueryReport.breakdowns.resultTable.push(breakdown);
@@ -182,7 +203,7 @@ i2b2.CRC.view.QueryReport = {
                 i2b2.CRC.view.QueryReport.hasZeroPatients = isZeroPatients;
             }
             // only create graphs if there is breakdown data
-            if (!isPatientCount && !isZeroPatients  && !(visualAttr === 'LR' || visualAttr === 'LX') && status !== "ERROR") {
+            if (!isPatientCount && !isZeroPatients  && !(visualAttr === 'LR' || visualAttr === 'LX' || visualAttr === 'LP'|| visualAttr === 'LU') && status !== "ERROR") {
                 i2b2.CRC.view.graphs.createGraph("breakdownChartsBody", breakdown, i2b2.CRC.view.QueryReport.breakdowns.length);
             }
         }

@@ -1,9 +1,8 @@
 import { useDispatch } from "react-redux";
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import {
     saveUserParam, saveUserParamStatusConfirmed,
-    deleteUserParam, deleteUserParamStatusConfirmed, getAllUserParamsStatusConfirmed, deleteGlobalParamStatusConfirmed,
+    getAllUserParamsStatusConfirmed,
 } from "../../actions";
 import {EditParameters} from "../EditParameters";
 
@@ -17,8 +16,6 @@ export const EditUserParameters = ({selectedUser,
                                    setPaginationModel
 }) => {
     const [saveStatus, setSaveStatus] = useState("");
-    const [deleteStatus, setDeleteStatus] = useState("");
-    const [userParamStatus, setUserParamStatus] = useState("");
 
     const dispatch = useDispatch();
 
@@ -28,16 +25,12 @@ export const EditUserParameters = ({selectedUser,
         }
     };
 
-    const handleDeleteClick = (param)  => {
-        dispatch(deleteUserParam({user: selectedUser.user, param}));
-    };
-
     const saveStatusConfirm = () =>{
         dispatch(saveUserParamStatusConfirmed());
     }
 
-    const deleteStatusConfirm = () =>{
-        dispatch(deleteUserParamStatusConfirmed());
+    const allParamsStatusConfirm = () =>{
+        dispatch(getAllUserParamsStatusConfirmed());
     }
 
     useEffect(() => {
@@ -46,17 +39,6 @@ export const EditUserParameters = ({selectedUser,
         }
         if(selectedUser.paramStatus.status === "SAVE_FAIL"){
             setSaveStatus(selectedUser.paramStatus);
-        }
-        if(selectedUser.paramStatus.status === "DELETE_SUCCESS"){
-            setDeleteStatus(selectedUser.paramStatus);
-        }
-        if(selectedUser.paramStatus.status === "DELETE_FAIL"){
-            setDeleteStatus(selectedUser.paramStatus);
-        }
-
-        if(selectedUser.allUserParamStatus === "FAIL"){
-            dispatch(getAllUserParamsStatusConfirmed());
-            setUserParamStatus("FAIL");
         }
 
     }, [selectedUser]);
@@ -69,12 +51,9 @@ export const EditUserParameters = ({selectedUser,
                 updateParams={updateParams}
                 title={title}
                 saveParam={saveParam}
-                deleteParam={handleDeleteClick}
                 saveStatus={saveStatus}
-                deleteStatus={deleteStatus}
-                allParamStatus={userParamStatus}
+                allParamStatus={selectedUser.allUserParamStatus}
                 saveStatusConfirm={saveStatusConfirm}
-                deleteStatusConfirm={deleteStatusConfirm}
                 paginationModel={paginationModel}
                 setPaginationModel={setPaginationModel}
             />

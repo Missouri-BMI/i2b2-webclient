@@ -7,7 +7,7 @@
 	Author: Nick Benik
 	Contributors: Nich Wattanasin
 				  Mike Mendis
-	Last Revised: 04-26-23
+	Last Revised: 07-15-25
 
 *****************************************************************
 
@@ -26,6 +26,16 @@ Update: 05-03-17 (nw096):
 	- the automatic detection of $WHITELIST URLs from i2b2_config_data.js now supports ports (bug fix)
 
 */
+
+function unparse_url($parsed_url) {
+  $scheme   = isset($parsed_url['scheme']) ? $parsed_url['scheme'] . '://' : '';
+  $host     = isset($parsed_url['host']) ? $parsed_url['host'] : '';
+  $port     = isset($parsed_url['port']) ? ':' . $parsed_url['port'] : '';
+  $path     = isset($parsed_url['path']) ? $parsed_url['path'] : '';
+  $query    = isset($parsed_url['query']) ? '?' . $parsed_url['query'] : '';
+  return "$scheme$host$port$path$query";
+}
+
 
 
 $pmURL = "http://127.0.0.1:8080/i2b2/rest/PMService/getServices";
@@ -129,14 +139,16 @@ if ($PostBody=="") {
     // ---------------------------------------------------
 	//   white-list processing on the URL
 	// ---------------------------------------------------
-	$isAllowed = false;
 	$requestedURL = strtoupper($proxyURL);
+	$sec_fix_request = parse_url($requestedURL);
 	foreach ($WHITELIST as $entryValue) {
-		$checkValue = strtoupper(substr($requestedURL, 0, strlen($entryValue)));
-		if ($checkValue == strtoupper($entryValue)) {
-			$isAllowed = true;
-			break;
-		}
+	    $isAllowed = true;
+	    // additional security checks
+	    $sec_fix_whitelist = parse_url(strtoupper($entryValue));
+	    if ($sec_fix_whitelist['scheme'] != $sec_fix_request['scheme']) $isAllowed = false;
+	    if ($sec_fix_whitelist['host'] != $sec_fix_request['host']) $isAllowed = false;
+	    if ($sec_fix_whitelist['port'] != $sec_fix_request['port']) $isAllowed = false;
+		if ($isAllowed == true) break;
 	}
 	if (!$isAllowed) {
 		// security as failed - exit here and don't allow one more line of execution the opportunity to reverse this
@@ -146,13 +158,18 @@ if ($PostBody=="") {
 	//   black-list processing on the URL
 	// ---------------------------------------------------
 	foreach ($BLACKLIST as $entryValue) {
-		$checkValue = strtoupper(substr($requestedURL, 0, strlen($entryValue)));
-		if ($checkValue == strtoupper($entryValue)) {
-			// security as failed - exit here and don't allow one more line of execution the opportunity to reverse this
-			die("The proxy has refused to relay your request.");
+	    // additional security checks
+	    $sec_fix_blacklist = parse_url(strtoupper($entryValue));
+		if (($sec_fix_blacklist['scheme'] == $sec_fix_request['scheme']) &&
+            ($sec_fix_blacklist['host'] == $sec_fix_request['host']) &&
+            ($sec_fix_blacklist['port'] == $sec_fix_request['port'])) {
+            // bug fix: path must match as well for the blacklist entries
+            if ($sec_fix_blacklist['path'] == $sec_fix_request['path']) {
+                // security as failed - exit here and don't allow one more line of execution the opportunity to reverse this
+                die("The proxy has refused to relay your request.");
+            }
 		}
 	}
-
 
 	$newXML = $PostBody;
 	// Do not allow DOCTYPE declarations
@@ -207,8 +224,11 @@ if ($PostBody=="") {
         }
 	}
 
+    // sanitize the proxyURL (security improvement)
+    $sanitized_proxyURL = unparse_url(parse_url($proxyURL));
+
 	// open the URL and forward the new XML in the POST body
-	$proxyRequest = curl_init($proxyURL);
+	$proxyRequest = curl_init($sanitized_proxyURL);
 	curl_setopt($proxyRequest, CURLOPT_SSL_VERIFYPEER, FALSE);
 	// these options are set for hyper-vigilance purposes
 	curl_setopt($proxyRequest, CURLOPT_COOKIESESSION, 0);
@@ -238,7 +258,8 @@ if ($PostBody=="") {
 
 	// perform any analysis or processing on the returned result here
 	header("Content-Type: text/xml", true);
-	print($proxyResult);
+	$sanitized = new SimpleXMLElement($proxyResult);
+	echo $sanitized->asXML();
 }
 
 ?>

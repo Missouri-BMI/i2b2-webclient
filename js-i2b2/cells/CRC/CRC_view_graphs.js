@@ -38,7 +38,7 @@ i2b2.CRC.view.graphs.createGraph = function(sDivName, breakdownData, breakdownIn
         return;
     }
     parentContainer = parentContainer[0];
-    let margin = {top: 30, right: 30, bottom: 70, left: 60},
+    let margin = {top: 30, right: 40, bottom: 70, left: 60},
         height = 400 - margin.top - margin.bottom;
 
     // append the svg object to the target div
@@ -104,7 +104,7 @@ i2b2.CRC.view.graphs.createGraph = function(sDivName, breakdownData, breakdownIn
         .range([ height, 0]);
     // build the Y axis
     let y_axis = svg.append("g")
-        .call(d3.axisLeft(y));
+        .call(d3.axisLeft(y).tickFormat(d3.format(".2~s")));
     y_axis.append("text")
         .attr("fill","currentColor")
         .text("Number of Patients")

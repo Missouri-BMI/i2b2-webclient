@@ -254,14 +254,14 @@ i2b2.events.afterCellInit.add((cell) => {
                     });
                 });
 
-                container.on( 'tab', function( tab ){
-                    if(tab.element.text() === 'Terms') {
-                        //add unique id to the term tab
+                container.on('tab', (tab) => {
+                    if (tab.contentItem.componentName === "i2b2.ONT.view.nav") {
+                        // add unique id to the term tab [TECH DEBT: is this used?]
                         let elemId = "ontologyTermTab";
-
                         $(tab.element).attr("id", elemId);
 
-                        let optionsBtn = $('<div id="termOptions" class="menuOptions"><i class="bi bi-chevron-down" title="Set Terms Options"></i></div>');
+                        let title = tab.contentItem.config.title;
+                        let optionsBtn = $('<div id="termOptions" class="menuOptions"><i class="bi bi-chevron-down" title="'+ title +' Options"></i></div>');
                         $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));
 
                         i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#termOptions", {
@@ -357,8 +357,9 @@ i2b2.ONT.view.nav.viewInTreeFromId = function(sdx) {
     };
 
     let onLoadChildrenComplete = function(nodeData) {
-        i2b2.ONT.view.nav.treeview.treeview('expandNode', nodeData.nodeId);
         nodeData.el_Node[0].scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
+        if (nodeData.nodes === undefined) return;
+        if (nodeData.nodes.length > 0) i2b2.ONT.view.nav.treeview.treeview('expandNode', nodeData.nodeId);
         for (let child of nodeData.nodes) {
             if (sdxKey.startsWith(child.key)) {
                 if (sdxKey === child.key) {

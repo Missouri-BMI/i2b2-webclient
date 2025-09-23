@@ -51,6 +51,11 @@ DIV#PluginListBox A.pluginRecordBox DIV.Icon {
     margin: 0 0.3rem;
 }
 
+DIV#PluginListBox A.pluginRecordBox DIV.Icon img {
+    height: 32px;
+    width: 32px;
+}
+
 DIV#PluginListBox A.pluginRecordBox DIV.Name {
     font-family: arial,helvetica;
     font-size: 0.51em;
@@ -79,7 +84,7 @@ DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Descript {
     margin-top: 0.14em;
 }
 
-DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Icon {
+DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Icon img {
     height: 32px;
     width: 32px;
 }
@@ -117,4 +122,17 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
     margin:auto;
 }
 
+#activePluginOptions{
+    font-size: 1.25em;
+    width: 1.1em;
+    height: 1.1em;
+    margin-top: -0.4em;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+}
+
+.active-plugin .lm_close_tab {
+    display: none !important;
+}
 /* === Plugin List Viewer === */

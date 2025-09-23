@@ -59,11 +59,7 @@ i2b2.ONT.view.search.clearSearchInput = function(){
     $("#searchTermText").val("");
     i2b2.ONT.view.search.enableSearch("");
     $("#searchTermError").empty();
-
-    // Reset dropdown menu settings
-    $("#searchFilterText").text("Any Category");
-    $("#searchFilter").data("selectedFilterValue", "ALL CATEGORIES").data("selectedFilterType", "category");
-
+  
     // reset the info icon
     $('i.srTooltip').attr('data-bs-original-title', "A maximum of " + i2b2.ONT.view.nav.params.max + " records per category will be returned.");
     $('i.srTooltip').removeClass("warn");
@@ -295,6 +291,11 @@ i2b2.ONT.view.search.initSearchOptions = function(){
             // generate a list of categories
             let submenuOptions = Handlebars.compile(template);
             let categories = [];
+            categories.push({
+                name: "-Any Category-",
+                    value: "ANY",
+                    filterType: "category"
+            });
             for (let i=0; i<i2b2.ONT.model.Categories.length; i++) {
                 let cat = i2b2.ONT.model.Categories[i];
                 let catVal = cat.key.substring(2,cat.key.indexOf('\\',3));
@@ -329,15 +330,21 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                 $("#categorySubmenu").hide().closest("li").removeClass("highlight-menu-item");
                 $("#codingSubmenu").css("left", "100%").show();
             });
-
+            //look at this to get the any category if statement, existing code goes into else of an if search filter value = to any, reseset filter
             $("#i2b2FinderOnt .submenu li").on("click", function(){
                 $("#i2b2FinderOnt .active").removeClass("active");
                 let liItem = $(this).find("button");
                 let newDisplayText = liItem.addClass("active").text();
                 let filterValue = liItem.addClass("active").data("searchFilterValue");
                 let filterType = liItem.data("searchFilterType");
-                $("#searchFilterText").text(newDisplayText).prop('title', newDisplayText);
-                $("#searchFilter").data("selectedFilterValue", filterValue).data("selectedFilterType", filterType);
+                if(filterValue === "ANY"){                 
+                    // Reset dropdown menu settings
+                    $("#searchFilterText").text("Any Category");
+                    $("#searchFilter").data("selectedFilterValue", "ALL CATEGORIES").data("selectedFilterType", "category");
+               } else{             
+                    $("#searchFilterText").text(newDisplayText).prop('title', newDisplayText);
+                    $("#searchFilter").data("selectedFilterValue", filterValue).data("selectedFilterType", filterType);
+               }
             });
 
             $("#searchActions .reset").click(function() {
@@ -371,3 +378,4 @@ i2b2.ONT.view.search.initSearchOptions = function(){
         }).closest("li").addClass("highlight-menu-item");
     });
 };
+

@@ -65,7 +65,8 @@ export const allHivesReducer = (state = defaultState.allHives, action) => {
         case  GET_ALL_GLOBAL_PARAMS_ACTION.GET_ALL_GLOBAL_PARAMS: {
             return AllHives({
                 ...state,
-                isFetchingParams: true
+                isFetchingParams: true,
+                allGlobalParamStatus: null
             });
         }
 
@@ -80,13 +81,15 @@ export const allHivesReducer = (state = defaultState.allHives, action) => {
                     name: param.name,
                     value:param.value,
                     dataType: param.dataType,
+                    status: param.status
                 }));
             })
 
             return AllHives({
                 ...state,
                 params: paramsList,
-                isFetchingParams: false
+                isFetchingParams: false,
+                allGlobalParamStatus: "SUCCESS"
             });
         }
 
@@ -94,10 +97,18 @@ export const allHivesReducer = (state = defaultState.allHives, action) => {
 
             return AllHives({
                 ...state,
-                isFetchingParams: false
+                isFetchingParams: false,
+                allGlobalParamStatus: 'FAIL'
             });
         }
 
+        case GET_ALL_GLOBAL_PARAMS_ACTION.GET_ALL_GLOBAL_PARAMS_STATUS_CONFIRMED: {
+
+            return AllHives({
+                ...state,
+                allGlobalParamStatus: null
+            });
+        }
 
         case  SAVE_GLOBAL_PARAM_ACTION.SAVE_GLOBAL_PARAM_SUCCEEDED: {
             const  { param }  = action.payload;

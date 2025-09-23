@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import PropTypes from "prop-types";
 import {
     saveProjectParam, saveProjectParamStatusConfirmed,
-    deleteProjectParam, deleteProjectParamStatusConfirmed,
-    getAllProjectParamsStatusConfirmed
+    getAllProjectParamsStatusConfirmed,
 } from "../../actions";
 import {EditParameters} from "../EditParameters";
 import "./EditProjectParameters.scss";
@@ -13,14 +11,13 @@ import "./EditProjectParameters.scss";
 export const EditProjectParameters = ({selectedProject,
                                           updatedParams,
                                           updateParams,
+                                          projectParamStatus,
                                           doSave,
                                           setSaveCompleted,
                                           paginationModel,
                                           setPaginationModel
                                          }) => {
     const [saveStatus, setSaveStatus] = useState("");
-    const [deleteStatus, setDeleteStatus] = useState("");
-    const [projectParamStatus, setProjectParamStatus] = useState("");
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -35,16 +32,12 @@ export const EditProjectParameters = ({selectedProject,
         }
     };
 
-    const handleDeleteClick = (param)  => {
-        dispatch(deleteProjectParam({project: selectedProject.project, param}));
-    };
-
     const saveStatusConfirm = () =>{
         dispatch(saveProjectParamStatusConfirmed());
     }
 
-    const deleteStatusConfirm = () =>{
-        dispatch(deleteProjectParamStatusConfirmed());
+    const allParamsStatusConfirm = () =>{
+        dispatch(getAllProjectParamsStatusConfirmed());
     }
 
     useEffect(() => {
@@ -53,17 +46,6 @@ export const EditProjectParameters = ({selectedProject,
         }
         if(selectedProject.paramStatus.status === "SAVE_FAIL"){
             setSaveStatus(selectedProject.paramStatus);
-        }
-        if(selectedProject.paramStatus.status === "DELETE_SUCCESS"){
-            setDeleteStatus(selectedProject.paramStatus)
-        }
-        if(selectedProject.paramStatus.status === "DELETE_FAIL"){
-            setDeleteStatus(selectedProject.paramStatus)
-        }
-
-        if(selectedProject.allParamStatus === "FAIL"){
-            dispatch(getAllProjectParamsStatusConfirmed());
-            setProjectParamStatus("FAIL");
         }
 
     }, [selectedProject]);
@@ -76,12 +58,9 @@ export const EditProjectParameters = ({selectedProject,
                 updateParams={updateParams}
                 title={selectedProject.project.name + " - Parameters"}
                 saveParam={saveParam}
-                deleteParam={handleDeleteClick}
                 saveStatus={saveStatus}
-                deleteStatus={deleteStatus}
                 allParamStatus={projectParamStatus}
                 saveStatusConfirm={saveStatusConfirm}
-                deleteStatusConfirm={deleteStatusConfirm}
                 paginationModel={paginationModel}
                 setPaginationModel={setPaginationModel}
             />

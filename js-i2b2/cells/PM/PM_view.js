@@ -64,11 +64,23 @@ i2b2.PM.doLoginDialog = function() {
                 text: domain.name
             }));
         });
-        // attach the onSubmit handler
-        $("#PM-login-modal form").submit(function(event) {
-            event.preventDefault();
-            i2b2.PM.doLogin();
+        // attach the onClick/onSubmit handlers
+        $("#PM-login-modal .login-button").click(function(event) {
+            let selectedDomain = i2b2.PM.model.Domains[$('#logindomain').val()];
+            if (selectedDomain.ignorePasswordMgrs === true) {
+                // prevent the browser's password save option from saving/checking the password
+                event.preventDefault();
+                i2b2.PM.doLogin();
+            } else {
+                // allow the form's submit handler to fire (this is the hook for Chrome's password manager)
+                i2b2.PM.doLogin();
+            }
         });
+        $("#PM-login-modal form").submit(function(event) {
+            // we don't actually want to use the browser's form submit action
+            event.preventDefault();
+        });
+
         // attach event handlers for the SSO buttons
         let func_lauchSaml = (evt) => { i2b2.PM.doSamlLogin($(evt.currentTarget).data('service')); };
         $('.sso-button').on('click', func_lauchSaml);
@@ -89,13 +101,28 @@ i2b2.PM.view.updateProjectSelection = function(projectSelElem){
 
     let project = $(projectSelElem).val();
     $("#projectSelectionDetails").empty();
+    let details = Object.fromEntries(Object.entries(i2b2.PM.model.projects[project].details)
+        .filter(([key, detail]) => detail.status !== 'H' && detail.name.toUpperCase() !== "ANNOUNCEMENT"));
     let projectDetails = {
-        projectDetails: i2b2.PM.model.projects[project].details
+        projectDetails: details
     }
 
     $((Handlebars.compile("{{> ProjectSelectionDetail }}"))(projectDetails)).appendTo("#projectSelectionDetails");
 }
 // ================================================================================================== //
+
+i2b2.PM.view.showAnnouncements = function() {
+    try {
+        let announcement = Object.entries(i2b2.PM.model.projects[i2b2.PM.model.login_project].details).find(([key, detail]) => detail.name.toUpperCase() === "ANNOUNCEMENT");
+        if (announcement.length > 0 && announcement[1].status.toUpperCase() === "A") {
+            i2b2.PM.view.modal.announcementDialog.showAnnouncement(announcement[1].value);
+            return;
+        }
+    } catch(e) {
+        console.warn("Error in processing announcement. ", e);
+    }
+    i2b2.PM._processLaunchFramework();
+}
 
 i2b2.PM.view.showProjectSelectionModal = function(){
 
@@ -103,10 +130,13 @@ i2b2.PM.view.showProjectSelectionModal = function(){
 
     let projects = [];
     for (let code in i2b2.PM.model.projects) {
+        let details = Object.fromEntries(Object.entries( i2b2.PM.model.projects[code].details)
+            .filter(([key, detail]) => detail.status !== 'H' && detail.name.toUpperCase() !== "ANNOUNCEMENT"));
+
         projects.push({
             name : i2b2.PM.model.projects[code].name,
             value: code,
-            details:  i2b2.PM.model.projects[code].details
+            details:  details
         });
     }
 
@@ -125,7 +155,8 @@ i2b2.PM.view.showProjectSelectionModal = function(){
                 if (ProjId !== 'admin_HY!5Axu&') {
                     i2b2.PM.model.login_project = ProjId;
                     i2b2.PM.model.login_projectname = ProjName;
-                    i2b2.PM._processLaunchFramework();
+                    i2b2.PM.view.showAnnouncements();
+                    //i2b2.PM._processLaunchFramework();
                 }
 
                 $("#projectSelection div").eq(0).modal("hide");
@@ -142,6 +173,17 @@ i2b2.PM.view.showProjectSelectionModal = function(){
 // ================================================================================================== //
 i2b2.PM.doChangeDomain = function() {
     let selectedDomain = i2b2.PM.model.Domains[$('#logindomain').val()];
+    // remove the submit attribute on the login button if configured
+    if (selectedDomain.ignorePasswordMgrs === true) {
+        $("#PM-login-modal input[name='loginpass']").attr('type', 'text');
+        $("#PM-login-modal input[name='loginpass']").attr('autocomplete', 'off');
+        $("#PM-login-modal input[name='loginusr']").attr('autocomplete', 'off');
+    } else {
+        $("#PM-login-modal input[name='loginpass']").attr('type', 'password');
+        $("#PM-login-modal input[name='loginpass']").removeAttr('autocomplete', '');
+        $("#PM-login-modal input[name='loginusr']").removeAttr('autocomplete', '');
+    }
+
     let loginElements = $(".login-user, .login-password, .login-button");
     if (selectedDomain.saml !== undefined) {
         loginElements.hide();

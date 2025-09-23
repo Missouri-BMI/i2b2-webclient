@@ -18,6 +18,7 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
                 ...state,
                 user,
                 isFetching: true,
+                allUserParamStatus: null
             });
         }
         case  GET_ALL_USER_PARAMS_ACTION.GET_ALL_USER_PARAMS_SUCCEEDED: {
@@ -32,6 +33,7 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
                     name: param.name,
                     value:param.value,
                     dataType: param.dataType,
+                    status: param.status
                 }));
             })
 
@@ -40,6 +42,7 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
                 user,
                 params: paramsList,
                 isFetching: false,
+                allUserParamStatus: 'SUCCESS'
             });
         }
 
@@ -47,6 +50,7 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
             return SelectedUser({
                 ...state,
                 isFetching: false,
+                allUserParamStatus: 'FAIL'
             });
         }
 
@@ -54,7 +58,7 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
 
             return SelectedUser({
                 ...state,
-                userParamStatus: null
+                allUserParamStatus: null
             });
         }
 
@@ -159,7 +163,7 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
                 ...state,
                 user,
                 isFetching: true,
-                userParamStatus: null
+                allUserParamStatus: null
             });
         }
 
@@ -175,6 +179,7 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
                     name: param.name,
                     value:param.value,
                     dataType: param.dataType,
+                    status: param.status
                 }));
             })
 
@@ -183,7 +188,7 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
                 user,
                 params: paramsList,
                 isFetching: false,
-                userParamStatus: "SUCCESS"
+                allUserParamStatus: "SUCCESS"
             });
         }
 
@@ -192,7 +197,7 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
             return SelectedUser({
                 ...state,
                 isFetching: false,
-                userParamStatus: "FAIL"
+                allUserParamStatus: "FAIL"
             });
         }
 
@@ -200,7 +205,7 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
 
             return SelectedUser({
                 ...state,
-                userParamStatus: null
+                allUserParamStatus: null
             });
         }
 

@@ -14,11 +14,14 @@ const saveParamRequest = (param) => {
         paramIdStr = 'id="'+param.internalId+'"';
     }
 
-    let dataValue = encodeHTML(param.value);
+    let paramName = encodeHTML(param.name);
+    let paramValue = encodeHTML(param.value);
 
     const msg_xml = '<project_path>/</project_path><can_override>Y</can_override>' +
-            '<param datatype="'+param.dataType+ '" ' + paramIdStr
-        + ' name="'+param.name+'">'+ dataValue +"</param>";
+            '<param datatype="'+param.dataType + '" ' + paramIdStr
+        +' name="'+paramName +'" status="'+param.status +'">'
+        + paramValue
+        +"</param>";
 
     let data = {
         table: "global",

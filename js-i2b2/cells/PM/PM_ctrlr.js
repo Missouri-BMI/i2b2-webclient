@@ -194,16 +194,23 @@ i2b2.PM._processUserConfig = function (data) {
     let ieInCompatibilityMode = false;
     let ua = window.navigator.userAgent;
     let msie = ua.indexOf("MSIE ");
-    if (msie > 0)
-        browserIsIE8 = true;
-    if(browserIsIE8){
-        if (ua.indexOf("Trident/4.0") > -1) {
-            ieInCompatibilityMode = true;
+    if (msie > 0) browserIsIE8 = true;
+    if (browserIsIE8) {
+        if (ua.indexOf("Trident/4.0") > -1) ieInCompatibilityMode = true;
+    }
+    if (!(window.ActiveXObject) && "ActiveXObject" in window) browserIsIE11 = true;
+
+    let xml = data.refXML;
+    if (data.error === true) {
+        let s = i2b2.h.XPath(xml, 'descendant::result_status/status[@type="ERROR"]');
+        if (s.length > 0) {
+            // we have a proper error msg
+            if (s[0].firstChild.nodeValue !== "Password Expired.") {
+                alert("ERROR: " + s[0].firstChild.nodeValue);
+                return false;
+            }
         }
     }
-    if(!(window.ActiveXObject) && "ActiveXObject" in window)
-        browserIsIE11 = true;
-
 
     // save the valid data that was passed into the PM cell's data model
     i2b2.PM.model.login_username = data.msgParams.sec_user;
@@ -225,7 +232,6 @@ i2b2.PM._processUserConfig = function (data) {
     if (i2b2.PM.model.reLogin) {
         try { i2b2.PM.view.modal.login.hide(); } catch(e) {}
         i2b2.PM.model.reLogin = false;
-
         return;
     }
     i2b2.PM.model.otherAuthMethod = false;
@@ -247,6 +253,11 @@ i2b2.PM._processUserConfig = function (data) {
         }
     } catch(e) {}
 
+    try {
+        const email = i2b2.h.XPath(data.refXML, '//user/email')[0];
+        i2b2.PM.model.email = i2b2.h.getXNodeVal(email, 'email');
+    } catch(e) {}
+
     i2b2.PM.model.login_domain = data.msgParams.sec_domain;
     i2b2.PM.model.shrine_domain = Boolean.parseTo(data.msgParams.is_shrine);
     i2b2.PM.model.login_project = data.msgParams.sec_project;
@@ -259,7 +270,6 @@ i2b2.PM._processUserConfig = function (data) {
     i2b2.PM.removeLoginDialog();
 
     i2b2.PM.cfg.cellURL = i2b2.PM.model.url;  // remember the url
-    let xml = data.refXML;
 
     // copy any global params to i2b2.hive.model.params
     i2b2.hive.model.globalParams = {}
@@ -287,37 +297,51 @@ i2b2.PM._processUserConfig = function (data) {
         let projdetails = i2b2.h.XPath(projs[i], 'descendant-or-self::param[@name]');
         i2b2.PM.model.projects[code].details = {};
         for (let d=0; d<projdetails.length; d++) {
+            let paramId = projdetails[d].getAttribute('id');
             let paramName = projdetails[d].getAttribute('name');
             // BUG FIX - Firefox splits large values into multiple 4k text nodes... use Firefox-specific function to read concatenated value
             if (projdetails[d].textContent) {
-                i2b2.PM.model.projects[code].details[paramName] = projdetails[d].textContent;
+                i2b2.PM.model.projects[code].details[paramId] = {
+                    name: paramName,
+                    status: projdetails[d].getAttribute('status'),
+                    value: projdetails[d].textContent
+                };
             } else if (projdetails[d].firstChild) {
                 // BUG FIX - WEBCLIENT-118
                 if(((browserIsIE8 && ieInCompatibilityMode) || browserIsIE11) && paramName === "announcement")
-                    i2b2.PM.model.projects[code].details[paramName] = projdetails[d].firstChild.nodeValue;
+                    i2b2.PM.model.projects[code].details[paramId] = {
+                        name: paramName,
+                        status: projdetails[d].getAttribute('status'),
+                        value: projdetails[d].firstChild.nodeValue
+                    };
                 else
-                    i2b2.PM.model.projects[code].details[paramName] = projdetails[d].firstChild.nodeValue.unescapeHTML();
+                    i2b2.PM.model.projects[code].details[paramId] = {
+                        name: paramName,
+                        status: projdetails[d].getAttribute('status'),
+                        value: projdetails[d].firstChild.nodeValue.unescapeHTML()
+                    };
             }
         }
     }
 
      if (!i2b2.PM.model.isAdmin && i2b2.PM.model.admin_only) {
-        if (data.msgResponse === "")
-                    alert("The PM Cell is down or the address in the properties file is incorrect.");
-        else
+        if (data.msgResponse === "") {
+            alert("The PM Cell is down or the address in the properties file is incorrect.");
+        } else {
             alert("Requires ADMIN role, please contact your system administrator");
+        }
         try { i2b2.PM.view.modal.login.show(); } catch(e) {}
         return true;
     } else if (i2b2.PM.model.admin_only) {
         // default to the first project
         i2b2.PM.model.login_project = ""; //i2b2.h.XPath(projs[0], 'attribute::id')[0].nodeValue;
         i2b2.PM._processLaunchFramework();
-    } else 	if (projs.length === 0) {
+    } else if (projs.length === 0) {
         // show project selection dialog if needed
         // better error messages
         let s = i2b2.h.XPath(xml, 'descendant::result_status/status[@type="ERROR"]');
         if (s.length > 0) {
-            // we have a proper error msg
+            // we have a proper error msg (which was handled at the top unless the password was expired)
             try {
                 if (s[0].firstChild.nodeValue === "Password Expired.") {
                     i2b2.PM.view.changePassword.show(function(){
@@ -344,14 +368,7 @@ i2b2.PM._processUserConfig = function (data) {
         // default to the only project the user has access to
         i2b2.PM.model.login_project = i2b2.h.XPath(projs[0], 'attribute::id')[0].nodeValue;
         i2b2.PM.model.login_projectname = i2b2.h.getXNodeVal(projs[0], "name");
-        try {
-            let announcement = i2b2.PM.model.projects[i2b2.PM.model.login_project].details.announcement;
-            if (announcement) {
-                i2b2.PM.view.modal.announcementDialog.showAnnouncement(announcement);
-                return;
-            }
-        } catch(e) {}
-        i2b2.PM._processLaunchFramework();
+         i2b2.PM.view.showAnnouncements();
     } else {
         // display list of possible projects for the user to select
         i2b2.PM.view.showProjectSelectionModal();
