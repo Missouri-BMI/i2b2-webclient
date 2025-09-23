@@ -1,5 +1,5 @@
 {
-  "urlProxy": "/~proxy",
+  "urlProxy": "proxy.php",
   "urlFramework": "js-i2b2/",
   "lstDomains": [
     { "domain": "i2b2demo",
