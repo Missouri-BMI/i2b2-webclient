@@ -10,19 +10,6 @@
       "debug": false
     }, {
       "domain": "i2b2demo",
-      "name": "i2b2.org Demo (old)",
-      "urlCellPM": "http://services.i2b2.org/i2b2/services/PMService/",
-      "allowAnalysis": true,
-      "debug": false
-    }, {
-      "domain": "i2b2demo",
-      "name": "Clinical Query 2 Demo",
-      "urlCellPM": "http://weberdemo.hms.harvard.edu/i2b2/CQ2ServiceProxy.php/PMService/",
-      "allowAnalysis": true,
-      "debug": false,
-      "saml" : {"okta": null}
-    }, {
-      "domain": "i2b2demo",
       "name": "Shibboleth (localhost)",
       "urlCellPM": "http://127.0.0.1/i2b2/services/PMService/",
       "allowAnalysis": true,
