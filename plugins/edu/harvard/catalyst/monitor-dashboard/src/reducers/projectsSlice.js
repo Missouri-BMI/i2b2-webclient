@@ -35,7 +35,7 @@ export const projectsSlice = createSlice({
                     createDate: createDate
                 }));
             })
-            projects.sort((a, b) => a.name.localeCompare(b.name));
+            projects.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
 
             state.projectList = projects;
         },
