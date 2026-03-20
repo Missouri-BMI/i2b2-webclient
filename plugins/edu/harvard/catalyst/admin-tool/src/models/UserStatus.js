@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-export const UserSession = ({
+export const UserStatus = ({
     isActive= false,
     isLockedOut= false,
     isTerminatingSession = false,
@@ -12,7 +12,7 @@ export const UserSession = ({
     isUnlockingOutUser
 });
 
-UserSession.propTypes = {
+UserStatus.propTypes = {
     isActive: PropTypes.bool.isRequired,
     isLockedOut: PropTypes.bool.isRequired,
     isTerminatingSession: PropTypes.bool.isRequired,
