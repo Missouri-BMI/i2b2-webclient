@@ -10,7 +10,7 @@ export { DataSources } from "./DataSources";
 export { Queries } from "./Queries";
 export { Query } from "./Query";
 export { ExportRequest } from "./ExportRequest";
-export { QueryStatus } from "./QueryStatus";
+export { QueryStatus, QUERY_STATUSES } from "./QueryStatus";
 export { UserInfo } from "./UserInfo";
 export { UserRoleCount, USER_DATA_ROLES } from "./UserRoleCount";
 export { UserRoleCounts } from "./UserRoleCounts";

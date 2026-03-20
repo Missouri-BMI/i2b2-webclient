@@ -1,4 +1,4 @@
-import { Query, StatusInfo, QueryStatus } from "models";
+import { Query, StatusInfo, QUERY_STATUSES, QueryStatus } from "models";
 import {QUERIES} from "../actions";
 import {createSlice} from "@reduxjs/toolkit";
 import {defaultState} from "../defaultState";
@@ -21,12 +21,12 @@ export const queriesSlice = createSlice({
 
             let queries = [];
             queryList.map((query) => {
-                const status =QueryStatus.convertI2b2Status(query.status);
+                const status = QUERY_STATUSES.convertI2b2Status(query.status);
                 const startDate = DateTime.fromISO(query.startDate);
                 const deleteDate = query.deleteDate?.length > 0 ? DateTime.fromISO(query.deleteDate).toJSDate() : null;
 
                 let runTime = null;
-                if(status === QueryStatus.statuses.ERROR || status === QueryStatus.statuses.FINISHED){
+                if(status === QUERY_STATUSES.statuses.ERROR || status === QUERY_STATUSES.statuses.FINISHED){
                     const endDate = DateTime.fromISO(query.endDate);
                     runTime = ((endDate - startDate) / 1000).toFixed(1);
                 }
@@ -46,7 +46,10 @@ export const queriesSlice = createSlice({
                     startDate: startDate.toJSDate(),
                     deleteDate: deleteDate,
                     patientCount: query.patientCount,
-                    status: QueryStatus.convertI2b2Status(query.status),
+                    queryStatus: QueryStatus({
+                        status: status,
+                        i2b2Status: query.status,
+                    }),
                     username: query.userId,
                     obfuscatedPatientCountStr: query.obfuscatedPatientCountStr,
                     project: query.projectId,

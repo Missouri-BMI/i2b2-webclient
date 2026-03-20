@@ -6,6 +6,7 @@ import "./QueryTableView.scss";
 import {getQueryRequestDetails} from "../../reducers/queryRequestDetailsSlice";
 import {QueryRequestDetailsView} from "./QueryRequestDetailsView";
 import {Box, Tooltip} from "@mui/material";
+import {QUERY_STATUSES} from "../../models";
 
 export const QueryTableView = ({queries, projectIdList, isObfuscated}) => {
     const dispatch = useDispatch();
@@ -91,22 +92,29 @@ export const QueryTableView = ({queries, projectIdList, isObfuscated}) => {
             }
         },
         {
-            field: 'status',
+            field: 'queryStatus',
             headerName: 'Status',
             headerClassName: "header",
             sortable: true,
             disableReorder: true,
             minWidth: 100,
-            valueGetter: (status) => {
-                if (status) {
-                    return status.name;
+            valueGetter: (qstatus) => {
+                let queryStatus = qstatus.status.name;
+
+                if(queryStatus === QUERY_STATUSES.statuses.UNKNOWN.name){
+                    queryStatus = queryStatus.i2b2Status;
                 }
-                return status;
+                return queryStatus;
             },
             renderCell: (param) => {
+                let queryStatus = param.row.queryStatus.status.name;
+
+                if(queryStatus === QUERY_STATUSES.statuses.UNKNOWN.name){
+                    queryStatus = param.queryStatus.i2b2Status;
+                }
                 return (
                     <div className={"QueryStatus"}>
-                        <div>{param.row.status.name}</div>
+                        <div>{queryStatus}</div>
                     </div>
                 );
             }
@@ -141,6 +149,9 @@ export const QueryTableView = ({queries, projectIdList, isObfuscated}) => {
                     displayValue = row.obfuscatedPatientCountStr;
                 }
 
+                if(row.queryStatus.status.name !== QUERY_STATUSES.statuses.FINISHED.name){
+                    displayValue = '';
+                }
                 return displayValue;
             }
         },
