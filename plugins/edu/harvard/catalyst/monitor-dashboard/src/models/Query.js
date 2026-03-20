@@ -12,7 +12,7 @@ export const Query = ({
     deleteDate = null,
     patientCount = null,
     obfuscatedPatientCountStr= "",
-    status= QueryStatus.statuses.SUBMITTED,
+    queryStatus= QueryStatus(),
     runTime=null,
     username,
 } = {}) => ({
@@ -26,7 +26,7 @@ export const Query = ({
     patientCount,
     obfuscatedPatientCountStr,
     username,
-    status,
+    queryStatus,
     runTime
 });
 
@@ -40,7 +40,7 @@ Query.propTypes = {
     patientCount: PropTypes.number.isRequired,
     obfuscatedPatientCountStr: PropTypes.string,
     userId:  PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired,
+    queryStatus: PropTypes.shape(QueryStatus),
     runTime: PropTypes.number.isRequired
 }
 
