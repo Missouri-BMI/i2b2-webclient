@@ -67,8 +67,8 @@ export const AllUsersTable = ({paginationModel,
             }
         },
         {
-            field: 'session',
-            headerName: 'Session',
+            field: 'status',
+            headerName: 'Status',
             flex: 1,
             editable: false,
             valueGetter: (param) => {
@@ -118,7 +118,7 @@ export const AllUsersTable = ({paginationModel,
                     </Tooltip>
                 ];
 
-                if(row.session.isActive){
+                if(row.status.isActive){
                     actions.push(
                     <Tooltip title="Terminate user session">
                             <GridActionsCellItem
@@ -131,7 +131,7 @@ export const AllUsersTable = ({paginationModel,
                     </Tooltip>);
                 }
 
-                if(row.session.isLockedOut){
+                if(row.status.isLockedOut){
                     actions.push(
                         <Tooltip title="Unlock user">
                             <GridActionsCellItem
