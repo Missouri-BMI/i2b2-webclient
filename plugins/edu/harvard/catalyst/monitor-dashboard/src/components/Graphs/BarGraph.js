@@ -80,7 +80,9 @@ export const BarGraph = ({ data, xAxisTitle, yAxisTitle }) => {
 
         let y_axis = svg.append("g")
             .classed("y-axis", true)
-            .call(d3.axisLeft(y).tickFormat(d3.format(".2~s")));
+            .call(d3.axisLeft(y)
+                .tickValues(y.ticks().filter(Number.isInteger))
+                .tickFormat(d3.format("d")));
 
         y_axis.append("text")
             .classed("y-title", true)
