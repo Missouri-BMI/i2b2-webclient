@@ -102,7 +102,7 @@ export const QueryTableView = ({queries, projectIdList, isObfuscated}) => {
                 let queryStatus = qstatus.status.name;
 
                 if(queryStatus === QUERY_STATUSES.statuses.UNKNOWN.name){
-                    queryStatus = queryStatus.i2b2Status;
+                    queryStatus = qstatus.i2b2Status;
                 }
                 return queryStatus;
             },
@@ -110,7 +110,7 @@ export const QueryTableView = ({queries, projectIdList, isObfuscated}) => {
                 let queryStatus = param.row.queryStatus.status.name;
 
                 if(queryStatus === QUERY_STATUSES.statuses.UNKNOWN.name){
-                    queryStatus = param.queryStatus.i2b2Status;
+                    queryStatus = param.row.queryStatus.i2b2Status;
                 }
                 return (
                     <div className={"QueryStatus"}>
