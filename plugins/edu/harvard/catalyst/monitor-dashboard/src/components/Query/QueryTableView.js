@@ -12,10 +12,12 @@ export const QueryTableView = ({queries, projectIdList, isObfuscated}) => {
     const dispatch = useDispatch();
     const [paginationModel, setPaginationModel] = useState({ pageSize: 100, page: 0});
     const [showRequestDetails, setShowRequestDetails] = useState(false);
+    const [selectedRow, setSelectedRow] = useState(false);
 
-    const handleShowQueryDetails = (queryMasterId) => () => {
+    const handleShowQueryDetails = (queryMasterId, row) => () => {
         dispatch(getQueryRequestDetails({queryMasterId}));
         setShowRequestDetails(true);
+        setSelectedRow(row);
     }
 
     const columns = [
@@ -140,19 +142,11 @@ export const QueryTableView = ({queries, projectIdList, isObfuscated}) => {
             disableReorder: true,
             minWidth: 100,
             valueGetter: (value, row) => {
-                let formattedValue = value?.length > 0 ? parseInt(value) : value;
-                let displayValue = formattedValue;
-
-                if (isNaN(formattedValue) || !(value?.length > 0)) {
-                    displayValue = "";
-                }else if (isObfuscated && formattedValue !== -1) {
-                    displayValue = row.obfuscatedPatientCountStr;
+                let displayText = "";
+                if (row.status === QUERY_STATUSES.statuses.FINISHED) {
+                    displayText = getFormattedPatientCount(row);
                 }
-
-                if(row.queryStatus.status.name !== QUERY_STATUSES.statuses.FINISHED.name){
-                    displayValue = '';
-                }
-                return displayValue;
+                return displayText;
             }
         },
         {
@@ -171,7 +165,7 @@ export const QueryTableView = ({queries, projectIdList, isObfuscated}) => {
                                 icon={<TextSnippetOutlinedIcon/>}
                                 label="SQL/Xml"
                                 className="textPrimary"
-                                onClick={handleShowQueryDetails(id)}
+                                onClick={handleShowQueryDetails(id, row)}
                                 color="inherit"
                             />
                         </Tooltip>
@@ -193,9 +187,22 @@ export const QueryTableView = ({queries, projectIdList, isObfuscated}) => {
     };
 
     const handleCloseRequestDetails = () => {
-        console.log("closing request details");
         setShowRequestDetails(false);
     }
+
+    const getFormattedPatientCount = (row) => {
+        let formattedValue = row.patientCount.length > 0 ? parseInt(row.patientCount) : value;
+        let displayValue = formattedValue;
+
+        if (isNaN(formattedValue) || !(row.patientCount.length > 0)) {
+            displayValue = "";
+        }else if (isObfuscated && formattedValue !== -1) {
+            displayValue = row.obfuscatedPatientCountStr;
+        }
+
+        return displayValue;
+    }
+
     return(
         <Box className={"QueryTableView"}>
             <DataGrid
@@ -233,7 +240,7 @@ export const QueryTableView = ({queries, projectIdList, isObfuscated}) => {
                 getRowHeight={() => 'auto'}
             />
 
-            {showRequestDetails && <QueryRequestDetailsView onClose={handleCloseRequestDetails}/>}
+            {showRequestDetails && <QueryRequestDetailsView onClose={handleCloseRequestDetails} patientCountStr={getFormattedPatientCount(selectedRow)} queryRow={selectedRow}/>}
 
         </Box>
     )
