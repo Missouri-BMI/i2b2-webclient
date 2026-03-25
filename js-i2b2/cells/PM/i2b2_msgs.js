@@ -2844,7 +2844,7 @@ i2b2.PM.cfg.parsers.getAllRoleCount = function() {
     }
     return this;
 };
-i2b2.PM.ajax._addFunctionCall("getAllRoleCount","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getAllRoleCount,null,i2b2.PM.cfg.parsers.getAllRoleCount)	;
+i2b2.PM.ajax._addFunctionCall("getAllRoleCount","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getAllRoleCount,["project_id_xml"],i2b2.PM.cfg.parsers.getAllRoleCount)	;
 // ================================================================================================== //
 i2b2.PM.cfg.msgs.getLockUser = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
     '<i2b2:request xmlns:i2b2="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:pm="http://www.i2b2.org/xsd/cell/pm/1.1/">\n'+

@@ -28,12 +28,13 @@ export const userRoleCountsSlice = createSlice({
             let managerUserCount = 0;
 
             userRoleCountsList.map((userRoleCount) => {
-                let role = USER_DATA_ROLES[userRoleCount.role];
-                role = role ? role : USER_DATA_ROLES.UNKNOWN;
+                let dataRole = USER_DATA_ROLES[userRoleCount.role];
+                dataRole = dataRole ? dataRole : USER_DATA_ROLES.UNKNOWN;
 
                 userRoleCounts.push(UserRoleCount({
                     projectId: userRoleCount.projectId,
-                    role: role,
+                    roleText: userRoleCount.role,
+                    dataRole,
                     count: userRoleCount.count,
                 }));
 
