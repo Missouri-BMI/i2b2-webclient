@@ -83,7 +83,7 @@ export const Query = () => {
     return (
         <Box className={"Query"}>
             <Box className="QueryHeader">
-                {dataSources.isFetching || dataSources.dataSourceList.length > 1 && <Tooltip title={dataSource ? dataSource.dbSchema : ""}>
+                {dataSources.isFetching || dataSources.dataSourceList.length > 0 && <Tooltip title={dataSource ? dataSource.dbSchema : ""}>
                     <Autocomplete
                         getOptionLabel={(option) => option.dbSchema ? option.dbSchema: ""}
                         getOptionKey={(option) => option.id}
