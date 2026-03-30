@@ -86,7 +86,6 @@ const parseLockedUsersXml = (lockedUsersXml) => {
                 }else{
                     lockedUsersObj[username] = [{fullname}];
                 }
-                console.log("locked username", username);
             }
         }
     }

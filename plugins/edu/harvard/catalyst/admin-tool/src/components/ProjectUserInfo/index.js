@@ -16,6 +16,7 @@ import {saveProjectUser, saveProjectUserStatusConfirmed} from "actions";
 import { SelectedUser, ADMIN_ROLES, DATA_ROLES, EDITOR_ROLE } from "models";
 
 import "./ProjectUserInfo.scss";
+import {Autocomplete} from "@mui/material";
 
 export const ProjectUserInfo = ({selectedUser, selectedProject, cancelEdit, updateUser, updatedUser}) => {
     const [isDirty, setIsDirty] = useState(false);
@@ -23,12 +24,39 @@ export const ProjectUserInfo = ({selectedUser, selectedProject, cancelEdit, upda
     const [showSaveStatus, setShowSaveStatus] = useState(false);
     const [saveStatusMsg, setSaveStatusMsg] = useState("");
     const [saveStatusSeverity, setSaveStatusSeverity] = useState("info");
+    const [customRolesToDelete, setCustomRolesToDelete] = useState([]);
+    const [customRolesToSave, setCustomRolesToSave] = useState([]);
+    const [customRoles, setCustomRoles] = useState(selectedUser.user.customRoles);
+
     const dispatch = useDispatch();
 
 
+    const handleCustomRolesChange = (event, value) => {
+        let newCustomRoles = value;
+
+        const filterExistingCustomRolesToSave = newCustomRoles.filter(role => !selectedUser.user.customRoles.includes(role));
+        setCustomRolesToSave(filterExistingCustomRolesToSave);
+
+        const filterExistingCustomRolesToDelete = selectedUser.user.customRoles.filter(role => !newCustomRoles.includes(role));
+        setCustomRolesToDelete(filterExistingCustomRolesToDelete);
+
+        if(newCustomRoles !== selectedUser.user.customRoles){
+            setIsDirty(true);
+        }else{
+            setIsDirty(false);
+        }
+
+        setCustomRoles(newCustomRoles);
+    }
+
     const saveProjectUserInfo = () => {
         setShowSaveBackdrop(true);
-        dispatch(saveProjectUser({user: updatedUser, selectedProject, isEditor: selectedUser.user.editorPath.length > 0}));
+        dispatch(saveProjectUser({user: updatedUser,
+            selectedProject,
+            isEditor: selectedUser.user.editorPath.length > 0,
+            customRolesToSave,
+            customRolesToDelete
+        }));
     };
 
     const handleUpdate = (field, value) => {
@@ -151,6 +179,30 @@ export const ProjectUserInfo = ({selectedUser, selectedProject, cancelEdit, upda
                         <MenuItem value={"true"}>Yes</MenuItem>
                         <MenuItem value={"false"}>No</MenuItem>
                     </TextField>
+                </div>
+                <div className={"mainField customRoles"}>
+                    <Autocomplete
+                        size="small"
+                        multiple
+                        freeSolo
+                        value={customRoles}
+                        options={selectedProject.customRoles}
+                        onChange={handleCustomRolesChange}
+                        sx={{ minWidth: 300 }}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                variant="standard"
+                                size="small"
+                                label="Custom Roles"
+                                helperText={"Current: " + selectedUser.user.customRoles.join(", ")}
+                                placeholder={selectedProject.customRoles.length > 0 ? "Select a name or enter": ""}
+                                slotProps={{
+                                    shrink: true
+                                }}
+                            />
+                        )}
+                    />
                 </div>
             </Stack>
             <div className="EditUserActionPrimary">
