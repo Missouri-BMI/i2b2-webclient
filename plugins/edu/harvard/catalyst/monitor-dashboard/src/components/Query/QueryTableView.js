@@ -143,7 +143,7 @@ export const QueryTableView = ({queries, projectIdList, isObfuscated}) => {
             minWidth: 100,
             valueGetter: (value, row) => {
                 let displayText = "";
-                if (row.status === QUERY_STATUSES.statuses.FINISHED) {
+                if (row.queryStatus.status === QUERY_STATUSES.statuses.FINISHED) {
                     displayText = getFormattedPatientCount(row);
                 }
                 return displayText;
@@ -191,16 +191,15 @@ export const QueryTableView = ({queries, projectIdList, isObfuscated}) => {
     }
 
     const getFormattedPatientCount = (row) => {
-        let formattedValue = row.patientCount.length > 0 ? parseInt(row.patientCount) : value;
-        let displayValue = formattedValue;
+        let displayValue = parseInt(row.patientCount);
 
-        if (isNaN(formattedValue) || !(row.patientCount.length > 0)) {
-            displayValue = "";
+        if(isNaN(displayValue)){
+            displayValue = '';
         }else if (isObfuscated && formattedValue !== -1) {
             displayValue = row.obfuscatedPatientCountStr;
         }
 
-        return displayValue;
+        return displayValue.toString();
     }
 
     return(

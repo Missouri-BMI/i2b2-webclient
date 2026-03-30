@@ -331,7 +331,7 @@ export const QueryRequestDetailsReport = ({patientCountStr, queryRow}) => {
 
             <h2 className="sub-title">Query Results</h2>
 
-            {queryRow.queryStatus.status === QUERY_STATUSES.statuses.FINISHED && <Card className={"count-container"}>
+            {(queryRow.queryStatus.status === QUERY_STATUSES.statuses.FINISHED && patientCountStr.length > 0) && <Card className={"count-container"}>
                 <Typography className={"count-title"}>Number of patients</Typography>
                 <Typography className={"count-value"}>
                     {patientCountStr}
@@ -339,7 +339,7 @@ export const QueryRequestDetailsReport = ({patientCountStr, queryRow}) => {
             </Card>
             }
 
-            {queryRow.queryStatus.status !== QUERY_STATUSES.statuses.FINISHED && <Box> Status: {queryRow.queryStatus.status.name} </Box>}
+            {(queryRow.queryStatus.status !== QUERY_STATUSES.statuses.FINISHED ||  patientCountStr.length === 0) && <Box> Status: {queryRow.queryStatus.status.name} </Box>}
         </Box>
     );
 }
