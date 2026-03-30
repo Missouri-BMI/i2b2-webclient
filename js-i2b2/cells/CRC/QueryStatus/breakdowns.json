@@ -83,5 +83,67 @@
     "BARS": true,
     "TABLE": true,
     "DOWNLOAD": true
+  },
+  "PATIENT_ZIP_COUNT_XML": {
+    "TABLE": true,
+    "MULTIZIPCODEMAP": {
+      "clickBox": {
+        "options": {
+          "closeButton": "true",
+          "className": "onclick-box",
+          "autoClose": false,
+          "closeOnClick": false
+        },
+        "template": "<b>[{{text}}] - {{name}}</b><br/>{{display}} patients"
+      },
+      "hoverBox": {
+        "position": "topright",
+        "className": "onhover-box",
+        "default": "<h4>Patient Count</h4>Hover over an area",
+        "template": "<h4>Patient Count</h4><div><b>{{name}}</b></div><div>Zip Code: {{zipcode}}</div><span>{{display}} patients</span>"
+      },
+      "legendBox": {
+        "position": "bottomright",
+        "options": {},
+        "templates": {
+          "root": "<div class='map-title'><h4>Patient Count</h4></div><div class='map-entries'><div>{{entries}}</div></div>",
+          "auto": "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min|2}}&ndash;{{~max|2}}</span></div>",
+          "min-max": "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min}}&ndash;{{~max}}</span></div>",
+          "no-min": "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>&lt;{{~max}}</span></div>",
+          "no-max": "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min}}+</span></div>"
+        }
+      },
+      "map": {
+        "tiles": "http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png",
+        "labelTiles": "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
+        "maxZoom": 18,
+        "aggKeyName": "aggKey",
+        "colors": [
+          {"color": "#d73027"},
+          {"color": "#f46d43"},
+          {"color": "#fdae61"},
+          {"color": "#fee090"},
+          {"color": "#ffffbf"},
+          {"color": "#e0f3f8"},
+          {"color": "#abd9e9"},
+          {"color": "#74add1"},
+          {"color": "#4575b4"}
+        ],
+        "styles": {
+          "norm": {
+            "weight": 1,
+            "opacity": 1,
+            "color": "#000",
+            "fillOpacity": 0.25
+           },
+          "hover": {
+            "weight": 3,
+            "_dashArray": "4,6",
+            "color": "#F00",
+            "fillOpacity": 0.5
+          }
+        }
+      }
+    }
   }
 }
