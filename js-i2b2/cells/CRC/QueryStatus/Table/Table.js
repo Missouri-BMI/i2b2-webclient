@@ -134,7 +134,10 @@ let parseData = function(xmlData) {
     // short circuit exit because there is no data
     if (params.length === 0) return;
     for (let i2 = 0; i2 < params.length; i2++) {
-        let entryRecord = {}
+      // bail out if we get a -1 back from the server. This means the data is not valid.
+      if (params[i2].firstChild.nodeValue === -1) return;
+      // create the entry record
+      let entryRecord = {}
         entryRecord.name = $('<div>').html(params[i2].getAttribute("column")).text();
         entryRecord.value = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(params[i2].firstChild.nodeValue);
         // Override the display value if specified by server setting the "display" attribute

@@ -271,6 +271,10 @@ let parseData = function(xmlData) {
         entryRecord.name = $('<div>').html(params[i2].getAttribute("column")).text();
         entryRecord.value = params[i2].firstChild.nodeValue;
 
+        // bail out if we get a -1 back from the server. This means the data is not valid.
+        if (entryRecord.value === -1) return;
+
+        // apply obfuscation
         if (i2b2.PM.model.isObfuscated) {
             const nodeValue = parseInt(params[i2].firstChild.nodeValue);
             if (!isNaN(nodeValue) && nodeValue < 4) {
