@@ -68,6 +68,15 @@
       "source": "MultiZipcodeMap/MultiZipcodeMap.js",
       "CSS": "MultiZipcodeMap/MultiZipcodeMap.css",
       "iconClass": "bi bi-globe2"
+    },
+    "PATHOGENTIMELINE": {
+      "name": "Pathogen Timeline",
+      "source": "PathogenTimeline/PathogenTimeline.js",
+      "CSS": "PathogenTimeline/PathogenTimeline.css",
+      "iconClass": "bi-graph-up-arrow",
+      "displayOrder": 3,
+      "class": "pathogen-timeline",
+      "displayForUnregistered": false
     }
   },
   "displayOrder": [
