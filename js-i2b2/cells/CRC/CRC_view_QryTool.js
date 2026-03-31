@@ -134,9 +134,11 @@ i2b2.CRC.view.QT.showRun = function() {
             });
         }
 
-        if(Object.keys(i2b2.CRC.model.requestTypes).length === 0 && Object.keys(i2b2.CRC.model.userRequestTypes).length === 0 ){
+        if(Object.keys(i2b2.CRC.model.requestTypes).length === 0 && Object.keys(i2b2.CRC.model.userRequestTypes).length === 0
+            && Object.keys(i2b2.CRC.model.projectRequestTypes).length === 0){
             $('#DataRequestDiv').hide();
-            $('#CustomDataRequestInfoDiv').hide();
+        }else{
+            $('#DataRequestDiv').show();
         }
 
         const selectPatientSetForDataRequest = () => {
@@ -159,7 +161,6 @@ i2b2.CRC.view.QT.showRun = function() {
 
         let requestContainer = $("#crcModal .RequestTypes");
         for (let code in i2b2.CRC.model.requestTypes) {
-            document.getElementById("DataRequestDiv").style.display = "";
             let descriptions = i2b2.CRC.model.requestTypes[code];
             descriptions.forEach(description => {
                 let checked = '';
