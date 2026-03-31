@@ -77,6 +77,20 @@
       "displayOrder": 3,
       "class": "pathogen-timeline",
       "displayForUnregistered": false
+    },
+    "NIHENROLLTABLE": {
+      "name": "Enrollment Form",
+      "source": "NihEnrollTable/Table.js",
+      "CSS": "NihEnrollTable/Table.css",
+      "iconClass": "bi bi-grid-3x3",
+      "displayOrder": 1
+    },
+    "NIHENROLLCSV": {
+      "name": "Enrollment Form CSV",
+      "source": "NihEnrollCsv/Download.js",
+      "iconClass": "bi bi-filetype-csv",
+      "displayOrder": 100,
+      "notInReport": true
     }
   },
   "displayOrder": [
