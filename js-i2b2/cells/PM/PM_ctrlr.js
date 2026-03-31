@@ -419,6 +419,7 @@ i2b2.PM.doLogout = function(allSessions) {
             }
             else{
                 alert("Error logging out user.");
+                window.location.reload();
             }
         }, i2b2.PM);
         let parameters = {
@@ -556,6 +557,7 @@ i2b2.PM._processLaunchFramework = function() {
                 for (let i = 0; i < x.length; i++) {
                     let n = i2b2.h.XPath(x[i], "attribute::name")[0].nodeValue;
                     cellRef.params[n] = x[i].innerHTML;
+                   // cellRef.paramsStatus[n] = x[i].innerHTML;
                 }
                 // project params
                 x = i2b2.h.XPath(oXML, "//user/project[@id='"+i2b2.PM.model.login_project+"']/param[@name]");
