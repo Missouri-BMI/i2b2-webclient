@@ -23,3 +23,15 @@ export { TopUsersByQuery } from "./TopUsersByQuery";
 export { QueryActivityByMonth } from "./QueryActivityByMonth";
 export { QueryActivityAndDate } from "./QueryActivityAndDate";
 export { QueryRequestDetails } from "./QueryRequestDetails";
+export { QueryDefinition, QUERY_TIMING } from "./QueryDefinition";
+export { ConceptGroup, CONCEPT_TIMING } from "./ConceptGroup";
+export { Concept } from "./Concept";
+export { ConstrainByValue } from "./ConstrainByValue";
+export { ConstrainByModifier } from "./ConstrainByModifier";
+export { ConstrainByDate } from "./ConstrainByDate";
+export { EventQuery } from "./EventQuery";
+export { EventConstraint, EVENT_CONSTRAINT_OPERATOR } from "./EventConstraint";
+export { EventConstraintQuery, EVENT_JOIN_COLUMN, EVENT_CONSTRAINT_AGGREGATE_OPERATOR } from "./EventConstraintQuery";
+export { EventGroup } from "./EventGroup";
+export { TimeSpan, TIMESPAN_OPERATOR, TIMESPAN_UNIT } from "./TimeSpan";
+

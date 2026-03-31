@@ -3,6 +3,7 @@ import {useSelector} from "react-redux";
 
 import "./QueryTableView.scss";
 import {CustomTabs} from "./CustomTabs";
+import {QueryRequestDetailsReport} from "./QueryRequestDetailsReport";
 
 import {
     Box,
@@ -14,7 +15,7 @@ import {
 } from "@mui/material";
 import Button from "@mui/material/Button";
 
-export const QueryRequestDetailsView = ({onClose}) => {
+export const QueryRequestDetailsView = ({onClose, patientCountStr, queryRow}) => {
     const queryRequestDetails  = useSelector((state) => state.queryRequestDetails);
     const [open, setOpen] = React.useState(true);
 
@@ -73,7 +74,12 @@ export const QueryRequestDetailsView = ({onClose}) => {
                             {
                                 label: "SQL",
                                 content: getSQLTab()
-                            }]
+                            },
+                            {
+                                label: "Query Definition",
+                                content: <QueryRequestDetailsReport patientCountStr={patientCountStr} queryRow={queryRow}/>
+                            }
+                        ]
                         }
                     />
                 </Typography>
