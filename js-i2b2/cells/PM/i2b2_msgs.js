@@ -1199,6 +1199,7 @@ i2b2.PM.cfg.msgs.getAllUser = '<?xml version="1.0" encoding="UTF-8" standalone="
 '    <message_body>\n'+
 '        <pm:get_all_user>\n'+
 '         {{{entry_date_xml}}}\n'+
+'         {{{project_id_xml}}}\n'+
 '        </pm:get_all_user>\n'+
 '    </message_body>\n'+
 '</i2b2:request>';
@@ -1223,7 +1224,7 @@ i2b2.PM.cfg.parsers.getAllUser = function() {
     }
     return this;
 };
-i2b2.PM.ajax._addFunctionCall("getAllUser","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getAllUser, ["entry_date_xml"], i2b2.PM.cfg.parsers.getAllUser);
+i2b2.PM.ajax._addFunctionCall("getAllUser","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getAllUser, ["entry_date_xml", "project_id_xml"], i2b2.PM.cfg.parsers.getAllUser);
 
 
 
