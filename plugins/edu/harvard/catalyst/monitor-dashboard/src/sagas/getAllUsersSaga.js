@@ -5,11 +5,13 @@ import {parseXml} from "../utilities/parseXml";
 
 //a function that returns a promise
 const getAllUsersRequest = (projectId) => {
-    const data = {};
+    const data = {
+        entry_date_xml: "",
+        project_id_xml: ""
+    };
+
     if(projectId){
-        data.sec_project = projectId;
-    }else{
-        data.sec_project = "@"
+        data.project_id_xml = "<project_id>" + projectId + "</project_id>";
     }
 
     return i2b2.ajax.PM.getAllUser(data).then((xmlString) => parseXml(xmlString));

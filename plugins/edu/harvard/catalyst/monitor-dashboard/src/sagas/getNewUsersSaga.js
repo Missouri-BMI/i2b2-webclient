@@ -6,7 +6,9 @@ import {DateTime} from "luxon";
 
 //a function that returns a promise
 const getAllUsersRequest = (newUsersSinceInDays, projectId) => {
-    let data = {};
+    let data = {
+        project_id_xml: ""
+    };
 
     if(newUsersSinceInDays !== undefined) {
         const now = DateTime.now();
@@ -15,9 +17,7 @@ const getAllUsersRequest = (newUsersSinceInDays, projectId) => {
     }
 
     if(projectId){
-        data.sec_project = projectId;
-    }else{
-        data.sec_project = "@"
+        data.project_id_xml = "<project_id>" + projectId + "</project_id>"
     }
 
     return i2b2.ajax.PM.getAllUser(data).then((xmlString) => parseXml(xmlString));
