@@ -89,7 +89,8 @@ const parseAllQueryListXml = (queryListXml) => {
             let resultInstanceId = null;
             let queryInstanceId = null;
             let startDate = null;
-            let endDate = null
+            let endDate = null;
+            let latestEndDate = null;
             for (let i = 0; i < queryInstanceTypeList.length; i++) {
                 const queryInstanceType = queryInstanceTypeList[0];
                 queryInstanceId = queryInstanceType.getElementsByTagName('query_instance_id');
@@ -107,6 +108,19 @@ const parseAllQueryListXml = (queryListXml) => {
                     let resultInstanceId =  queryResultInstanceType.getElementsByTagName('result_instance_id');
                     resultInstanceId = resultInstanceId.length > 0 ? resultInstanceId[0].childNodes[0].nodeValue: null;
                     let queryResultType = queryResultInstanceType.getElementsByTagName('query_result_type');
+
+
+                    let resultEndDate = queryResultInstanceType.getElementsByTagName('end_date');
+                    resultEndDate = resultEndDate.length > 0 && resultEndDate[0].childNodes.length !== 0 ? resultEndDate[0].childNodes[0].nodeValue : '';
+
+
+                    if(resultEndDate.length > 0) {
+                        if(latestEndDate != null && DateTime.fromISO(resultEndDate) > DateTime.fromISO(latestEndDate)){
+                            latestEndDate = resultEndDate;
+                        }else{
+                            latestEndDate = resultEndDate;
+                        }
+                    }
 
                     let visualAttributeType = null;
                     if(queryResultType.length > 0){
@@ -142,7 +156,7 @@ const parseAllQueryListXml = (queryListXml) => {
                     }
                 }
             }
-            exportRequestList.push({id: queryId, queryName, queryInstanceId, startDate, endDate, status, patientCount, userId, dataRequests: requestList, resultInstanceId, projectId, deleteDate});
+            exportRequestList.push({id: queryId, queryName, queryInstanceId, startDate, endDate: latestEndDate, status, patientCount, userId, dataRequests: requestList, resultInstanceId, projectId, deleteDate});
         }
     }
 
