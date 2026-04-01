@@ -105,5 +105,8 @@
     "ERROR",
     "INCOMPLETE",
     "TIMEOUT"
+  ],
+  "hideVisualizationsOn": [
+    "ERROR"
   ]
 }
