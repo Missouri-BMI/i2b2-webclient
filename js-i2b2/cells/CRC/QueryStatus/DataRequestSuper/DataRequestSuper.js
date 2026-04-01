@@ -9,7 +9,7 @@ export default class DataRequestSuper {
 
             (async function() {
                 // retrieve the component frame template
-                let response = await fetch(i2b2.CRC.QueryStatus.baseURL + "DataRequest/DataRequest.html");
+                let response = await fetch(i2b2.CRC.QueryStatus.baseURL + "DataRequestSuper/DataRequestSuper.html");
                 if (!response.ok) {
                     console.error(`Failed to retrieve DataRequest component template file: ${response.status}`);
                     this.dispTemplate = "";
@@ -40,16 +40,18 @@ export default class DataRequestSuper {
                 let resultXML = i2b2.h.XPath(data, "//xml_value");
                 if (resultXML.length > 0) {
                     resultXML = resultXML[0].firstChild.nodeValue;
-                    // get the record name
-                    const QriName = i2b2.h.XPath(resultXML, "//body/*")[0].getAttribute("name");
+                    // get the record code
+                    const QriCode = i2b2.h.XPath(resultXML, "//body/*")[0].getAttribute("name");
 
                     // parse the data and put the results into the new data slot
                     const parsedData = parseData(resultXML);
+                    const QriName = i2b2.h.XPath(data, "//query_result_type/description/text()")[0].nodeValue;
 
                     // save the data into our model
                     if (typeof this.data !== "object" || this.data === null) this.data = {};
-                    this.data[QriName] = {
+                    this.data[QriCode] = {
                         name: QriName,
+                        code: QriCode,
                         rawData: resultXML,
                         parsedData: parsedData
                     }
@@ -60,10 +62,36 @@ export default class DataRequestSuper {
 
             if (typeof this.dispTemplate !== 'undefined' && this.data !== null) {
                 // TODO: Change this to deal with all the data, not just one record
-                const siteData = Object.values(this.data)[0].parsedData;
+
+                const FirstRecord = Object.values(this.data)[0];
+                let templateData = {
+                    requesterEmail: FirstRecord.parsedData.requestInfo.email,
+                    requestMsg: FirstRecord.parsedData.requestInfo.emailMsg,
+                    requestStatus: []
+                }
+
+                const func_formatDate = function(value) {
+                    let date = value.substring(0,8);
+                    return date.substring(0,4) + "/" + date.substring(4,6) + "/" + date.substring(6,8);
+                }
+
+                Object.values(this.data).forEach((rec) => {
+                    let recToSave = {
+                        code: rec.code,
+                        name: rec.name
+                    };
+
+                    const submitted = rec.parsedData.resultTable.filter((t) => t.name === "SUBMITTED");
+                    if (submitted.length) recToSave.submitted = func_formatDate(submitted[0].value);
+
+                    templateData.requestStatus.push(recToSave);
+                });
+
+                console.dir(templateData);
+
                 // update the display
                 $(this.config.displayEl).empty();
-                $(this.dispTemplate({dataExport: siteData})).appendTo(this.config.displayEl);
+                $(this.dispTemplate(templateData)).appendTo(this.config.displayEl);
                 // make sure we are visible
                 this.show();
             }
@@ -133,7 +161,7 @@ let parseData = function(xmlData) {
             entryRecord.value = i2b2.h.Unescape(entryRecord.value);
             entryRecord.display = params[i2].attributes.display.textContent;
         }
-        if(entryRecord.name === 'RequestEmail') {
+        if (entryRecord.name === 'RequestEmail') {
             dataExport.requestInfo.emailMsg = {
                 name: "Request Email",
                 value: entryRecord.value
@@ -144,7 +172,7 @@ let parseData = function(xmlData) {
                 name: "Requested By Email",
                 value: entryRecord.value
             };
-        }else{
+        } else {
             dataExport.resultTable.push(entryRecord);
         }
     }

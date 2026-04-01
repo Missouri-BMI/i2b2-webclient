@@ -1,13 +1,20 @@
 .viz-window.viztype-DATAREQUESTSUPER {
-    padding: 0 2rem;
     overflow: hidden;
+}
+
+.viz-window.viztype-DATAREQUESTSUPER .DataRequest {
+    padding: 0rem 2rem;
+}
+
+.viz-window.viztype-DATAREQUESTSUPER .requestTypes {
+    margin: 0;
 }
 
 .viz-window.viztype-DATAREQUESTSUPER td {
     padding: 0.3em;
 }
 .viz-window.viztype-DATAREQUESTSUPER .breakdownValue {
-    color: #0000dd;
+    border-top: 1px #ccc solid;
 }
 
 .viz-window.viztype-DATAREQUESTSUPER .dataExportInfo {
