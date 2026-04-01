@@ -9,7 +9,6 @@
     "COUNT": true
   },
   "/^RPDO_/": {
-    "DATAREQUEST": false,
     "DATAREQUESTSUPER": false
   },
   "PATIENT_GENDER_COUNT_XML": {

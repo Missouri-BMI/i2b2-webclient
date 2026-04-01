@@ -39,14 +39,6 @@
       "displayOrder": 100,
       "displayForUnregistered": true
     },
-    "DATAREQUEST": {
-      "name": "Data Request",
-      "source": "DataRequest/DataRequest.js",
-      "CSS": "DataRequest/DataRequest.css",
-      "iconClass": "bi bi-table",
-      "displayOrder": 100,
-      "displayForUnregistered": false
-    },
     "DATAREQUESTSUPER": {
       "name": "Data Request",
       "source": "DataRequestSuper/DataRequestSuper.js",
