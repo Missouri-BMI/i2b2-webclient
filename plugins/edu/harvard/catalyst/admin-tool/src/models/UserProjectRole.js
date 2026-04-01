@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-import {DATA_ROLES} from "./ProjectUser";
 
 export const UserProjectRole = ({
     projectLabel="",

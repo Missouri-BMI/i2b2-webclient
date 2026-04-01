@@ -164,18 +164,23 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
         case  GET_ALL_PROJECT_USERS_ACTION.GET_ALL_PROJECT_USERS_SUCCEEDED: {
             const  { users }  = action.payload;
 
+            let customRoles = [];
             users.map((user) => {
                 ProjectUser({
                     username: user.username,
                     adminPath: user.adminPath,
                     dataPath: user.dataPath,
-                    editorPath: user.editorPath
+                    editorPath: user.editorPath,
+                    customRoles: user.customRoles
                 });
+
+                customRoles =[...customRoles, ...user.customRoles];
             });
 
             return SelectedProject({
                 ...state,
                 users,
+                customRoles: [...new Set(customRoles)],
                 isFetchingUsers: false,
             });
         }
@@ -246,7 +251,7 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
         }
 
         case  SAVE_PROJECT_USER_ACTION.SAVE_PROJECT_USER_SUCCEEDED: {
-            const  { selectedProject, projectUser }  = action.payload;
+            const  { selectedProject, projectUser, newCustomRoles }  = action.payload;
 
             const existingUser =  selectedProject.users.filter((user) => user.username === projectUser.username).length > 0;
             let users = [...selectedProject.users];
@@ -257,9 +262,12 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
                 users.push(projectUser);
             }
 
+            const customRoles = [...state.customRoles, ...newCustomRoles];
+
             return SelectedProject({
                 ...state,
                 users,
+                customRoles,
                 isFetching: false,
                 userStatus: UserStatusInfo({
                     status: "SAVE_SUCCESS",

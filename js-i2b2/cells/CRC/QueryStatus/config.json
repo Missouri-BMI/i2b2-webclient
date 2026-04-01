@@ -39,6 +39,14 @@
       "displayOrder": 100,
       "displayForUnregistered": true
     },
+    "TABLEBARCHART": {
+      "name": "Table Bar Chart",
+      "source": "TableBarChart/TableBarChart.js",
+      "CSS": "TableBarChart/TableBarChart.css",
+      "iconClass": "bi bi-bar-chart-steps",
+      "displayOrder": 10,
+      "displayForUnregistered": true
+    },
     "DATAREQUESTSUPER": {
       "name": "Data Request",
       "source": "DataRequestSuper/DataRequestSuper.js",
@@ -57,6 +65,35 @@
       "displayOrder": 500,
       "displayForUnregistered": true,
       "notInReport": true
+    },
+    "MULTIZIPCODEMAP": {
+      "name": "Map View",
+      "source": "MultiZipcodeMap/MultiZipcodeMap.js",
+      "CSS": "MultiZipcodeMap/MultiZipcodeMap.css",
+      "iconClass": "bi bi-globe2"
+    },
+    "PATHOGENTIMELINE": {
+      "name": "Pathogen Timeline",
+      "source": "PathogenTimeline/PathogenTimeline.js",
+      "CSS": "PathogenTimeline/PathogenTimeline.css",
+      "iconClass": "bi-graph-up-arrow",
+      "displayOrder": 3,
+      "class": "pathogen-timeline",
+      "displayForUnregistered": false
+    },
+    "NIHENROLLTABLE": {
+      "name": "Enrollment Form",
+      "source": "NihEnrollTable/Table.js",
+      "CSS": "NihEnrollTable/Table.css",
+      "iconClass": "bi bi-grid-3x3",
+      "displayOrder": 1
+    },
+    "NIHENROLLCSV": {
+      "name": "Enrollment Form CSV",
+      "source": "NihEnrollCsv/Download.js",
+      "iconClass": "bi bi-filetype-csv",
+      "displayOrder": 100,
+      "notInReport": true
     }
   },
   "displayOrder": [
@@ -71,5 +108,8 @@
     "ERROR",
     "INCOMPLETE",
     "TIMEOUT"
+  ],
+  "hideVisualizationsOn": [
+    "ERROR"
   ]
 }

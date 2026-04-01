@@ -2,19 +2,15 @@ import PropTypes from "prop-types";
 
 export const UserRoleCount = ({
     projectId = null,
-    role = USER_DATA_ROLES.DATA_OBFSC,
+    roleText = null,
+    dataRole = USER_DATA_ROLES.UNKNOWN,
     count = null,
 } = {}) => ({
     projectId,
-    role,
+    roleText,
+    dataRole,
     count,
 });
-
-UserRoleCount.propTypes = {
-    projectId: PropTypes.number.isRequired,
-    role: PropTypes.string.isRequired,
-    count: PropTypes.number.isRequired,
-};
 
 export const USER_DATA_ROLES = {
     DATA_PROT: {

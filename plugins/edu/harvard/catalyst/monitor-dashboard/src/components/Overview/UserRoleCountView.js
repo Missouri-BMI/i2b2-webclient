@@ -33,12 +33,35 @@ export const UserRoleCountView = ({users, userRoleCounts, projectId}) => {
 
         return text;
     }
+
+
+    const getUserCountText = () => {
+        let text = "";
+        if(projectId){
+            const userRoleList = userRoleCounts.userRoleCountsList.filter(rc => rc.roleText === "USER");
+            if(userRoleList.length === 1) {
+                text = userRoleList[0].count + " User";
+                if (userRoleList[0].count > 1) {
+                    text += "s";
+                }
+            }
+        }else{
+            text = users.userList.length + " User";
+
+            if(users.userList.length > 1){
+                text += "s";
+            }
+        }
+
+        return text;
+    }
+
     const getRoleBreakDowns = () => {
-        const obfUsers = userRoleCounts.userRoleCountsList.find(userRole => userRole.role === USER_DATA_ROLES.DATA_OBFSC);
-        const aggUsers = userRoleCounts.userRoleCountsList.find(userRole => userRole.role === USER_DATA_ROLES.DATA_AGG);
-        const ldsUsers = userRoleCounts.userRoleCountsList.find(userRole => userRole.role === USER_DATA_ROLES.DATA_LDS);
-        const deidUsers = userRoleCounts.userRoleCountsList.find(userRole => userRole.role === USER_DATA_ROLES.DATA_DEID);
-        const protUsers = userRoleCounts.userRoleCountsList.find(userRole => userRole.role === USER_DATA_ROLES.DATA_PROT);
+        const obfUsers = userRoleCounts.userRoleCountsList.find(userRole => userRole.dataRole === USER_DATA_ROLES.DATA_OBFSC);
+        const aggUsers = userRoleCounts.userRoleCountsList.find(userRole => userRole.dataRole === USER_DATA_ROLES.DATA_AGG);
+        const ldsUsers = userRoleCounts.userRoleCountsList.find(userRole => userRole.dataRole === USER_DATA_ROLES.DATA_LDS);
+        const deidUsers = userRoleCounts.userRoleCountsList.find(userRole => userRole.dataRole === USER_DATA_ROLES.DATA_DEID);
+        const protUsers = userRoleCounts.userRoleCountsList.find(userRole => userRole.dataRole === USER_DATA_ROLES.DATA_PROT);
 
         return (
             <div className={"UserRoleCountBreakdown"}>
@@ -62,7 +85,7 @@ export const UserRoleCountView = ({users, userRoleCounts, projectId}) => {
             <Box>
                 Total Number of Users
                 <Box className={"ProjectOverviewInfoContentCount UserRoleCount"}>
-                    {users.userList.length > 1 ? users.userList.length + " Users" : users.userList.length + " User"}
+                    {getUserCountText()}
                     <Box>including</Box>
                     { getAdminOrManagerCountText()}
                 </Box>

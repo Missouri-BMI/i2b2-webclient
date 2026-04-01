@@ -3,7 +3,7 @@ import {
     ALL_USERS,
 } from "../actions";
 import { defaultState } from "../defaultState";
-import {User, UserSession} from "../models";
+import {User, UserStatus} from "../models";
 
 export const allUsersSlice = createSlice({
     name: ALL_USERS,
@@ -21,7 +21,7 @@ export const allUsersSlice = createSlice({
                     fullname: user.fullname,
                     email: user.email,
                     isAdmin: user.isAdmin,
-                    session: UserSession({
+                    status: UserStatus({
                         isActive: user.isActive,
                         isLockedOut: user.isLockedOut
                     })
@@ -39,7 +39,7 @@ export const allUsersSlice = createSlice({
             const foundUser = state.users.find(curUser => curUser.username === user.username);
 
             if (foundUser) {
-                foundUser.session.isTerminatingSession = true;
+                foundUser.status.isTerminatingSession = true;
             }
         },
         terminateUserSessionSucceeded: (state, {payload:  {user} }) => {
@@ -47,8 +47,8 @@ export const allUsersSlice = createSlice({
             const foundUser = state.users.find(curUser => curUser.username === user.username);
 
             if (foundUser) {
-                foundUser.session.isActive = false;
-                foundUser.session.isTerminatingSession = false;
+                foundUser.status.isActive = false;
+                foundUser.status.isTerminatingSession = false;
             }
         },
         terminateUserSessionFailed: (state, {payload:  {user} }) => {
@@ -56,7 +56,32 @@ export const allUsersSlice = createSlice({
             const foundUser = state.users.find(curUser => curUser.username === user.username);
 
             if (foundUser) {
-                foundUser.session.isTerminatingSession = false;
+                foundUser.status.isTerminatingSession = false;
+            }
+        },
+        unlockOutUser: (state, {payload:  {user} }) => {
+            //Extract each user data into User model and return an array of Users
+            const foundUser = state.users.find(curUser => curUser.username === user.username);
+
+            if (foundUser) {
+                foundUser.status.isUnlockingOutUser = true;
+            }
+        },
+        unlockOutUserSucceeded: (state, {payload:  {user} }) => {
+            //Extract each user data into User model and return an array of Users
+            const foundUser = state.users.find(curUser => curUser.username === user.username);
+
+            if (foundUser) {
+                foundUser.status.isLockedOut = false;
+                foundUser.status.isUnlockingOutUser = false;
+            }
+        },
+        unlockOutUserFailed:(state, {payload:  {user} }) => {
+            //Extract each user data into User model and return an array of Users
+            const foundUser = state.users.find(curUser => curUser.username === user.username);
+
+            if (foundUser) {
+                foundUser.status.isUnlockingOutUser = false;
             }
         },
     }
@@ -68,7 +93,10 @@ export const {
     getAllUsersFailed,
     terminateUserSession,
     terminateUserSessionSucceeded,
-    terminateUserSessionFailed
+    terminateUserSessionFailed,
+    unlockOutUser,
+    unlockOutUserSucceeded,
+    unlockOutUserFailed
 } = allUsersSlice.actions
 
 
