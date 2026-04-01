@@ -418,7 +418,7 @@ i2b2.PM.doLogout = function(allSessions) {
                 window.location.reload();
             }
             else{
-                alert("Error logging out user.");
+                console.error("Error logging out user.");
                 window.location.reload();
             }
         }, i2b2.PM);
