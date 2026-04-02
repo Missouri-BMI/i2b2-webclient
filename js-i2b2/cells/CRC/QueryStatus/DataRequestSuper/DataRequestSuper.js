@@ -37,6 +37,10 @@ export default class DataRequestSuper {
     update(data) {
         try {
             if (typeof data !== 'undefined') {
+                // bail out if the results are an error
+                const status = i2b2.h.XPath(data,"//query_result_instance/query_status_type/name");
+                if (status.length > 0 && i2b2.CRC.QueryStatus.hideVisualizationsOn.includes(status[0].firstChild.nodeValue)) return false;
+
                 let resultXML = i2b2.h.XPath(data, "//xml_value");
                 if (resultXML.length > 0) {
                     resultXML = resultXML[0].firstChild.nodeValue;
