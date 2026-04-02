@@ -48,7 +48,13 @@ breakdowns will be displayed in the Query Status window (see "Breakdown Display 
 The next level deeper into the configuration level (at a "per breakdown" level) is a configuration object where each 
 attribute's name is the unique visualization module code defined within `config.json`'s  `"displayComponents"` configuration object.
 At this point a simple non-false value is sufficient for the Query Status subsystem to use the declared module to render the
-breakdown's data.  
+breakdown's data.
+
+### Default Visualizations for Unregistered Breakdowns
+If a returned breakdown is not found in `breakdowns.json` or it is not assigned any visualization modules then all modules
+that have `"displayForUnregistered": true` set in the `config.json` file will be used to display the breakdown.  If a 
+breakdown has been defined and assigned a plugin (even if the plugin registration is deactivated by setting it to `false`)
+then it is not considered "unregistered" and will not be rendered with default visualization modules. 
 
 ```json
 {
@@ -119,5 +125,56 @@ configuration option is processed by the Query Status subsystem and not each ind
     },
     "DOWNLOAD": true
   }, ...
+}
+```
+
+## Supermodules
+
+### Overview
+
+A super module is a visualization module which is designed to display/handle multiple breakdowns at once.  Its functional
+difference is that its `update()` method will be called once for each breakdown that matches 
+its `capture` array in `config.json`.  A super module is only able to be displayed as a frameless module and does not have
+a title or breakdown selection menu for its entry.  If you need these things your module will need to create and own them
+itself.  Super modules are initialized at the end of all other non-super modules and are therefore appended to the end of
+the results in the Query Status window.
+
+### Registration / Configuration
+To enable Supermodule operation of a visualization its configuration must contain a `superModule` definition which has
+a `capture` array.  The capture array contains a list of breakdown codes and/or breakdown code regular expressions which
+will match or return true when a breakdown code is examined.
+
+```json
+(from config.json)
+{
+   "displayComponents": {
+      "DATAREQUESTSUPER": {
+         "name": "Data Request",
+         "source": "DataRequestSuper/DataRequestSuper.js",
+         "CSS": "DataRequestSuper/DataRequestSuper.css",
+         "iconClass": "bi bi-table",
+         "displayOrder": 100,
+         "displayForUnregistered": false,
+         "superModule": {
+           "capture": [
+             "/^RPDO_/"
+           ]
+         }
+      }
+   }
+}
+```
+
+Many times you will want breakdowns that are mapped to a Supermodule to not be processed as an unregistered breakdown 
+and have default visualizations applied to them in addition to the Supermodule.  To do this you must "register" at least 
+one visualization module but set the registration option as `false`.  The convention is you would register the breakdown
+with the supermodule visualization that would handle it, but as a disabled module.
+```json
+(from breakdowns.json)
+{
+   "/^RPDO_/": {
+     "DATAREQUESTSUPER": false
+   },
+  ...
 }
 ```
