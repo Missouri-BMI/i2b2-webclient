@@ -47,13 +47,16 @@
       "displayOrder": 10,
       "displayForUnregistered": true
     },
-    "DATAREQUEST": {
+    "DATAREQUESTSUPER": {
       "name": "Data Request",
-      "source": "DataRequest/DataRequest.js",
-      "CSS": "DataRequest/DataRequest.css",
+      "source": "DataRequestSuper/DataRequestSuper.js",
+      "CSS": "DataRequestSuper/DataRequestSuper.css",
       "iconClass": "bi bi-table",
       "displayOrder": 100,
-      "displayForUnregistered": false
+      "displayForUnregistered": false,
+      "superModule": {
+        "capture": ["/^RPDO_/"]
+      }
     },
     "DOWNLOAD": {
       "name": "CSV Download",
