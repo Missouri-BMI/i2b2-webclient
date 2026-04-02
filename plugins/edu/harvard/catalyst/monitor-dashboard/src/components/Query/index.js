@@ -6,11 +6,14 @@ import {
     Button,
     Checkbox,
     FormControlLabel,
+    IconButton,
     MenuItem,
     Paper,
     TextField,
-    Tooltip, Typography
+    Tooltip,
+    Typography
 } from "@mui/material";
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import "./Query.scss";
 import {getAllDataSources} from "../../reducers/dataSourcesSlice";
 import {QueryTableView} from "./QueryTableView";
@@ -152,7 +155,6 @@ export const Query = () => {
                             </Tooltip>
                         </Box>
 
-                        <Typography className={"optionLinkText"}> last </Typography>
                         <TextField
                             select
                             value={fetchSetting}
@@ -173,20 +175,27 @@ export const Query = () => {
                             }}
                         >
                             <MenuItem key={30} value={30} data-type={"date"}>
-                                30 days
+                                last 30 days
                             </MenuItem>
                             <MenuItem key={60} value={60} data-type={"date"}>
-                                60 days
+                                last 60 days
                             </MenuItem>
                             <MenuItem key={90} value={90} data-type={"date"}>
-                                90 days
+                                last 90 days
                             </MenuItem>
                             <MenuItem key={100} value={100} data-type={"size"}>
-                                100 queries
+                                up to 100 queries
                             </MenuItem>
                         </TextField>
                         <FormControlLabel className={"deletedQueriesOption"} control={<Checkbox size="small" checked={includeDeletedQueries} onChange={handleIncludeDeletedQueriesChange}/>} label="include deleted queries"/>
                         <Button className={"ViewProjectBtn"} variant="contained" size="small" onClick={handleViewQueryTable}>View</Button>
+                        <Tooltip className={"QueriesTooltip"} title="“up to 100 queries” will return an equal number of queries
+                            from each project unless a project does not have enough queries. The most recent queries from each project
+                             will be included.">
+                            <IconButton>
+                                <InfoOutlinedIcon size={"small"}/>
+                            </IconButton>
+                        </Tooltip>
                     </>
                 }
             </Box>
