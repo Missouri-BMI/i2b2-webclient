@@ -17,7 +17,7 @@ const DIAGNOSIS_REGISTRY = {
 
 const WASTEWATER_REGISTRY = {
     wastewater_sources: {
-        "mwra-combined": { label: "Wastewater MWRA COVID-19", color: "#333333", order: 3, accessor: (row) => (Number(row["Northern 7 day avg"]) || 0) + (Number(row["Southern 7 day avg"]) || 0) }
+        "local-combined": { label: "Wastewater Local COVID-19", color: "#333333", order: 3, accessor: (row) => (Number(row["Northern 7 day avg"]) || 0) + (Number(row["Southern 7 day avg"]) || 0) }
     }
 };
 
@@ -180,8 +180,9 @@ export default class PathogenTimeline {
 
                 if (this.wwRequestRange && this.wwRequestRange.ok) {
                     this._wwFetched = true;
-
-                    fetchWastewater(this.wwRequestRange.startStr, this.wwRequestRange.endStr).then(data => {
+                    // for use with Wastewater API, if applicable
+                    //fetchWastewater(this.wwRequestRange.startStr, this.wwRequestRange.endStr).then(data => {
+                    fetchWastewaterFromFile().then(data => {
                         if (Array.isArray(data)) {
                             this.wastewater = data;
                         } else if (data?.data && Array.isArray(data.data)) {
@@ -1170,91 +1171,129 @@ function pivotToYOYRows(aggregatedRecords){
 // ------------------------------------------------------------
 // Wastewater service plumbing
 // ------------------------------------------------------------
-const WASTEWATER_URLS = {
-    dev: "http://shrine-masscpr-dev-hub-i2b2.catalyst.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData",
-    prod: "http://prod-i2b2.network.masscpr.hms.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData"
-};
 
-function detectEnv() {
-    const override = (window.PATHOGEN_TIMELINE_ENV || "").toLowerCase();
-    if (override === "dev" || override === "prod") return override;
-
-    const host = (window.location?.hostname || "").toLowerCase();
-
-    // Local dev should use dev backend by default
-    if (host === "localhost" || host === "127.0.0.1" || host.endsWith(".local")) return "dev";
-
-    if (host.includes("dev") || host.includes("catalyst")) return "dev";
-
-    return "prod";
-}
-
-function getWastewaterServiceUrl() {
-    const env = detectEnv();
-    return WASTEWATER_URLS[env] || WASTEWATER_URLS.prod;
-}
-
-async function fetchWastewater(startDate, endDate) {
-    const redirectUrl = getWastewaterServiceUrl();
-    const env = detectEnv();
-    console.info(
-        `[WASTEWATER] ${env.toUpperCase()} detected; calling ${env.toUpperCase()} wastewater service`
-    );
-
-    const msg = `
-    <ns6:request xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">
-        <message_header>
-        <proxy>
-            <redirect_url>${redirectUrl}</redirect_url>
-        </proxy>
-        </message_header>
-        <message_body>
-        {&quot;Start Date&quot;:&quot;${startDate}&quot;, &quot;End Date&quot;:&quot;${endDate}&quot;}
-        </message_body>
-    </ns6:request>
-    `;
-
+// DEMO WASTEWATER DATA FROM LOCAL FILE
+async function fetchWastewaterFromFile() {
     try {
-        // Preferred proxy helper
-        if (i2b2?.hive?.proxy?.handler) {
-            const response = await i2b2.hive.proxy.handler({
-                url: "/~proxy",
-                msg: msg,
-                method: "POST"
-            });
-
-            const bodyNode = i2b2.h.XPath(
-                response.refXML,
-                "//message_body/text()"
-            )[0];
-
-            return bodyNode ? JSON.parse(bodyNode.nodeValue) : null;
-        }
-
-        // Fallback direct POST to /~proxy
-        const response = await fetch("/~proxy", {
-            method: "POST",
-            headers: { "Content-Type": "text/xml" },
-            body: msg,
-            credentials: "include"
-        });
+        const response = await fetch("js-i2b2/cells/CRC/QueryStatus/PathogenTimeline/demo_wastewater.json");
 
         if (!response.ok) {
-            console.error("Wastewater /~proxy call failed:", response.status, "env:", detectEnv(), "redirect:", redirectUrl);
+            console.error("Failed to load local wastewater file:", response.status);
             return null;
         }
 
-        const text = await response.text();
-        const xml = new DOMParser().parseFromString(text, "text/xml");
-        const bodyNode = xml.querySelector("message_body");
+        const raw = await response.json();
 
-        return bodyNode ? JSON.parse(bodyNode.textContent) : null;
+        // Normalize keys (remove newlines, trim)
+        const normalized = raw.map(row => {
+            const cleanRow = {};
+
+            Object.keys(row).forEach(key => {
+                const cleanKey = key.replace(/\n/g, " ").trim();
+                cleanRow[cleanKey] = row[key];
+            });
+
+            return cleanRow;
+        });
+
+        return normalized;
 
     } catch (err) {
-        console.error("Failed to fetch wastewater data", err, "env:", detectEnv(), "redirect:", redirectUrl);
+        console.error("Error loading local wastewater file:", err);
         return null;
     }
 }
+
+
+
+// const WASTEWATER_URLS = {
+//     dev: "your-service-endpoint",
+//     prod: "your-service-endpoint"
+// };
+
+// Get Wastewater API URL
+// function detectEnv() {
+//     const override = (window.PATHOGEN_TIMELINE_ENV || "").toLowerCase();
+//     if (override === "dev" || override === "prod") return override;
+
+//     const host = (window.location?.hostname || "").toLowerCase();
+
+//     // Local dev should use dev backend by default
+//     if (host === "localhost" || host === "127.0.0.1" || host.endsWith(".local")) return "dev";
+
+//     if (host.includes("dev") || host.includes("catalyst")) return "dev";
+
+//     return "prod";
+// }
+
+// Get Wastewater API URL
+// function getWastewaterServiceUrl() {
+//     const env = detectEnv();
+//     return WASTEWATER_URLS[env] || WASTEWATER_URLS.prod;
+// }
+
+// Fetch Wastewater from API
+// async function fetchWastewater(startDate, endDate) {
+//     const redirectUrl = getWastewaterServiceUrl();
+//     const env = detectEnv();
+//     console.info(
+//         `[WASTEWATER] ${env.toUpperCase()} detected; calling ${env.toUpperCase()} wastewater service`
+//     );
+
+//     const msg = `
+//     <ns6:request xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">
+//         <message_header>
+//         <proxy>
+//             <redirect_url>${redirectUrl}</redirect_url>
+//         </proxy>
+//         </message_header>
+//         <message_body>
+//         {&quot;Start Date&quot;:&quot;${startDate}&quot;, &quot;End Date&quot;:&quot;${endDate}&quot;}
+//         </message_body>
+//     </ns6:request>
+//     `;
+
+//     try {
+//         // Preferred proxy helper
+//         if (i2b2?.hive?.proxy?.handler) {
+//             const response = await i2b2.hive.proxy.handler({
+//                 url: "/~proxy",
+//                 msg: msg,
+//                 method: "POST"
+//             });
+
+//             const bodyNode = i2b2.h.XPath(
+//                 response.refXML,
+//                 "//message_body/text()"
+//             )[0];
+
+//             return bodyNode ? JSON.parse(bodyNode.nodeValue) : null;
+//         }
+
+//         // Fallback direct POST to /~proxy
+//         const response = await fetch("/~proxy", {
+//             method: "POST",
+//             headers: { "Content-Type": "text/xml" },
+//             body: msg,
+//             credentials: "include"
+//         });
+
+//         if (!response.ok) {
+//             console.error("Wastewater /~proxy call failed:", response.status, "env:", detectEnv(), "redirect:", redirectUrl);
+//             return null;
+//         }
+
+//         const text = await response.text();
+//         const xml = new DOMParser().parseFromString(text, "text/xml");
+//         const bodyNode = xml.querySelector("message_body");
+
+//         return bodyNode ? JSON.parse(bodyNode.textContent) : null;
+
+//     } catch (err) {
+//         console.error("Failed to fetch wastewater data", err, "env:", detectEnv(), "redirect:", redirectUrl);
+//         return null;
+//     }
+// }
 
 // ------------------------------------------------------------
 // Derive wastewater request date range from patient breakdown

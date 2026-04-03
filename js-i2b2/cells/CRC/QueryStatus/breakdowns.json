@@ -84,7 +84,9 @@
     "TABLE": true,
     "DOWNLOAD": true
   },
-  "PATIENT_PATHOGEN_TIMELINE_XML": {
+  "PATIENT_PATHOGEN_TIMELINE_SHRINE_XML": {
+    "TABLE": true,
+    "DOWNLOAD": true,
     "PATHOGENTIMELINE": true
   },
   "PATIENT_NIH_ENROLLMENT_XML": {
