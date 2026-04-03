@@ -1205,13 +1205,13 @@ async function fetchWastewaterFromFile() {
 }
 
 
-
+// API Service URLS
 // const WASTEWATER_URLS = {
 //     dev: "your-service-endpoint",
 //     prod: "your-service-endpoint"
 // };
 
-// Get Wastewater API URL
+// Detect current Env
 // function detectEnv() {
 //     const override = (window.PATHOGEN_TIMELINE_ENV || "").toLowerCase();
 //     if (override === "dev" || override === "prod") return override;

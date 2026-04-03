@@ -61,3 +61,8 @@ const WASTEWATER_REGISTRY = {
     }
 };
 ```
+
+
+### Demo Wastewater Data
+
+As described above, this module comes with a sample file of wastewater data. The code also contains example functions used to fetch the wastewater data through an endpoint.
