@@ -460,7 +460,7 @@ export const EditParameters = ({
 
     const isCellEditable = (params) => {
         const notExistingParam = (params.field !== "name" || (params.field === "name" && !params.row.internalId));
-        const notPredefinedParam = (params.field !== "dataType" ||   (predefinedParams && predefinedParams.filter(p => {
+        const notPredefinedParam = (params.field !== "dataType" ||  !predefinedParams || (predefinedParams && predefinedParams.filter(p => {
             const name = p.label ? p.label: p;
             return name === params.row.name
         }).length === 0));
