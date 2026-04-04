@@ -20,6 +20,7 @@ export const EditProjectUser = ({project, user,  setIsEditingUser}) => {
     const [updatedParams, setUpdatedParams] = useState(selectedUser.params);
     const [paginationModel, setPaginationModel] = useState({ pageSize: 10, page: 0});
     const [open, setOpen] = useState(true);
+    const [showDeletedParams, setShowDeletedParams] = useState(false);
 
     const dispatch = useDispatch();
     const EditDetails = {
@@ -104,6 +105,8 @@ export const EditProjectUser = ({project, user,  setIsEditingUser}) => {
                             updateParams={setUpdatedParams}
                             paginationModel={paginationModel}
                             setPaginationModel={setPaginationModel}
+                            showDeletedParams = {showDeletedParams}
+                            setShowDeletedParams = {setShowDeletedParams}
                         />
                     }
                 </div>

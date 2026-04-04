@@ -15,9 +15,12 @@ export const EditProjectUserParameters = ({selectedProject,
                                           updateParams,
                                           title,
                                           paginationModel,
-                                          setPaginationModel
+                                          setPaginationModel,
+                                          showDeletedParams,
+                                          setShowDeletedParams
 }) => {
     const [saveStatus, setSaveStatus] = useState("");
+
     const dispatch = useDispatch();
 
     const saveParam = (param) => {
@@ -59,6 +62,8 @@ export const EditProjectUserParameters = ({selectedProject,
                 paginationModel={paginationModel}
                 setPaginationModel={setPaginationModel}
                 paramTableName={"PM_PROJECT_USER_PARAMS"}
+                showDeletedParams = {showDeletedParams}
+                setShowDeletedParams = {setShowDeletedParams}
             />
         </div>
     );

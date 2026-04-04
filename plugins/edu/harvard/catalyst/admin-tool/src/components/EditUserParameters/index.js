@@ -16,7 +16,9 @@ export const EditUserParameters = ({selectedUser,
                                    updateParams,
                                    title,
                                    paginationModel,
-                                   setPaginationModel
+                                   setPaginationModel,
+                                   showDeletedParams,
+                                   setShowDeletedParams
 }) => {
     const allGlobalParams = useSelector((state) => state.allHives?.params );
     const [saveStatus, setSaveStatus] = useState("");
@@ -81,6 +83,8 @@ export const EditUserParameters = ({selectedUser,
                 setPaginationModel={setPaginationModel}
                 predefinedParams={predefinedParams}
                 paramTableName={"PM_USER_PARAMS"}
+                showDeletedParams = {showDeletedParams}
+                setShowDeletedParams = {setShowDeletedParams}
             />
         </div>
     );

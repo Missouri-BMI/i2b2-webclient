@@ -44,14 +44,15 @@ export const EditParameters = ({
                                    customActionsHandler,
                                    customActionsBtnOption,
                                    predefinedParams,
-                                   paramTableName
-}) => {
+                                   paramTableName,
+                                   showDeletedParams,
+                                   setShowDeletedParams
+                               }) => {
     const [rowModesModel, setRowModesModel] = useState({});
     const [showStatus, setShowStatus] = useState(false);
     const [statusMsg, setStatusMsg] = useState("");
     const [statusSeverity, setStatusSeverity] = useState("info");
     const [inValidCells, setInValidCells] = useState({});
-    const [showDeletedParams, setShowDeletedParams] = useState(false);
     const autosuggestParams = predefinedParams ? predefinedParams : [];
     const [paramValuePreview, setParamValuePreview] = React.useState({text: "", title: ""});
     const [openParamValuePreview, setOpenParamValuePreview] = React.useState(false);
@@ -628,8 +629,8 @@ export const EditParameters = ({
                 maxWidth={'sm'}
                 PaperProps={{
                     sx: {
-                        minHeight: '40%',
-                        maxHeight: '40%'
+                        minHeight: '42%',
+                        maxHeight: '42%'
                     }
                 }}
             >
