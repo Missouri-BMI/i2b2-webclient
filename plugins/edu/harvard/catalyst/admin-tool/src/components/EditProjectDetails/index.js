@@ -39,6 +39,7 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
     const [statusMsg, setStatusMsg] = useState("");
     const [statusSeverity, setStatusSeverity] = useState("info");
     const isExistingProject = (project && project.internalId.length > 0);
+    const [showDeletedParams, setShowDeletedParams] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -195,6 +196,8 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
                     setSaveCompleted={setSaveCompleted}
                     paginationModel={paginationModel}
                     setPaginationModel={setPaginationModel}
+                    showDeletedParams = {showDeletedParams}
+                    setShowDeletedParams = {setShowDeletedParams}
                 />
             }
 

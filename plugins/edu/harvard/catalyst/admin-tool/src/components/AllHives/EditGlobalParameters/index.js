@@ -21,6 +21,8 @@ export const EditGlobalParameters = ({allHives,
     const [predefinedParams, setPredefinedParams] = useState([]);
     const [saveStatus, setSaveStatus] = useState("");
     const [showAuthConfig, setShowAuthConfig] = useState(false);
+    const [showDeletedParams, setShowDeletedParams] = useState(false);
+
     const dispatch = useDispatch();
 
     const saveParam = (param) => {
@@ -85,6 +87,8 @@ export const EditGlobalParameters = ({allHives,
                 customActionsBtnOption={{startIcon: <AddIcon />}}
                 predefinedParams={predefinedParams}
                 paramTableName={"PM_GLOBAL_PARAMS"}
+                showDeletedParams = {showDeletedParams}
+                setShowDeletedParams = {setShowDeletedParams}
             />
             {showAuthConfig && <AuthenticationConfigModal onOk={onClose} onCancel={onClose}/>}
         </div>

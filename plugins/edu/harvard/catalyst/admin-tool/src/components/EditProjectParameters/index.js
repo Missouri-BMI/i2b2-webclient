@@ -16,11 +16,14 @@ export const EditProjectParameters = ({selectedProject,
                                           doSave,
                                           setSaveCompleted,
                                           paginationModel,
-                                          setPaginationModel
+                                          setPaginationModel,
+                                          showDeletedParams,
+                                          setShowDeletedParams
                                          }) => {
     const allGlobalParams = useSelector((state) => state.allHives?.params );
     const [saveStatus, setSaveStatus] = useState("");
     const [predefinedParams, setPredefinedParams] = useState([]);
+
     const ONT_PREDEFINED_PARAMS = [
         {
             label: "Terms Options: Disable Modifiers",
@@ -134,6 +137,8 @@ export const EditProjectParameters = ({selectedProject,
                 setPaginationModel={setPaginationModel}
                 predefinedParams={predefinedParams}
                 paramTableName={"PM_PROJECT_PARAMS"}
+                showDeletedParams = {showDeletedParams}
+                setShowDeletedParams = {setShowDeletedParams}
             />
         </div>
     );
