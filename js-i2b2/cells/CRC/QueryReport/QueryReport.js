@@ -289,13 +289,13 @@ i2b2.CRC.QueryReport.generateReport = () => {
     try {
         // load ReportConfig.json
         let response = await fetch(i2b2.CRC.QueryReport.baseURL + "ReportConfig.json");
-        if (!response.ok) throw new Error(`Failed to retreve QueryReport ReportConfig.json file: ${response.status}`);
+        if (!response.ok) throw new Error(`Failed to retrieve QueryReport ReportConfig.json file: ${response.status}`);
         const config = await response.json();
         i2b2.CRC.QueryReport.displayConfig = config;
 
         // load QueryReport template
         response = await fetch(i2b2.CRC.QueryReport.baseURL + "QueryReport.html");
-        if (!response.ok) throw new Error(`Failed to retreve QueryReport.html template: ${response.status}`);
+        if (!response.ok) throw new Error(`Failed to retrieve QueryReport.html template: ${response.status}`);
         const template = await response.text();
         i2b2.CRC.QueryReport.templates.queryReport = Handlebars.compile(template);
 

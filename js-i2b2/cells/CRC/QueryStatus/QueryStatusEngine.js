@@ -876,7 +876,7 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
     try {
         // load config.json
         let response = await fetch(i2b2.CRC.QueryStatus.baseURL + "config.json");
-        if (!response.ok) throw new Error(`Failed to retreve QueryStatus config.json file: ${response.status}`);
+        if (!response.ok) throw new Error(`Failed to retrieve QueryStatus config.json file: ${response.status}`);
         const config = await response.json();
         i2b2.CRC.QueryStatus.displayComponents = config.displayComponents;
         i2b2.CRC.QueryStatus.displayOrder = config.displayOrder;
@@ -885,7 +885,7 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
 
         // load breakdowns.json
         response = await fetch(i2b2.CRC.QueryStatus.baseURL + "breakdowns.json");
-        if (!response.ok) throw new Error(`Failed to retreve QueryStatus breakdowns.json file: ${response.status}`);
+        if (!response.ok) throw new Error(`Failed to retrieve QueryStatus breakdowns.json file: ${response.status}`);
         i2b2.CRC.QueryStatus.breakdownConfig = await response.json();
 
         // save component keys into component objects
