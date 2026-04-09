@@ -36,9 +36,8 @@ export function* doSaveProjectUser(action) {
     console.log("saving user " + user.username + " in project " + selectedProject.project.name + "...");
     try {
         let rolesToSave = [user.adminPath.name, user.dataPath.name];
-        if(customRolesToSave.length > 0) {
+        if(customRolesToSave?.length > 0) {
             rolesToSave = rolesToSave.concat(customRolesToSave);
-            console.log("roles to save is " + customRolesToSave)
         }
         let rolesToDelete = [ADMIN_ROLES.USER.name, DATA_ROLES.DATA_OBFSC.name];
 
@@ -61,7 +60,7 @@ export function* doSaveProjectUser(action) {
         const deletedProjectUserRolesErrors = deletedProjectUserRoleResponse.filter(result => result.msgType === "AJAX_ERROR");
 
         let customRolesProjectUserRolesErrors = [];
-        if(customRolesToDelete) {
+        if(customRolesToDelete?.length > 0) {
             const customRolesToDeleteResponse = yield all(customRolesToDelete.map((role) => {
                 return call(deleteProjectUserRoleRequest, selectedProject.project.internalId, user.username, role);
             }));
