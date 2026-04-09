@@ -156,6 +156,12 @@ export const EditParameters = ({
                             apiRefContext.current.setEditCellValue({id, field: "dataType", value: value.dataType});
                         }
 
+                        if(value.dataType === DataType.B) {
+                            apiRefContext.current.setEditCellValue({id, field: "value", value: "true"});
+                        }else{
+                            apiRefContext.current.setEditCellValue({id, field: "value", value: ""});
+                        }
+
                         if(value.defaultValue){
                             apiRefContext.current.setEditCellValue({id, field: "value", value: value.defaultValue});
                         }
@@ -210,28 +216,58 @@ export const EditParameters = ({
 
                 if(params.row.dataType === DataType.B){
                     const valueSuggestions = ["true", "false"];
-                    return (
-                        <Autocomplete
-                            freeSolo
-                            disableClearable
-                            options={valueSuggestions}
-                            onChange={handleValueChange}
-                            value={value}
-                            style={{ width: "100%" }}
-                            PaperComponent={props => (
-                                <Paper {...props} className={"ParameterValueTextField"} />
-                            )}
-                            renderInput={(textParams) => (
-                                <TextField
-                                    {...textParams}
-                                    onChange={handleValueChange}
-                                    slotProps={{
-                                        shrink: true
-                                    }}
-                                />
-                            )}
-                        />
-                    );
+                    const predefTermsUIParam = predefinedParams && predefinedParams.find(p => p.label === params.row.name
+                     && p.label.startsWith("Terms Options:"));
+
+                    const freeSoloMode = predefTermsUIParam !== undefined;
+
+                    if(freeSoloMode){
+                        return (
+                            <Autocomplete
+                                disableClearable
+                                options={valueSuggestions}
+                                onChange={handleValueChange}
+                                value={value}
+                                style={{width: "100%"}}
+                                PaperComponent={props => (
+                                    <Paper {...props} className={"ParameterValueTextField"}/>
+                                )}
+                                renderInput={(textParams) => (
+                                    <TextField
+                                        {...textParams}
+                                        onChange={handleValueChange}
+                                        slotProps={{
+                                            shrink: true
+                                        }}
+                                    />
+                                )}
+                            />
+                        );
+                    }
+                    else {
+                        return (
+                            <Autocomplete
+                                freeSolo
+                                disableClearable
+                                options={valueSuggestions}
+                                onChange={handleValueChange}
+                                value={value}
+                                style={{width: "100%"}}
+                                PaperComponent={props => (
+                                    <Paper {...props} className={"ParameterValueTextField"}/>
+                                )}
+                                renderInput={(textParams) => (
+                                    <TextField
+                                        {...textParams}
+                                        onChange={handleValueChange}
+                                        slotProps={{
+                                            shrink: true
+                                        }}
+                                    />
+                                )}
+                            />
+                        );
+                    }
                 }
                 else {
                     return (
@@ -257,37 +293,67 @@ export const EditParameters = ({
             editable: true,
             filterable: false,
             type: 'singleSelect',
-            valueOptions: [{
-                label: 'Text',
-                value: DataType.T
-            }, {
-                label: 'Numeric',
-                value: DataType.N
-            }, {
-                label: 'Date',
-                value: DataType.D
-            }, {
-                label: 'Integer',
-                value: DataType.I
-            }, {
-                label : 'Boolean',
-                value: DataType.B
-            }, {
-                label : 'Reference Binary',
-                value: DataType.C
-            },{
-                label: 'RTF',
-                value: DataType.RTF
-            }, {
-                label: 'Word',
-                value: DataType.DOC
-            }, {
-                label: 'Excel',
-                value: DataType.XLS
-            }, {
-                label : 'XML',
-                value: DataType.XML
-            }]
+            valueOptions: (params) => {
+                if(params.row?.name !== '' && params.row?.dataType === DataType.B){
+                    return  [{
+                        label: 'Boolean',
+                        value: DataType.B
+                    }]
+                }
+                else if(params.row?.name !== '' && params.row?.dataType === DataType.T){
+                    return  [{
+                        label: 'Text',
+                        value: DataType.T
+                    }]
+                }
+                else if(params.row?.name !== '' && params.row?.dataType === DataType.N){
+                    return  [{
+                        label: 'Numeric',
+                        value: DataType.N
+                    }]
+                }
+                else if(params.row?.name !== '' && params.row?.dataType === DataType.I){
+                    return  [{
+                        label: 'Integer',
+                        value: DataType.I
+                    }]
+                }
+                else {
+                    return (
+                        [{
+                            label: 'Text',
+                            value: DataType.T
+                        }, {
+                            label: 'Numeric',
+                            value: DataType.N
+                        }, {
+                            label: 'Date',
+                            value: DataType.D
+                        }, {
+                            label: 'Integer',
+                            value: DataType.I
+                        }, {
+                            label: 'Boolean',
+                            value: DataType.B
+                        }, {
+                            label: 'Reference Binary',
+                            value: DataType.C
+                        }, {
+                            label: 'RTF',
+                            value: DataType.RTF
+                        }, {
+                            label: 'Word',
+                            value: DataType.DOC
+                        }, {
+                            label: 'Excel',
+                            value: DataType.XLS
+                        }, {
+                            label: 'XML',
+                            value: DataType.XML
+                        }]
+                    );
+                }
+            }
         },
         {
             field: 'status',
