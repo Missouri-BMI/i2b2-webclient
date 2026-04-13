@@ -195,7 +195,7 @@ export const QueryTableView = ({queries, projectIdList, isObfuscated}) => {
 
         if(isNaN(displayValue)){
             displayValue = '';
-        }else if (isObfuscated && formattedValue !== -1) {
+        }else if (isObfuscated && displayValue !== -1) {
             displayValue = row.obfuscatedPatientCountStr;
         }
 
