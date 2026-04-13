@@ -37,6 +37,7 @@ export const UserProjectRolesView = ({onClose}) => {
         { field: 'roles',
             headerName: 'Roles',
             flex: 1,
+            sortable: false,
             valueGetter: (param) => {
                 return param.value.join(", ");
             }
@@ -85,6 +86,11 @@ export const UserProjectRolesView = ({onClose}) => {
                 disableRowSelectionOnClick
                 showCellVerticalBorder={true}
                 density={'compact'}
+                initialState={{
+                    sorting: {
+                        sortModel: [{field:'createDate',sort:'asc'}]
+                    },
+                }}
                 paginationModel={paginationModel}
                 onPaginationModelChange={setPaginationModel}
                 onSortModelChange={(model) => {

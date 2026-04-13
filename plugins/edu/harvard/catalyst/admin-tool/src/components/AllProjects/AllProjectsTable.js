@@ -115,6 +115,11 @@ export const AllProjectsTable = ({paginationModel,
                 onSortModelChange={(model) => {
                     apiRef.current.setPage(0);
                 }}
+                initialState={{
+                    sorting: {
+                        sortModel: [{field:'name',sort:'asc'}]
+                    },
+                }}
                 pageSizeOptions={[5, 10, 25]}
                 sx={{
                     [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]: {
