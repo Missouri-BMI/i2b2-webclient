@@ -48,6 +48,8 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
     const [doPasswordsNotMatch, setDoPasswordsNotMatch] = useState(false);
     const [passwordsDoNotMatchError, setPasswordsDoNotMatchError] = useState("");
     const [newAuthMethod, setNewAuthMethod] = useState("");
+    const [isAuthMethodNotValid, setIsAuthMethodNotValid] = useState(false);
+    const [authMethodNotValidError, setAuthMethodNotValidError] = useState("");
     const [showDeleteUserConfirm, setShowDeleteUserConfirm] = useState(false);
     const [deleteUserConfirmMsg, setDeleteUserConfirmMsg] = useState("");
     const [showStatus, setShowStatus] = useState(false);
@@ -107,6 +109,17 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
         else{
             setIsEmailNotValid(false);
             setEmailNotValidError("");
+        }
+
+        if(isNewUser && newAuthMethod.length === 0){
+            setIsAuthMethodNotValid(true);
+            setAuthMethodNotValidError("Select an authentication config");
+            isValid = false;
+
+        }else{
+            setIsAuthMethodNotValid(false);
+            setAuthMethodNotValidError("");
+
         }
 
         //if this is a new user check the password fields
@@ -308,9 +321,12 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
                 <div className={"mainField"}>
                     <TextField
                         select
+                        required={isNewUser}
                         className={"inputField"}
                         label="Authentication Config"
                         value={newAuthMethod}
+                        error={isAuthMethodNotValid}
+                        helperText={authMethodNotValidError}
                         onChange={(event) => {
                                 const newValue = event.target.value;
                                 let newUser = {
