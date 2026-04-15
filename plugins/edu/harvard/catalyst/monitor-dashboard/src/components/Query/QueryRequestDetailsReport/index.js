@@ -310,7 +310,7 @@ export const QueryRequestDetailsReport = ({patientCountStr, queryRow}) => {
     return (
         <Box className={"QueryRequestDetailsReport"}>
             This query was performed by username {queryRequestDetails.username}  on {queryRow.startDate.toLocaleDateString()} at {queryRow.startDate.toLocaleTimeString()}.
-
+            {queryRow.queryStatus.status === QUERY_STATUSES.statuses.FINISHED && <span> The search was completed in  {queryRow.runTime} seconds.</span>}
             <h2 className="sub-title">Query Definition</h2>
             <Typography>
                 Temporal Constraint: {getQueryDefinitionTimingDescription()}
