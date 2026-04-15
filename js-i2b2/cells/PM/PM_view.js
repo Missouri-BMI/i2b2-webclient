@@ -374,10 +374,17 @@ i2b2.PM.view.changePassword = {
             let curpass = $('#curpass').val();
             let newpass = $('#newpass').val();
             let retypepass = $('#retypepass').val();
+            $(".changePasswordModal .curpass").removeClass("error");
+            $(".changePasswordModal .newpass").removeClass("error");
 
-            if(!newpass){
+            if(!curpass){
+                $(".changePasswordModal .errorMsg").text("Current password cannot be blank");
+                $(".changePasswordModal .curpass").addClass("error");
+            }
+            else if(!newpass){
                 $(".changePasswordModal .errorMsg").text("New password cannot be blank");
                 $(".changePasswordModal .newpass").addClass("error");
+
             }
             else if (newpass !== retypepass) {
                 $(".changePasswordModal .errorMsg").text("New password doesn't match the confirm password");
