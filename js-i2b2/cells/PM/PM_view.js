@@ -384,7 +384,6 @@ i2b2.PM.view.changePassword = {
             else if(!newpass){
                 $(".changePasswordModal .errorMsg").text("New password cannot be blank");
                 $(".changePasswordModal .newpass").addClass("error");
-
             }
             else if (newpass !== retypepass) {
                 $(".changePasswordModal .errorMsg").text("New password doesn't match the confirm password");
