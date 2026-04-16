@@ -22,7 +22,13 @@ const getDataSourceRequest = (cellId, cellURL, projectPath) => {
 
     const sec_cell = cellId === CELL_ID.CRC ? cellId.toLowerCase() + "/pdo" : cellId.toLowerCase();
 
-    projectPath = projectPath.substring(1) + "/";
+    projectPath = projectPath.substring(1);
+    if(cellId === CELL_ID.ONT) {
+        projectPath = projectPath.replace(/^\//, "");
+    }else{
+        projectPath = projectPath + "/";
+    }
+
     let data = {
         sec_url: cellURL,
         sec_cell: sec_cell,
@@ -182,6 +188,10 @@ export function* doGetAllProjectDataSources(action) {
             let ontCell = cellList.filter(cell => cell.id === CELL_ID.ONT);
             if(ontCell.length > 0) {
                 ontCell = findMatchingCellUrlForProject(ontCell, project.path);
+                //workaround for server side quirk in ontology datasource project path
+                // where the leading "/" must be omitted
+                ontCell = ontCell ? ontCell : findMatchingCellUrlForProject(ontCell, project.path.replace(/^\//, ""));
+
                 if(ontCell){
                     filteredCellList.push(ontCell);
                 }
