@@ -294,7 +294,7 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
 
         //remove leading "/" in ONT datasource only, due to server side quirk
         //in ontology datasource project path where the leading "/" must be omitted
-        const ontProjectPath = selectedProject.project.path.replace(/^\//, "");
+        const ontProjectPath = selectedProject.project.path.replace(/^\//, "") + "/";
         newDataSources[CELL_ID.ONT] = {
             ...newDataSources[CELL_ID.ONT],
             projectPath: newDataSources[CELL_ID.ONT].projectPath ? newDataSources[CELL_ID.ONT].projectPath : ontProjectPath,
