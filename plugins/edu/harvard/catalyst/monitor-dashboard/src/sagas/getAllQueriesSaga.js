@@ -111,16 +111,8 @@ const parseAllQueryListXml = (queryListXml) => {
 
 
                     let resultEndDate = queryResultInstanceType.getElementsByTagName('end_date');
-                    resultEndDate = resultEndDate.length > 0 && resultEndDate[0].childNodes.length !== 0 ? resultEndDate[0].childNodes[0].nodeValue : '';
+                    resultEndDate = resultEndDate.length > 0 && resultEndDate[0].childNodes.length !== 0 ? resultEndDate[0].childNodes[0].nodeValue : ''
 
-
-                    if(resultEndDate.length > 0) {
-                        if(latestEndDate != null && DateTime.fromISO(resultEndDate) > DateTime.fromISO(latestEndDate)){
-                            latestEndDate = resultEndDate;
-                        }else{
-                            latestEndDate = resultEndDate;
-                        }
-                    }
 
                     let visualAttributeType = null;
                     if(queryResultType.length > 0){
@@ -151,6 +143,14 @@ const parseAllQueryListXml = (queryListXml) => {
                             if(requestDescription.length > 0 && requestDescription[0].childNodes.length !== 0) {
                                 request.description = decode(requestDescription[0].childNodes[0].nodeValue);
                                 requestList.push(request);
+                            }
+                        }else{
+                            if(resultEndDate.length > 0) {
+                                if(latestEndDate != null && DateTime.fromISO(resultEndDate) > DateTime.fromISO(latestEndDate)){
+                                    latestEndDate = resultEndDate;
+                                }else{
+                                    latestEndDate = resultEndDate;
+                                }
                             }
                         }
                     }
