@@ -19,9 +19,10 @@ const saveUserRequest = (user) => {
         full_name: user.fullname,
         email: user.email,
         is_admin: user.isAdmin,
+        password: ''
     };
 
-    if(user.password !== null && user.password !== undefined){
+    if(user.password?.length > 0){
         data.password = "<password>"+user.password+"</password>";
     }
     return i2b2.ajax.PM.setUser(data).then((xmlString) => new XMLParser().parseFromString(xmlString));
