@@ -219,11 +219,12 @@ export const EditParameters = ({
                     const predefTermsUIParam = predefinedParams && predefinedParams.find(p => p.label === params.row.name
                      && p.label.startsWith("Terms Options:"));
 
-                    const freeSoloMode = predefTermsUIParam !== undefined;
+                    const freeSoloMode = predefTermsUIParam === undefined;
 
                     if(freeSoloMode){
                         return (
                             <Autocomplete
+                                freeSolo
                                 disableClearable
                                 options={valueSuggestions}
                                 onChange={handleValueChange}
@@ -247,7 +248,6 @@ export const EditParameters = ({
                     else {
                         return (
                             <Autocomplete
-                                freeSolo
                                 disableClearable
                                 options={valueSuggestions}
                                 onChange={handleValueChange}
