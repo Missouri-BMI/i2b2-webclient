@@ -619,3 +619,13 @@ iframe.pluginCell {
 body.pendingRequest *{
 	cursor: progress !important;
 }
+
+.toast {
+	background-color: rgba(255, 255, 255, 1) !important; /* Forces solid white */
+	opacity: 1 !important;
+}
+
+.toast-body {
+	padding-top: 0.5em;
+	padding-bottom: 0;
+}
