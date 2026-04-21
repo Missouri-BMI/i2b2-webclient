@@ -13,6 +13,15 @@ i2b2.hive.errorMsgDisplay = {
                     if((status.attributes['type'] && status.attributes['type'].nodeValue.toUpperCase() === "ERROR")
                        || (condition.length > 0 && condition[0].attributes['type']
                             && condition[0].attributes['type'].nodeValue.toUpperCase() === "ERROR")){
+
+                        if(i2b2.hive.model.globalParams["i2b2 Error Message Display Text"]
+                            && i2b2.hive.model.globalParams["i2b2 Error Message Display Text"].attributes["status"]
+                            && i2b2.hive.model.globalParams["i2b2 Error Message Display Text"].attributes["status"].nodeValue === "A"
+                        ){
+                            $(".toast-body")[0].innerHTML = i2b2.h.Unescape(
+                                i2b2.hive.model.globalParams["i2b2 Error Message Display Text"].innerHTML);
+                        }
+
                         $('.toast').toast('hide');
                         $(".toast-time").text(msg.msgRecv.when);
                         $('.toast').toast('show');
