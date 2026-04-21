@@ -10,7 +10,8 @@ i2b2.hive.errorMsgDisplay = {
                     const status = statusElems[s];
                     const condition = i2b2.h.XPath(status, 'descendant::condition');
 
-                    if((status.attributes['type'] && status.attributes['type'].nodeValue.toUpperCase() === "ERROR")
+                    if((status.attributes['type'] && status.attributes['type'].nodeValue.toUpperCase() === "ERROR"
+                        && status.textContent !== "MAX_EXCEEDED")
                        || (condition.length > 0 && condition[0].attributes['type']
                             && condition[0].attributes['type'].nodeValue.toUpperCase() === "ERROR")){
 
