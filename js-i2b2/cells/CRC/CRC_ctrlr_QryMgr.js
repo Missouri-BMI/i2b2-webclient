@@ -229,6 +229,9 @@ i2b2.CRC.ctrlr.QueryMgr.cancelQuery = function() {
     i2b2.CRC.ctrlr.QueryMgr.stopQuery();
     i2b2.CRC.model.runner.queued = false;
 
+    // stop the Query Status subsystem from polling
+    i2b2.CRC.QueryStatus.stopPolling();
+
     // update the screen to show status as cancelled
     $("#infoQueryStatusText .statusButtons").removeClass("running").addClass("cancelled");
 }
@@ -242,6 +245,9 @@ i2b2.CRC.ctrlr.QueryMgr.stopQuery = function() {
     i2b2.CRC.model.runner.isCancelled = true;
     i2b2.CRC.model.runner.finished = true;
     i2b2.CRC.model.runner.queued = true;
+
+    // stop the Query Status subsystem from polling
+    i2b2.CRC.QueryStatus.stopPolling();
 
     if (i2b2.CRC.model.runner.intervalTimer !== undefined) {
         clearInterval(i2b2.CRC.model.runner.intervalTimer);
@@ -363,7 +369,7 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
         }
 
         // Start the query status panel!
-        i2b2.CRC.QueryStatus.start(i2b2.CRC.model.runner.idQueryInstance, $(".CRC_QS_view")[0]);
+        if (!i2b2.CRC.model.runner.isCancelled) i2b2.CRC.QueryStatus.start(i2b2.CRC.model.runner.idQueryInstance, $(".CRC_QS_view")[0]);
     }
 };
 

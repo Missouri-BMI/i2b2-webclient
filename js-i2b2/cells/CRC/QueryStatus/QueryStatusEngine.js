@@ -7,6 +7,7 @@ i2b2.CRC.QueryStatus = {
     currentQueryInstanceId: false,
     displayEl: false,
     resizeObserver: false,
+    haltPolling: false,
     model: {
         QRS: {},
         visualizations: {}
@@ -58,6 +59,10 @@ i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber = function(number, floorValue, 
     return parseInt(number).toLocaleString();
 };
 
+i2b2.CRC.QueryStatus.stopPolling = function() {
+    i2b2.CRC.QueryStatus.haltPolling = true;
+};
+
 i2b2.CRC.QueryStatus.clear = function() {
     // remove resize observer
     if (i2b2.CRC.QueryStatus.resizeObserver) i2b2.CRC.QueryStatus.resizeObserver.disconnect();
@@ -103,6 +108,8 @@ i2b2.CRC.QueryStatus.clear = function() {
 i2b2.CRC.QueryStatus.start = function(queryInstanceId, mainEl) {
     // restart process only when new query instance id is given
     if (i2b2.CRC.QueryStatus.currentQueryInstanceId !== queryInstanceId) {
+
+        i2b2.CRC.QueryStatus.haltPolling = false;
 
         i2b2.CRC.QueryStatus.model.QRS = {};
         if (typeof i2b2.CRC.QueryStatus.model.visualizations === 'undefined') i2b2.CRC.QueryStatus.model.visualizations = {};
@@ -665,6 +672,9 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
 
 
 i2b2.CRC.QueryStatus._handleQueryResultSet = function(results) {
+    // see if polling has been halted or not
+    if (i2b2.CRC.QueryStatus.haltPolling) return;
+
     if (results.error) {
         alert(results.errorMsg);
         return;
@@ -736,6 +746,9 @@ i2b2.CRC.QueryStatus._handleQueryResultSet = function(results) {
 
 
 i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
+    // see if polling has been halted or not
+    if (i2b2.CRC.QueryStatus.haltPolling) return;
+
     if (results.error) {
         console.error("Failed to update " + this.code + " query result instance ID=" + this.id + "! : " + results.errorMsg);
         alert("Failed to get data for Query Result Instance " + this.id + "  of type " + this.type + "!");
