@@ -216,8 +216,10 @@ i2b2.hive.communicatorFactory = function(cellCode){
                       snifferPackage.status = xhr.status;
                       snifferPackage.msgRecv = {
                           when: new Date(),
-                          msg: String(xhr.responseText)
+                          msg: String(xhr.responseText),
+                          hasErrors: i2b2.h.checkXmlResponseForErrors(String(xhr.responseText))
                       }
+
                       if (i2b2.hive.msgSniffer) i2b2.hive.msgSniffer.add(snifferPackage);
                       i2b2.hive.errorMsgDisplay.show(snifferPackage);
 
