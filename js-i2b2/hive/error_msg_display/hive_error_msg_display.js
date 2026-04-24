@@ -7,7 +7,6 @@ i2b2.hive.errorMsgDisplay = {
                 const parsedMsg = i2b2.h.parseXml(msg.msgRecv.msg);
                 const statusElems = parsedMsg.getElementsByTagName('status');
                 for(let s=0;s<statusElems.length;s++){
-                    const status = statusElems[s];
                     const GLOBAL_ERROR_MESSAGE_PARAM_NAME = "Global Error Message";
 
                     if(i2b2.h.checkXmlResponseForErrors(msg.msgRecv.msg)){
