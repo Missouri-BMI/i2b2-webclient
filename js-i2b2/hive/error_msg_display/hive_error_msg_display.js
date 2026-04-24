@@ -17,13 +17,15 @@ i2b2.hive.errorMsgDisplay = {
 
                         if(i2b2.hive.model.globalParams["i2b2 Error Message Display Text"]
                             && i2b2.hive.model.globalParams["i2b2 Error Message Display Text"].attributes["status"]
-                            && i2b2.hive.model.globalParams["i2b2 Error Message Display Text"].attributes["status"].nodeValue === "A"
                         ){
                             $(".toast-body")[0].innerHTML = i2b2.h.Unescape(
                                 i2b2.hive.model.globalParams["i2b2 Error Message Display Text"].innerHTML);
                         }
 
-                        $('.toast').toast('hide');
+                        let i2b2Url = window.location;
+                        i2b2Url = i2b2Url.length > 31 ? i2b2Url.slice(0, 30) + "..." : i2b2Url;
+
+                        $(".toast-header .header-title").text("[" + i2b2Url + "] says: ");
                         $(".toast-time").text(msg.msgRecv.when);
                         $('.toast').toast('show');
                     }
