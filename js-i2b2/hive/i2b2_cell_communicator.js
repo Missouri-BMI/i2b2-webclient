@@ -219,6 +219,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
                           msg: String(xhr.responseText)
                       }
                       if (i2b2.hive.msgSniffer) i2b2.hive.msgSniffer.add(snifferPackage);
+                      i2b2.hive.errorMsgDisplay.show(snifferPackage);
 
                       if (typeof o !== "object") {
                           /* error handler code */
@@ -253,6 +254,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
                           msg: String(xhr.responseText)
                       }
                       if (i2b2.hive.msgSniffer) i2b2.hive.msgSniffer.add(snifferPackage);
+                      i2b2.hive.errorMsgDisplay.show(snifferPackage);
 
                       /* failure handler code */
                       o.request = {};
