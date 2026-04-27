@@ -11,7 +11,8 @@ i2b2.hive.errorMsgDisplay = {
 
                     if(i2b2.h.checkXmlResponseForErrors(msg.msgRecv.msg)){
 
-                        if(i2b2.hive.model.globalParams[GLOBAL_ERROR_MESSAGE_PARAM_NAME]
+                        if(i2b2.hive.model.globalParams &&
+                            i2b2.hive.model.globalParams[GLOBAL_ERROR_MESSAGE_PARAM_NAME]
                             && i2b2.hive.model.globalParams[GLOBAL_ERROR_MESSAGE_PARAM_NAME].attributes["status"]
                         ){
                             $(".toast-body")[0].innerHTML = i2b2.h.Unescape(
