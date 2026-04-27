@@ -328,3 +328,27 @@ i2b2.h.StripCRLF = function(input) {
     let ret = String(input).replace(/\r/g, ">");
     return ret.replace(/\n/g, ">");
 };
+
+// ================================================================================================== //
+i2b2.h.checkXmlResponseForErrors = function(msg) {
+    let hasErrors = false;
+
+    if(msg && msg?.length > 0) {
+        const parsedMsg = i2b2.h.parseXml(msg);
+        const statusElems = parsedMsg.getElementsByTagName('status');
+        for (let s = 0; s < statusElems.length; s++) {
+            const status = statusElems[s];
+            const condition = i2b2.h.XPath(status, 'descendant::condition');
+
+            if ((status.attributes['type'] && status.attributes['type'].nodeValue.toUpperCase() === "ERROR"
+                    && status.textContent !== "MAX_EXCEEDED")
+                || (condition.length > 0 && condition[0].attributes['type']
+                    && condition[0].attributes['type'].nodeValue.toUpperCase() === "ERROR")) {
+
+                hasErrors = true;
+            }
+        }
+    }
+
+    return hasErrors;
+}

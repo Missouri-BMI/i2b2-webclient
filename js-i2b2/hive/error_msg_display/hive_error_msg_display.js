@@ -7,19 +7,16 @@ i2b2.hive.errorMsgDisplay = {
                 const parsedMsg = i2b2.h.parseXml(msg.msgRecv.msg);
                 const statusElems = parsedMsg.getElementsByTagName('status');
                 for(let s=0;s<statusElems.length;s++){
-                    const status = statusElems[s];
-                    const condition = i2b2.h.XPath(status, 'descendant::condition');
+                    const GLOBAL_ERROR_MESSAGE_PARAM_NAME = "Global Error Message";
 
-                    if((status.attributes['type'] && status.attributes['type'].nodeValue.toUpperCase() === "ERROR"
-                        && status.textContent !== "MAX_EXCEEDED")
-                       || (condition.length > 0 && condition[0].attributes['type']
-                            && condition[0].attributes['type'].nodeValue.toUpperCase() === "ERROR")){
+                    if(i2b2.h.checkXmlResponseForErrors(msg.msgRecv.msg)){
 
-                        if(i2b2.hive.model.globalParams["i2b2 Error Message Display Text"]
-                            && i2b2.hive.model.globalParams["i2b2 Error Message Display Text"].attributes["status"]
+                        if(i2b2.hive.model.globalParams &&
+                            i2b2.hive.model.globalParams[GLOBAL_ERROR_MESSAGE_PARAM_NAME]
+                            && i2b2.hive.model.globalParams[GLOBAL_ERROR_MESSAGE_PARAM_NAME].attributes["status"]
                         ){
                             $(".toast-body")[0].innerHTML = i2b2.h.Unescape(
-                                i2b2.hive.model.globalParams["i2b2 Error Message Display Text"].innerHTML);
+                                i2b2.hive.model.globalParams[GLOBAL_ERROR_MESSAGE_PARAM_NAME].innerHTML);
                         }
 
                         let i2b2Url = window.location;
@@ -31,7 +28,7 @@ i2b2.hive.errorMsgDisplay = {
                     }
                 }
             }catch(e){
-                console.error("Error parsing i2b2 response for errors.");
+                console.error("Error parsing i2b2 response for errors. ", e);
             }
         }
     }
