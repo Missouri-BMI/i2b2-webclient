@@ -2,7 +2,7 @@ $('.toast').toast();
 
 i2b2.hive.errorMsgDisplay = {
     show: (msg) => {
-        if(msg.msgRecv.msg?.length > 0){
+        if(msg.msgRecv.msg?.length > 0 && i2b2.PM.model.projects){
             try {
                 const parsedMsg = i2b2.h.parseXml(msg.msgRecv.msg);
                 const statusElems = parsedMsg.getElementsByTagName('status');
