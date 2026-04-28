@@ -2,21 +2,35 @@ $('.toast').toast();
 
 i2b2.hive.errorMsgDisplay = {
     show: (msg) => {
-        if(msg.msgRecv.msg?.length > 0){
+        if(msg.msgRecv.msg?.length > 0 && i2b2.PM.model.projects){
             try {
                 const parsedMsg = i2b2.h.parseXml(msg.msgRecv.msg);
                 const statusElems = parsedMsg.getElementsByTagName('status');
-                for(let s=0;s<statusElems.length;s++){
+                for(let s=0;s<statusElems.length;s++) {
                     const GLOBAL_ERROR_MESSAGE_PARAM_NAME = "Global Error Message";
+                    const DISABLE_GLOBAL_ERROR_MESSAGE_PARAM_NAME = "Disable Global Error Message";
 
-                    if(i2b2.h.checkXmlResponseForErrors(msg.msgRecv.msg)){
+                    const projectParamsArr = Object.entries(i2b2.PM.model.projects[i2b2.PM.model.login_project].details);
+                    const projectLevelEnabled = projectParamsArr.filter(param => param.length > 1
+                        &&  param[1].name === DISABLE_GLOBAL_ERROR_MESSAGE_PARAM_NAME
+                        && param[1].value !== "true").length !== 0;
+                    const projectLevelGlobalMessage = projectParamsArr.filter(param => param.length > 1 && param[1].name === GLOBAL_ERROR_MESSAGE_PARAM_NAME);
 
-                        if(i2b2.hive.model.globalParams &&
-                            i2b2.hive.model.globalParams[GLOBAL_ERROR_MESSAGE_PARAM_NAME]
-                            && i2b2.hive.model.globalParams[GLOBAL_ERROR_MESSAGE_PARAM_NAME].attributes["status"]
-                        ){
-                            $(".toast-body")[0].innerHTML = i2b2.h.Unescape(
-                                i2b2.hive.model.globalParams[GLOBAL_ERROR_MESSAGE_PARAM_NAME].innerHTML);
+                    const globalLevelEnabled = i2b2.hive.model.globalParams
+                        && (i2b2.hive.model.globalParams[DISABLE_GLOBAL_ERROR_MESSAGE_PARAM_NAME]
+                        &&  (i2b2.hive.model.globalParams[DISABLE_GLOBAL_ERROR_MESSAGE_PARAM_NAME].innerHTML !== "true"
+                        || !i2b2.hive.model.globalParams[DISABLE_GLOBAL_ERROR_MESSAGE_PARAM_NAME]));
+                    const globalLevelGlobalMessage = i2b2.hive.model.globalParams[GLOBAL_ERROR_MESSAGE_PARAM_NAME] ?
+                        i2b2.hive.model.globalParams[GLOBAL_ERROR_MESSAGE_PARAM_NAME].innerHTML : '';
+
+                    if(i2b2.h.checkXmlResponseForErrors(msg.msgRecv.msg) &&
+                        (globalLevelEnabled || projectLevelEnabled)
+                    ){
+                        if(projectLevelEnabled && projectLevelGlobalMessage.length > 0){
+                            $(".toast-body")[0].innerHTML = projectLevelGlobalMessage[0][1].value;
+                        }
+                        else if(globalLevelEnabled && globalLevelGlobalMessage.length > 0){
+                            $(".toast-body")[0].innerHTML = i2b2.h.Unescape(globalLevelGlobalMessage);
                         }
 
                         let i2b2Url = window.location;
