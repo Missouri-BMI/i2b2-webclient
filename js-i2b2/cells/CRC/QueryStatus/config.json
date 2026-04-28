@@ -55,7 +55,11 @@
       "displayOrder": 100,
       "displayForUnregistered": false,
       "superModule": {
-        "capture": ["/^RPDO_/"]
+        "capture": [
+          "/^RPDO_/",
+          "PATIENT_LAB_REQUEST",
+          "PATIENT_DIAGNOSIS_REQUEST"
+        ]
       }
     },
     "DOWNLOAD": {

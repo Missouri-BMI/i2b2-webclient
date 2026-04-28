@@ -8,9 +8,11 @@
   "PATIENT_COUNT_SHRINE_XML": {
     "COUNT": true
   },
-  "/^RPDO_/": {
-    "DATAREQUESTSUPER": false
-  },
+
+  "/^RPDO_/": { "DATAREQUESTSUPER": false },
+  "PATIENT_LAB_REQUEST": { "DATAREQUESTSUPER": false },
+  "PATIENT_DIAGNOSIS_REQUEST": { "DATAREQUESTSUPER": false },
+
   "PATIENT_GENDER_COUNT_XML": {
     "BARS": true,
     "TABLE": true,
