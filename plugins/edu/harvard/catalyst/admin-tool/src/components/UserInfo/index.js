@@ -226,6 +226,8 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
     useEffect(() => {
         if(JSON.stringify(updatedUser) !== JSON.stringify(selectedUser.user)){
             setIsDirty(true);
+        }else{
+            setIsDirty(false);
         }
     }, [updatedUser]);
 
@@ -310,7 +312,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
                         className={"inputField"}
                         label="Is Admin"
                         value={updatedUser.isAdmin}
-                        onChange={(event) => handleUpdate("isAdmin", event.target.value)}
+                        onChange={(event) => handleUpdate("isAdmin", event.target.value === "true")}
                         variant="standard"
                         InputLabelProps={{ shrink: true }}
                     >
@@ -334,6 +336,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
                                 }
                                 newUser["password"] = "";
                                 newUser["passwordVerify"] = "";
+                                newUser["authMethod"] = newValue;
 
                                 updateUser(newUser);
 
