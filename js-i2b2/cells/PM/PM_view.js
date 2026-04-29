@@ -349,6 +349,10 @@ i2b2.PM.view.changePassword = {
         }
         i2b2.PM.view.changePassword.onSuccess = successCallback;
         changePasswordModal.load('js-i2b2/cells/PM/assets/modalChangePassword.html', function(){
+            $(".changePasswordModal .btn-primary").keydown(function(e) {
+                if (e.keyCode == 27) return false;
+            });
+
             if(disableCancel){
                 $(".changePasswordModal .btn-cancel").hide();
             }
