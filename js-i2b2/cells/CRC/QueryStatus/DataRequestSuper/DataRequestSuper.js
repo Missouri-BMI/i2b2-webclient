@@ -67,7 +67,15 @@ export default class DataRequestSuper {
             if (typeof this.dispTemplate !== 'undefined' && this.data !== null) {
                 // TODO: Change this to deal with all the data, not just one record
 
-                const FirstRecord = Object.values(this.data)[0];
+                // BUG FIX: find a record that has the "extra" data to display (like email)
+                let FirstRecord;
+                let populatedRecords = Object.values(this.data).filter((v) => v.parsedData?.requestInfo.email);
+                if (populatedRecords.length > 0) {
+                    FirstRecord = populatedRecords[0];
+                } else {
+                    FirstRecord = Object.values(this.data)[0];
+                }
+
                 let templateData = {
                     requesterEmail: FirstRecord.parsedData.requestInfo.email,
                     requestMsg: FirstRecord.parsedData.requestInfo.emailMsg,
