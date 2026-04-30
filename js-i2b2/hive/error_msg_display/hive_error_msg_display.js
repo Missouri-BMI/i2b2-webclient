@@ -14,6 +14,10 @@ i2b2.hive.errorMsgDisplay = {
                     const projectLevelEnabled = projectParamsArr.filter(param => param.length > 1
                         &&  param[1].name === DISABLE_GLOBAL_ERROR_MESSAGE_PARAM_NAME
                         && param[1].value !== "true").length !== 0;
+                    const projectLevelDisabled = projectParamsArr.filter(param => param.length > 1
+                        &&  param[1].name === DISABLE_GLOBAL_ERROR_MESSAGE_PARAM_NAME
+                        && param[1].value === "true").length !== 0;
+
                     const projectLevelGlobalMessage = projectParamsArr.filter(param => param.length > 1 && param[1].name === GLOBAL_ERROR_MESSAGE_PARAM_NAME);
 
                     const globalLevelEnabled = i2b2.hive.model.globalParams
@@ -24,12 +28,12 @@ i2b2.hive.errorMsgDisplay = {
                         i2b2.hive.model.globalParams[GLOBAL_ERROR_MESSAGE_PARAM_NAME].innerHTML : '';
 
                     if(i2b2.h.checkXmlResponseForErrors(msg.msgRecv.msg) &&
-                        (globalLevelEnabled || projectLevelEnabled)
+                        (!projectLevelDisabled && (globalLevelEnabled || projectLevelEnabled))
                     ){
                         if(projectLevelEnabled && projectLevelGlobalMessage.length > 0){
                             $(".toast-body")[0].innerHTML = projectLevelGlobalMessage[0][1].value;
                         }
-                        else if(globalLevelEnabled && globalLevelGlobalMessage.length > 0){
+                        else if(!projectLevelDisabled && globalLevelEnabled && globalLevelGlobalMessage.length > 0){
                             $(".toast-body")[0].innerHTML = i2b2.h.Unescape(globalLevelGlobalMessage);
                         }
 
