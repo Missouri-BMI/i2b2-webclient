@@ -58,17 +58,22 @@ export const EditUserParameters = ({selectedUser,
        if(allGlobalParams && allGlobalParams.length > 0){
            const userPredefinedParamsJsonList = allGlobalParams.filter(g => g.name === "Predefined User Params" && g.status === ParamStatus.A);
 
-           const mappedUserDefParams = userPredefinedParamsJsonList.map(userPredefinedParamsJson => {
-               const userPredefinedParams = JSON.parse(userPredefinedParamsJson.value);
-               const mappedUserDefParams = userPredefinedParams.map(param => {
-                   param.dataType= DataType[param.dataType];
-                   return param;
-               });
+           const mappedUserDefParamsList = userPredefinedParamsJsonList.map(userPredefinedParamsJson => {
+               let mappedUserDefParams;
+                try {
+                    const userPredefinedParams = JSON.parse(userPredefinedParamsJson.value);
+                    mappedUserDefParams = userPredefinedParams.map(param => {
+                        param.dataType = DataType[param.dataType];
+                        return param;
+                    });
+                }catch(e){
+                    console.error("Error parsing User Predefined Params: ", userPredefinedParamsJson.value);
+                }
 
                return mappedUserDefParams;
            });
 
-           setPredefinedParams(mappedUserDefParams.flat());
+           setPredefinedParams(mappedUserDefParamsList.flat());
        }
     }, [allGlobalParams]);
 

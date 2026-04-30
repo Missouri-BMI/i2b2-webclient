@@ -112,11 +112,15 @@ export const EditProjectParameters = ({selectedProject,
             const projPredefinedParamsJsonList = allGlobalParams.filter(g => g.name === "Predefined Project Params" && g.status === ParamStatus.A);
 
             projPredefinedParamsJsonList.forEach(projPredefinedParamsJson => {
-                const projPredefinedParams = JSON.parse(projPredefinedParamsJson.value);
-                projPredefinedParams.forEach(param => {
-                    param.dataType= DataType[param.dataType];
-                    updatedPredefParams.push(param);
-                });
+                try {
+                    const projPredefinedParams = JSON.parse(projPredefinedParamsJson.value);
+                    projPredefinedParams.forEach(param => {
+                        param.dataType = DataType[param.dataType];
+                        updatedPredefParams.push(param);
+                    });
+                }catch(e){
+                    console.error("Error parsing Project Predefined Params ", projPredefinedParamsJson.value);
+                }
             });
 
             setPredefinedParams(updatedPredefParams);

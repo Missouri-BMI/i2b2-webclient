@@ -53,18 +53,22 @@ export const EditGlobalParameters = ({allHives,
     useEffect(() => {
         if(allGlobalParams && allGlobalParams.length > 0){
             const globalPredefinedParamsJsonList = allGlobalParams.filter(g => g.name === "Predefined Global Params" && g.status === ParamStatus.A);
-
-            const mappedGlobalDefParams = globalPredefinedParamsJsonList.map(globalPredefinedParamsJson => {
-                const globalPredefinedParams = JSON.parse(globalPredefinedParamsJson.value);
-                const mappedGlobalDefParams = globalPredefinedParams.map(param => {
-                    param.dataType= DataType[param.dataType];
-                    return param;
-                });
+            const mappedGlobalDefParamsList = globalPredefinedParamsJsonList.map(globalPredefinedParamsJson => {
+                let mappedGlobalDefParams;
+                try {
+                    const globalPredefinedParams = JSON.parse(globalPredefinedParamsJson.value);
+                    mappedGlobalDefParams = globalPredefinedParams.map(param => {
+                        param.dataType = DataType[param.dataType];
+                        return param;
+                    });
+                }catch(e){
+                    console.error("Error parsing Global Predefined Params ", globalPredefinedParamsJson.value);
+                }
 
                 return mappedGlobalDefParams;
             });
 
-            setPredefinedParams(mappedGlobalDefParams.flat());
+            setPredefinedParams(mappedGlobalDefParamsList.flat());
         }
     }, [allGlobalParams]);
 
