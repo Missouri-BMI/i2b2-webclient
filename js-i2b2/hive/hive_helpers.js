@@ -330,7 +330,7 @@ i2b2.h.StripCRLF = function(input) {
 };
 
 // ================================================================================================== //
-i2b2.h.checkXmlResponseForErrors = function(msg) {
+i2b2.h.checkXmlResponseForErrors = function(msg, includeAll) {
     let hasErrors = false;
 
     if(msg && msg?.length > 0) {
@@ -341,9 +341,11 @@ i2b2.h.checkXmlResponseForErrors = function(msg) {
             const condition = i2b2.h.XPath(status, 'descendant::condition');
 
             if ((status.attributes['type'] && status.attributes['type'].nodeValue.toUpperCase() === "ERROR"
-                    && status.textContent !== "MAX_EXCEEDED")
+                    && (status.textContent !== "MAX_EXCEEDED" || includeAll))
                 || (condition.length > 0 && condition[0].attributes['type']
-                    && condition[0].attributes['type'].nodeValue.toUpperCase() === "ERROR")) {
+                    && condition[0].attributes['type'].nodeValue.toUpperCase() === "ERROR")
+                    && (condition[0].textContent !== 'For input string: "QUERY_INSTANCE_ID_UNKNOWN"' || includeAll)
+            ) {
 
                 hasErrors = true;
             }
