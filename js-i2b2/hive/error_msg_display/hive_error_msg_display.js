@@ -2,8 +2,6 @@ $('.toast').toast();
 
 i2b2.hive.errorMsgDisplay = {
     show: (msg) => {
-        console.log("before i2b2.hive.errorMsgDisplay msg receive, ",msg.msgRecv.msg);
-
         if(msg.msgRecv.msg?.length > 0 && i2b2.PM.model.projects){
             try {
                 const GLOBAL_ERROR_MESSAGE_PARAM_NAME = "Global Error Message";
