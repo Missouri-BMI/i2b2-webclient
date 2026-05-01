@@ -213,11 +213,13 @@ i2b2.hive.communicatorFactory = function(cellCode){
                           $("body").removeClass("pendingRequest");
                       }
                       // Message logging for debug purposes
+                      const responseText = xhr.responseText !== undefined ? String(xhr.responseText) : String(o.responseText);
+
                       snifferPackage.status = xhr.status;
                       snifferPackage.msgRecv = {
                           when: new Date(),
-                          msg: String(xhr.responseText),
-                          hasErrors: i2b2.h.checkXmlResponseForErrors(String(xhr.responseText), true)
+                          msg: responseText,
+                          hasErrors: i2b2.h.checkXmlResponseForErrors(responseText, true)
                       }
 
                       if (i2b2.hive.msgSniffer) i2b2.hive.msgSniffer.add(snifferPackage);
@@ -250,10 +252,13 @@ i2b2.hive.communicatorFactory = function(cellCode){
                           $("body").removeClass("pendingRequest");
                       }
                       // Message logging for debug purposes
+                      const responseText = xhr.responseText !== undefined ? String(xhr.responseText) : String(o.responseText);
+
                       snifferPackage.status = xhr.status;
                       snifferPackage.msgRecv = {
                           when: new Date(),
-                          msg: String(xhr.responseText)
+                          msg: responseText,
+                          hasErrors: i2b2.h.checkXmlResponseForErrors(responseText, true)
                       }
                       if (i2b2.hive.msgSniffer) i2b2.hive.msgSniffer.add(snifferPackage);
                       i2b2.hive.errorMsgDisplay.show(snifferPackage);
