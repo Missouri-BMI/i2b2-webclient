@@ -55,7 +55,7 @@
       "displayOrder": 100,
       "displayForUnregistered": false,
       "superModule": {
-        "capture": ["/^RPDO_/"]
+        "capture": ["/^RPDO_/", "/_REQUEST$/"]
       }
     },
     "DOWNLOAD": {
