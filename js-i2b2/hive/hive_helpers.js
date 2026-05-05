@@ -336,6 +336,8 @@ i2b2.h.checkXmlResponseForErrors = function(msg, includeAll) {
     if(msg && msg?.length > 0) {
         const parsedMsg = i2b2.h.parseXml(msg);
         const statusElems = parsedMsg.getElementsByTagName('status');
+        const faultString = parsedMsg.getElementsByTagName('faultstring');
+
         for (let s = 0; s < statusElems.length; s++) {
             const status = statusElems[s];
             const condition = i2b2.h.XPath(status, 'descendant::condition');
@@ -349,6 +351,10 @@ i2b2.h.checkXmlResponseForErrors = function(msg, includeAll) {
 
                 hasErrors = true;
             }
+        }
+
+        if(faultString.length > 0){
+            hasErrors = true;
         }
     }
 
