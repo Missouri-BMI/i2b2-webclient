@@ -271,6 +271,9 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
 
         if(selectedProject.userStatus.status === "SAVE_SUCCESS"){
             dispatch(saveProjectUserStatusConfirmed());
+            setSaveStatusMsg("Saved user " + selectedProject.userStatus.username + " to project");
+            setShowSaveStatus(true);
+            setSaveStatusSeverity("success");
             handleEditClick(searchedUsername.username)();
         }
         if(selectedProject.userStatus.status === "SAVE_FAIL"){
