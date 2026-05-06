@@ -374,8 +374,8 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
             i2b2.CRC.model.runner.queued = true;
         }
 
-        // Start the query status panel!
-        if (!i2b2.CRC.model.runner.isCancelled) i2b2.CRC.QueryStatus.start(i2b2.CRC.model.runner.idQueryInstance, $(".CRC_QS_view")[0]);
+        // Start the query status panel (but only if real-time polling is enabled)!
+        if (!i2b2.CRC.model.runner.isCancelled && i2b2.CRC.QueryStatus.realtimePolling) i2b2.CRC.QueryStatus.start(i2b2.CRC.model.runner.idQueryInstance, $(".CRC_QS_view")[0]);
     }
 };
 
@@ -413,6 +413,7 @@ i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
         if (typeof i2b2.CRC.model.runner.idQueryInstance === 'undefined') {
             showStatus = false;
         } else {
+            // this is the location that QueryStatus will be updated if real-time polling is turned off
             i2b2.CRC.QueryStatus.start(i2b2.CRC.model.runner.idQueryInstance, $(".CRC_QS_view")[0]);
         }
     }
