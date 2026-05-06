@@ -89,9 +89,10 @@ export const Overview = () => {
         setSelectedProject(project);
         setLoginsSinceInDays(7);
         setNewUsersSinceInDays(30);
+        dispatch(getUserLogins({loginsSinceInDays: 7}));
         dispatch(getAllUsers({projectId: project.id}));
         dispatch(getAllUserRoleCounts({projectId: project.id}));
-        dispatch(getNewUsers({newUsersSinceInDays, projectId: project.id}));
+        dispatch(getNewUsers({newUsersSinceInDays: 30, projectId: project.id}));
         dispatch(getQueryMetrics({projectId: project.id}));
     }
 
