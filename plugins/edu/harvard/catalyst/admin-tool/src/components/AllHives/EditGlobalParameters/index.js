@@ -22,7 +22,23 @@ export const EditGlobalParameters = ({allHives,
     const [saveStatus, setSaveStatus] = useState("");
     const [showAuthConfig, setShowAuthConfig] = useState(false);
     const [showDeletedParams, setShowDeletedParams] = useState(false);
-
+    const GLOBAL_PREDEFINED_PARAMS = [
+        {
+            label: "Predefined Global Params",
+            dataType: "T",
+            description: "A JSON formatted string defining available global parameter names"
+        },
+        {
+            label: "Predefined Project Params",
+            dataType: "T",
+            description: "A JSON formatted string defining available project parameter names"
+        },
+        {
+            label: "Predefined User Params",
+            dataType: "T",
+            description: "A JSON formatted string defining available user parameter names"
+        },
+    ]
     const dispatch = useDispatch();
 
     const saveParam = (param) => {
@@ -51,24 +67,23 @@ export const EditGlobalParameters = ({allHives,
 
 
     useEffect(() => {
+        let mappedGlobalDefParamsList = GLOBAL_PREDEFINED_PARAMS;
+
         if(allGlobalParams && allGlobalParams.length > 0){
             const globalPredefinedParamsJsonList = allGlobalParams.filter(g => g.name === "Predefined Global Params" && g.status === ParamStatus.A);
-            const mappedGlobalDefParamsList = globalPredefinedParamsJsonList.map(globalPredefinedParamsJson => {
-                let mappedGlobalDefParams;
+            globalPredefinedParamsJsonList.forEach(globalPredefinedParamsJson => {
                 try {
                     const globalPredefinedParams = JSON.parse(globalPredefinedParamsJson.value);
-                    mappedGlobalDefParams = globalPredefinedParams.map(param => {
+                    globalPredefinedParams.forEach(param => {
                         param.dataType = DataType[param.dataType];
-                        return param;
+                        mappedGlobalDefParamsList.push(param);
                     });
                 }catch(e){
                     console.error("Error parsing Global Predefined Params ", globalPredefinedParamsJson.value);
                 }
-
-                return mappedGlobalDefParams;
             });
 
-            setPredefinedParams(mappedGlobalDefParamsList.flat());
+            setPredefinedParams(mappedGlobalDefParamsList);
         }
     }, [allGlobalParams]);
 

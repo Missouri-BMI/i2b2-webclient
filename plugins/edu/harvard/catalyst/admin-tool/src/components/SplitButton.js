@@ -16,7 +16,6 @@ export const SplitButton = ({optionsList, handleClick, customActionsBtnOption}) 
     const [selectedIndex, setSelectedIndex] = React.useState(1);
 
     const handleClickItem = () => {
-        console.info(`You clicked ${optionsList[selectedIndex]}`);
         handleClick(optionsList[selectedIndex]);
     };
 

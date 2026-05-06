@@ -56,24 +56,23 @@ export const EditUserParameters = ({selectedUser,
 
     useEffect(() => {
        if(allGlobalParams && allGlobalParams.length > 0){
+           let mappedUserDefParamsList = [];
+
            const userPredefinedParamsJsonList = allGlobalParams.filter(g => g.name === "Predefined User Params" && g.status === ParamStatus.A);
 
-           const mappedUserDefParamsList = userPredefinedParamsJsonList.map(userPredefinedParamsJson => {
-               let mappedUserDefParams;
+           userPredefinedParamsJsonList.forEach(userPredefinedParamsJson => {
                 try {
                     const userPredefinedParams = JSON.parse(userPredefinedParamsJson.value);
-                    mappedUserDefParams = userPredefinedParams.map(param => {
+                    userPredefinedParams.forEach(param => {
                         param.dataType = DataType[param.dataType];
-                        return param;
+                        mappedUserDefParamsList.push(param);
                     });
                 }catch(e){
                     console.error("Error parsing User Predefined Params: ", userPredefinedParamsJson.value);
                 }
-
-               return mappedUserDefParams;
            });
 
-           setPredefinedParams(mappedUserDefParamsList.flat());
+           setPredefinedParams(mappedUserDefParamsList);
        }
     }, [allGlobalParams]);
 
