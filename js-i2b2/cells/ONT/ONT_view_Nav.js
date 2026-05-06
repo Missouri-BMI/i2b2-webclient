@@ -119,7 +119,9 @@ i2b2.ONT.view.nav.loadChildren =  function(nodeData, onComplete) {
         // push new nodes into the treeview
         i2b2.ONT.view.nav.treeview.treeview('addNodes', [
             newNodes,
-            function(parent, child){ return (parent.key === child.parentKey) && (parent.text === child.parentText) },
+            function(parent, child){
+                return (parent.key === child.parentKey) && (parent.text === child.parentText) && nodeData.parentKey === parent.parentKey
+            },
             false
         ]);
 
