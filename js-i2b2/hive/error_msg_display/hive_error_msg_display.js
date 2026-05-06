@@ -17,9 +17,9 @@ i2b2.hive.errorMsgDisplay = {
 
                 const projectLevelGlobalMessage = projectParamsArr.filter(param => param.length > 1 && param[1].name === GLOBAL_ERROR_MESSAGE_PARAM_NAME);
 
-                const globalLevelEnabled = i2b2.hive.model.globalParams
-                    && (i2b2.hive.model.globalParams[DISABLE_GLOBAL_ERROR_MESSAGE_PARAM_NAME]
-                    &&  (i2b2.hive.model.globalParams[DISABLE_GLOBAL_ERROR_MESSAGE_PARAM_NAME].innerHTML !== "true"
+                const globalLevelEnabled = (i2b2.hive.model.globalParams !== undefined
+                    && (i2b2.hive.model.globalParams[DISABLE_GLOBAL_ERROR_MESSAGE_PARAM_NAME] !== undefined
+                    &&  (i2b2.hive.model.globalParams[DISABLE_GLOBAL_ERROR_MESSAGE_PARAM_NAME].innerHTML !== "true")
                     || !i2b2.hive.model.globalParams[DISABLE_GLOBAL_ERROR_MESSAGE_PARAM_NAME]));
                 const globalLevelGlobalMessage = i2b2.hive.model.globalParams[GLOBAL_ERROR_MESSAGE_PARAM_NAME] ?
                     i2b2.hive.model.globalParams[GLOBAL_ERROR_MESSAGE_PARAM_NAME].innerHTML : '';
