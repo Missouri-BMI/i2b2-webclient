@@ -8,9 +8,11 @@ i2b2.CRC.QueryStatus = {
     displayEl: false,
     resizeObserver: false,
     haltPolling: false,
+    realtimePolling: false,
     model: {
         QRS: {},
-        visualizations: {}
+        visualizations: {},
+        queryMgr: false
     },
     showOnZeroCount: [
         "SUMMARY",
@@ -232,6 +234,23 @@ i2b2.CRC.QueryStatus.updateFromQueryMgr = function() {
     for (let param of params) {
         if (refQueryMgrData[param] !== undefined) QueryMgrRecord[param] = refQueryMgrData[param];
     }
+
+    let hasChange = false;
+    for (let key of Object.keys(QueryMgrRecord)) {
+        if (key === "elapsedTime") continue;
+        if (typeof i2b2.CRC.QueryStatus.model.queryMgr?.[key] !== "undefined") {
+            if (i2b2.CRC.QueryStatus.model.queryMgr[key] !== QueryMgrRecord[key]) {
+                console.log("QueryStatus > Summary: Attribute changed [" + key + "]");
+                hasChange = true;
+            }
+        } else {
+            console.log("QueryStatus > Summary: Attribute added [" + key + "]");
+            hasChange = true;
+        }
+    }
+    if (hasChange) console.dir(QueryMgrRecord);
+
+    i2b2.CRC.QueryStatus.model.queryMgr = QueryMgrRecord;
     i2b2.CRC.QueryStatus.model.QRS["INTERNAL_SUMMARY"] = QueryMgrRecord;
 
     // cause an update of the display modules
@@ -895,6 +914,7 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
         i2b2.CRC.QueryStatus.displayOrder = config.displayOrder;
         i2b2.CRC.QueryStatus.haltOnStatus = config.haltPollingOnStatus;
         i2b2.CRC.QueryStatus.hideVisualizationsOn = config.hideVisualizationsOn;
+        i2b2.CRC.QueryStatus.realtimePolling = config.realtimePolling;
 
         // load breakdowns.json
         response = await fetch(i2b2.CRC.QueryStatus.baseURL + "breakdowns.json");

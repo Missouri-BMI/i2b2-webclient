@@ -111,5 +111,6 @@
   ],
   "hideVisualizationsOn": [
     "ERROR"
-  ]
+  ],
+  "realtimePolling": false
 }
