@@ -41,7 +41,7 @@ export default class Download {
                 }
             }
         } catch(e) {
-            console.error("Error in QueryStatus:Download.update()");
+            console.error("Error in QueryStatus:Download.update().", e);
         }
         return false;
     }
@@ -73,7 +73,7 @@ export default class Download {
             this.isVisible = false;
             return false;
         } catch(e) {
-            console.error("Error in QueryStatus:Download.show()");
+            console.error("Error in QueryStatus:Download.show().", e);
         }
     }
 
@@ -113,6 +113,11 @@ let generateCSV = (inputData) => {
         for (let i=0; i<siteCnt; i++) line.push(inputData.SHRINE.sites[i].name);
     }
     line.push("Total");
+
+    if(inputData.isObfuscated) {
+        line.push("Total Obfuscation Noise Clamp");
+    }
+
     csv = csv + func_ProcessLine(line);
 
     // // add the "All Patients" line if we have SHRINE data
@@ -147,7 +152,20 @@ let generateCSV = (inputData) => {
                 }
             }
         }
-        line.push(grouping.display) // total column value
+
+        if(inputData.isObfuscated){
+            const indexOfObfuscation = grouping.display.indexOf("+/-");
+            if(indexOfObfuscation !== -1){
+                const displayValue = grouping.display.substring(0, indexOfObfuscation).trim();
+                line.push(displayValue.replaceAll(",", ""));
+                line.push(grouping.display.substring(indexOfObfuscation));
+            }else{
+                line.push(grouping.display.replaceAll(",", ""));
+            }
+        }else{
+            line.push(grouping.display.replaceAll(",", ""));
+        }
+
         csv = csv + func_ProcessLine(line);
     }
     return csv;
@@ -158,6 +176,7 @@ let generateCSV = (inputData) => {
 let parseData = function(xmlData) {
     let breakdown = {};
     breakdown.result = [];
+    breakdown.isObfuscated = false;
     // process "normal" data
     let params = i2b2.h.XPath(xmlData, 'descendant::data[@column]/text()/..');
     // short circuit exit because there is no data
@@ -167,6 +186,11 @@ let parseData = function(xmlData) {
         entryRecord.name = $('<div>').html(params[i2].getAttribute("column")).text();
         entryRecord.value = parseInt(params[i2].firstChild.nodeValue);
         entryRecord.display = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(params[i2].firstChild.nodeValue);
+
+        if(entryRecord.display.indexOf("±") !== -1){
+            breakdown.isObfuscated = true;
+        }
+
         // fix issues with MS Excel's use of Microsoft-codepages
         entryRecord.display = entryRecord.display.replaceAll('±', ' +/- ');
         // Override the display value if specified by server setting the "display" attribute
