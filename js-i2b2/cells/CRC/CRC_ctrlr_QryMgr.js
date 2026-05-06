@@ -464,11 +464,15 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryStatus.callback = function(results) {
             i2b2.CRC.model.runner.patientCount = pCount
         } catch(e) {}
     }
+
+    // check for errors
+    if (typeof stats["ERROR"] !== "undefined") i2b2.CRC.model.runner.hasError = true;
+
     i2b2.CRC.model.runner.queryResultInstances = idQRI;
     i2b2.CRC.model.runner.progress = stats;
 
     // see if all processing is done
-    if (Object.keys(stats).length === 1 && stats["FINISHED"]) {
+    if (Object.keys(stats).length === 1 && (stats["FINISHED"] || stats["ERROR"])) {
         i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll();
     } else {
         i2b2.CRC.model.runner.isPolling = false;
