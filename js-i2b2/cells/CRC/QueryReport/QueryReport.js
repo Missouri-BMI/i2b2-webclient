@@ -170,7 +170,7 @@ i2b2.CRC.QueryReport.generateReport = () => {
     let stylesheets = [];
     for (let code in i2b2.CRC.QueryStatus.displayComponents) {
         const componentInfo = i2b2.CRC.QueryStatus.displayComponents[code];
-        if (componentInfo.CSS && !componentInfo.noReport) stylesheets.push(i2b2.CRC.QueryStatus.baseURL + componentInfo.CSS);
+        if (componentInfo.CSS && !componentInfo.notInReport) stylesheets.push(i2b2.CRC.QueryStatus.baseURL + componentInfo.CSS);
     }
     reportData.stylesheets = stylesheets;
 
@@ -180,21 +180,59 @@ i2b2.CRC.QueryReport.generateReport = () => {
     const configuredBreakdownCodes = Object.keys(i2b2.CRC.QueryReport.displayConfig);
     for (let qrsCode of configuredBreakdownCodes) {
         // get the data entry
-        let qrsData = Object.values(i2b2.CRC.QueryStatus.model.QRS).filter((x) => x.QRS_Type === qrsCode);
+        let qrsData = Object.values(i2b2.CRC.QueryStatus.model.QRS).filter((x) => {
+            if (x.QRS_DisplayType !== "CATNUM") return false;
+            let hasMatches = false;
+            if (x.QRS_Type === qrsCode) hasMatches = true;
+            if (qrsCode.substring(0,1) === '/') {
+                // regex processing
+                let testRegEx = i2b2.CRC.QueryStatus._generateRegEx(qrsCode);
+                if (testRegEx.test(x.QRS_Type)) hasMatches = true;
+            }
+            if (hasMatches) {
+                const activeModules = Object.entries(i2b2.CRC.QueryReport.displayConfig[qrsCode]).filter((e) => {
+                    if (e[1] !== false) return true;
+                });
+                if (activeModules.length > 0) return true;
+            }
+            return false;
+        });
+        // if we have data for displaying the breakdown
         if (qrsData.length > 0) {
             qrsData = qrsData[0];
             let visualizationGroup = [];
-            // we are displaying this breakdown, run through the viz modules
-            for (let vizCode in i2b2.CRC.QueryReport.displayConfig[qrsCode]) {
-                if (i2b2.CRC.QueryStatus.displayComponents[vizCode] !== undefined) {
-                    // valid visualization
-                    visualizationGroup.push({
-                        "codeViz": vizCode,
-                        "codeQRS": qrsCode,
-                        "module": i2b2.CRC.QueryStatus.displayComponents[vizCode],
-                        "data": qrsData,
-                        "config": i2b2.CRC.QueryReport.displayConfig[qrsCode][vizCode]
-                    });
+            // we are displaying this breakdown, find its definition(s)
+            let displayConfigEntries = [];
+            if (i2b2.CRC.QueryReport.displayConfig[qrsCode]) {
+                // via literal mapping
+                displayConfigEntries.push(i2b2.CRC.QueryReport.displayConfig[qrsCode]);
+            } else {
+                // via regex mapping
+                Object.entries(i2b2.CRC.QueryReport.displayConfig).forEach((e) => {
+                    if (e[0].substring(0,1) === '/') {
+                        let testRegEx = i2b2.CRC.QueryStatus._generateRegEx(e[0]);
+                        if (testRegEx.test(qrsCode)) displayConfigEntries.push(e[1]);
+                    }
+                });
+            }
+
+            // run through the matching definitions
+            for (let currentDef of displayConfigEntries) {
+                // run through the definition's viz modules
+                for (let vizCode in currentDef) {
+                    let showViz = true;
+                    if (typeof i2b2.CRC.QueryStatus.displayComponents[vizCode] === "undefined") showViz = false;
+                    if (currentDef[vizCode] === false) showViz = false;
+                    if (showViz) {
+                        // valid visualization
+                        visualizationGroup.push({
+                            "codeViz": vizCode,
+                            "codeQRS": qrsCode,
+                            "module": i2b2.CRC.QueryStatus.displayComponents[vizCode],
+                            "data": qrsData,
+                            "config": i2b2.CRC.QueryReport.displayConfig[qrsCode][vizCode]
+                        });
+                    }
                 }
             }
             if (visualizationGroup.length > 0) visualizations.push({
@@ -205,7 +243,16 @@ i2b2.CRC.QueryReport.generateReport = () => {
     }
     // display any non-configured breakdowns not defined in the JSON
     let definedBreakdowns = visualizations.map((x) => x.visualizations[0].codeQRS);
-    let todoBreakdowns = Object.values(i2b2.CRC.QueryStatus.model.QRS).filter((x) => !definedBreakdowns.includes(x.QRS_Type) && x.QRS_Type !== 'INTERNAL_SUMMARY');
+    let todoBreakdowns = Object.values(i2b2.CRC.QueryStatus.model.QRS).filter((x) => {
+        if (x.QRS_DisplayType !== "CATNUM") return false;
+        if (definedBreakdowns.includes(x.QRS_Type) || x.QRS_Type === 'INTERNAL_SUMMARY') return false;
+        // see if the breakdown matches a regex
+        const regExList = configuredBreakdownCodes.filter((y) => y.substring(0,1) === '/');
+        let anyRegexMatch = regExList.every((y) => !i2b2.CRC.QueryStatus._generateRegEx(y).test(x.QRS_Type));
+        // if a breakdown matches any regular expression that assume it was correctly filtered out on purpose
+        // at an earlier phase - do not readd
+        return anyRegexMatch;
+    });
     let targetVizModules = Object.values(i2b2.CRC.QueryStatus.displayComponents).filter((x) => x.displayForUnregistered === true && x.notInReport !== true).sort((a, b) => (a.displayOrderx || -Infinity) - (b.displayOrder || -Infinity))
     for (let undefinedBreakdown of todoBreakdowns) {
         let visualizationGroup = [];
