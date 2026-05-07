@@ -649,7 +649,7 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
 
     // TODO: Instantiate Super-modules (only runs once! and only after we get more than just the SUMMARY viz is built)
     if (typeof i2b2.CRC.QueryStatus.model.superModules === 'undefined') i2b2.CRC.QueryStatus.model.superModules = [];
-    if (i2b2.CRC.QueryStatus.model.superModules.length === 0 && Object.keys(i2b2.CRC.QueryStatus.model.visualizations).length > 1) {
+    if (i2b2.CRC.QueryStatus.model.superModules.length === 0 && Object.keys(i2b2.CRC.QueryStatus.model.visualizations).length >= 1) {
         Object.entries(i2b2.CRC.QueryStatus.displayComponents).forEach(([code, module]) => {
             if (typeof module.superModule !== 'undefined') {
                 // create the frameless display div
@@ -884,7 +884,7 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
                         break;
                     }
                 }
-                if (hide) this.reference.componentInstances[0].parentDisplayEl.style.display = "none";
+                if (hide && this.reference.componentInstances.length) this.reference.componentInstances[0].parentDisplayEl.style.display = "none";
             }
         }
     } else {
