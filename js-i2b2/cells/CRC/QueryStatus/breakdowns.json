@@ -63,7 +63,6 @@
     "TABLE": true,
     "DOWNLOAD": true
   },
-
   "PATIENT_TOP20MEDS_XML": {
     "BARS": true,
     "TABLE": {
@@ -85,6 +84,10 @@
   },
   "PATIENT_PATHOGEN_TIMELINE_SHRINE_XML": {
     "TABLE": true,
+    "DOWNLOAD": true,
+    "PATHOGENTIMELINE": true
+  },
+  "PATIENT_PATHOGEN_TIMELINE_XML": {
     "DOWNLOAD": true,
     "PATHOGENTIMELINE": true
   },

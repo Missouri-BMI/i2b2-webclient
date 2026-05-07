@@ -45,7 +45,8 @@
       "CSS": "TableBarChart/TableBarChart.css",
       "iconClass": "bi bi-bar-chart-steps",
       "displayOrder": 10,
-      "displayForUnregistered": true
+      "displayForUnregistered": true,
+      "notInReport": true
     },
     "DATAREQUESTSUPER": {
       "name": "Data Request",
