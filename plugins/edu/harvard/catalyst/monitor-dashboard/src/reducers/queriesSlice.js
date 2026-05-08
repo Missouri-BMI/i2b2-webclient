@@ -48,7 +48,7 @@ export const queriesSlice = createSlice({
                     patientCount: query.patientCount,
                     queryStatus: QueryStatus({
                         status: status,
-                        i2b2Status: query.queryStatus,
+                        i2b2Status: query.status,
                     }),
                     username: query.userId,
                     obfuscatedPatientCountStr: query.obfuscatedPatientCountStr,

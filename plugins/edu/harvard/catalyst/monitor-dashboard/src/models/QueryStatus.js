@@ -19,24 +19,28 @@ export const QUERY_STATUSES
             order: 40,
             name: "Medium Queue",
         },
-        LONG_QUEUE: {
+        MEDIUM_QUEUE_RUNNING: {
             order: 50,
+            name: "Medium Queue Running",
+        },
+        LONG_QUEUE: {
+            order: 60,
             name: "Long Queue",
         },
         CANCELLED: {
-            order: 60,
+            order: 70,
             name: "Cancelled",
         },
         INCOMPLETE: {
-            order: 70,
+            order: 80,
             name: "Incomplete",
         },
         FINISHED: {
-            order: 80,
+            order: 90,
             name: "Finished"
         },
         ERROR: {
-            order: 90,
+            order: 100,
             name: "Error"
         },
         UNKNOWN: {
@@ -73,6 +77,7 @@ QueryStatus.propTypes = {
         QUERY_STATUSES.statuses.PROCESSING,
         QUERY_STATUSES.statuses.QUEUED,
         QUERY_STATUSES.statuses.MEDIUM_QUEUE,
+        QUERY_STATUSES.statuses.MEDIUM_QUEUE_RUNNING,
         QUERY_STATUSES.statuses.LONG_QUEUE,
         QUERY_STATUSES.statuses.CANCELLED,
         QUERY_STATUSES.statuses.INCOMPLETE,
