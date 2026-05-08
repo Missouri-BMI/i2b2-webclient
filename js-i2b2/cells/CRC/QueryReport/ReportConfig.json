@@ -66,5 +66,7 @@
   },
   "PATIENT_PATHOGEN_TIMELINE_XML": {
     "PATHOGENTIMELINE": true
-  }
+  },
+  "/^RPDO_/": {"DATAREQUESTSUPER": false},
+  "/_REQUEST$/": {"DATAREQUESTSUPER": false}
 }
