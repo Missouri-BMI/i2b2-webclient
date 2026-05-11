@@ -339,7 +339,7 @@ export const QueryRequestDetailsReport = ({patientCountStr, queryRow}) => {
             </Card>
             }
 
-            {(queryRow.queryStatus.status !== QUERY_STATUSES.statuses.FINISHED ||  patientCountStr.length === 0) && <Box> Status: {queryRow.queryStatus.status.name} </Box>}
+            {(queryRow.queryStatus.status !== QUERY_STATUSES.statuses.FINISHED ||  patientCountStr.length === 0) && <Box> Status: {queryRow.queryStatus.status !== QUERY_STATUSES.statuses.UNKNOWN ? queryRow.queryStatus.status.name: queryRow.queryStatus.i2b2Status} </Box>}
         </Box>
     );
 }

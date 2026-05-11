@@ -11,36 +11,40 @@ export const QUERY_STATUSES
             order: 20,
             name: "Processing"
         },
-        QUEUED: {
+        RUNNING: {
             order: 30,
+            name: "Running"
+        },
+        QUEUED: {
+            order: 40,
             name: "Queued",
         },
         MEDIUM_QUEUE: {
-            order: 40,
+            order: 50,
             name: "Medium Queue",
         },
         MEDIUM_QUEUE_RUNNING: {
-            order: 50,
+            order: 60,
             name: "Medium Queue Running",
         },
         LONG_QUEUE: {
-            order: 60,
+            order: 70,
             name: "Long Queue",
         },
         CANCELLED: {
-            order: 70,
+            order: 80,
             name: "Cancelled",
         },
         INCOMPLETE: {
-            order: 80,
+            order: 90,
             name: "Incomplete",
         },
         FINISHED: {
-            order: 90,
+            order: 100,
             name: "Finished"
         },
         ERROR: {
-            order: 100,
+            order: 110,
             name: "Error"
         },
         UNKNOWN: {
