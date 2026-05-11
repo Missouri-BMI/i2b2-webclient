@@ -93,7 +93,10 @@ export const Overview = () => {
         dispatch(getAllUsers({projectId: project.id}));
         dispatch(getAllUserRoleCounts({projectId: project.id}));
         dispatch(getNewUsers({newUsersSinceInDays: 30, projectId: project.id}));
-        dispatch(getQueryMetrics({projectId: project.id}));
+
+        if(project.id !== ALL_PROJECTS_ID) {
+            dispatch(getQueryMetrics({projectId: project.id}));
+        }
     }
 
     return (
