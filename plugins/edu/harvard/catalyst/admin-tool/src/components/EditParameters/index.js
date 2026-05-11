@@ -11,7 +11,6 @@ import {GridRowEditStopReasons} from '@mui/x-data-grid';
 import { StatusUpdate, SplitButton } from "components";
 import {DataType, ParamStatus} from "models";
 import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
 import {
     Autocomplete, DialogActions,
     DialogContent,
@@ -19,6 +18,7 @@ import {
     FormControlLabel,
     FormGroup,
     Switch,
+    Tooltip,
     Typography
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
@@ -101,7 +101,8 @@ export const EditParameters = ({
         }, [value]); // Re-check if cell value changes
 
         return (
-            <Box
+            <Tooltip describeChild title={showTooltip ? params.value : ""}>
+            <Box className={"OverFlowExpandCell"}
                 sx={{
                     alignItems: 'center',
                     lineHeight: '24px',
@@ -135,6 +136,7 @@ export const EditParameters = ({
                 </IconButton>
                 }
             </Box>
+            </Tooltip>
         );
     }
 
@@ -694,11 +696,11 @@ export const EditParameters = ({
                 onClose={handleCloseParamValuePreview}
                 scroll={"paper"}
                 fullWidth={true}
-                maxWidth={'sm'}
+                maxWidth={'md'}
                 PaperProps={{
                     sx: {
-                        minHeight: '42%',
-                        maxHeight: '42%'
+                        minHeight: '60%',
+                        maxHeight: '60%'
                     }
                 }}
             >

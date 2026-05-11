@@ -76,6 +76,11 @@
 
   .ParamValuePreviewContent {
     padding: 0.4em;
+    padding-top: 0;
+  }
+
+  .MuiDialogContent-root {
+    padding-top: 0;
   }
 }
 
