@@ -245,13 +245,16 @@ i2b2.CRC.QueryReport.generateReport = () => {
     let definedBreakdowns = visualizations.map((x) => x.visualizations[0].codeQRS);
     let todoBreakdowns = Object.values(i2b2.CRC.QueryStatus.model.QRS).filter((x) => {
         if (x.QRS_DisplayType !== "CATNUM") return false;
+        if (i2b2.CRC.QueryStatus.hideVisualizationsOn.includes(x.QRS_Status)) return false;
         if (definedBreakdowns.includes(x.QRS_Type) || x.QRS_Type === 'INTERNAL_SUMMARY') return false;
         // see if the breakdown matches a regex
         const regExList = configuredBreakdownCodes.filter((y) => y.substring(0,1) === '/');
         let anyRegexMatch = regExList.every((y) => !i2b2.CRC.QueryStatus._generateRegEx(y).test(x.QRS_Type));
-        // if a breakdown matches any regular expression that assume it was correctly filtered out on purpose
-        // at an earlier phase - do not readd
-        return anyRegexMatch;
+        // if a breakdown matches any regular expression than assume it was correctly filtered out on purpose
+        // at an earlier phase - do not read
+        if (!anyRegexMatch) return false;
+        // if this breakdown is not in the mapping config then consider it an unmapped file
+        return !configuredBreakdownCodes.includes(x.QRS_Type);
     });
     let targetVizModules = Object.values(i2b2.CRC.QueryStatus.displayComponents).filter((x) => x.displayForUnregistered === true && x.notInReport !== true).sort((a, b) => (a.displayOrderx || -Infinity) - (b.displayOrder || -Infinity))
     for (let undefinedBreakdown of todoBreakdowns) {
