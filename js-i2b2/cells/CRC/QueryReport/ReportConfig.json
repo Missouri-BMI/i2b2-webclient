@@ -61,12 +61,14 @@
     "BARS": true
   },
   "PATIENT_NIH_ENROLLMENT_XML": {
-    "NIHENROLLTABLE": true,
-    "NIHENROLLCSV": true
+    "NIHENROLLTABLE": true
   },
   "PATIENT_PATHOGEN_TIMELINE_XML": {
     "PATHOGENTIMELINE": true
   },
+  "PATIENT_ZIP_COUNT_XML": {},
+  "PATIENT_DIAG3_COUNT_XML": {},
+
   "/^RPDO_/": {"DATAREQUESTSUPER": false},
   "/_REQUEST$/": {"DATAREQUESTSUPER": false}
 }

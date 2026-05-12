@@ -22,6 +22,7 @@
       "iconClass": "bi bi-bar-chart-line",
       "default": true,
       "displayOrder": 1,
+      "displayForUnregistered": true,
       "class": "bargraph"
     },
     "PIECHART": {
