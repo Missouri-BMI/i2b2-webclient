@@ -182,6 +182,7 @@ i2b2.CRC.QueryReport.generateReport = () => {
         // get the data entry
         let qrsData = Object.values(i2b2.CRC.QueryStatus.model.QRS).filter((x) => {
             if (x.QRS_DisplayType !== "CATNUM") return false;
+            if (i2b2.CRC.QueryStatus.hideVisualizationsOn.includes(x.QRS_Status)) return false;
             let hasMatches = false;
             if (x.QRS_Type === qrsCode) hasMatches = true;
             if (qrsCode.substring(0,1) === '/') {
