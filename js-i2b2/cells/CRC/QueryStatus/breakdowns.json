@@ -41,6 +41,7 @@
     "DOWNLOAD": true
   },
   "PATIENT_AGE_COUNT_XML": {
+    "PIECHART": true,
     "BARS": {
       "maxLabelLength": 15
     },

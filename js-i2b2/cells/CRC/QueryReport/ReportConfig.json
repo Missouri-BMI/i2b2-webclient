@@ -34,7 +34,8 @@
   },
   "PATIENT_AGE_COUNT_XML": {
     "TABLE": true,
-    "BARS": true
+    "BARS": true,
+    "PIECHART": true
   },
   "PATIENT_AGE_COUNT_SHRINE_XML": {
     "TABLE": true,
