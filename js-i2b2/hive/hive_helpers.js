@@ -342,6 +342,7 @@ i2b2.h.checkXmlResponseForErrors = function(msg, includeAll) {
             const status = statusElems[s];
             const condition = i2b2.h.XPath(status, 'descendant::condition');
 
+
             if ((status.attributes['type'] && status.attributes['type'].nodeValue.toUpperCase() === "ERROR"
                     && (status.textContent !== "MAX_EXCEEDED" || includeAll))
                 || (condition.length > 0 && condition[0].attributes['type']
@@ -355,6 +356,22 @@ i2b2.h.checkXmlResponseForErrors = function(msg, includeAll) {
 
         if(faultString.length > 0){
             hasErrors = true;
+        }
+
+        //work around for filtering queued queries status being set to ERROR
+        const queryInstanceElems = parsedMsg.getElementsByTagName('query_instance');
+        if(queryInstanceElems.length > 0){
+            const queryInstanceStatus = i2b2.h.XPath(queryInstanceElems[0], 'descendant-or-self::query_status_type/name')[0].firstChild.nodeValue;
+            if(queryInstanceStatus === "ERROR"){
+                const queryResultInstanceElems = parsedMsg.getElementsByTagName('query_result_instance');
+                for (let q = 0; q < queryResultInstanceElems.length; q++) {
+                    const queryResultInstance = queryResultInstanceElems[q];
+                    const queryResultInstanceStatus = i2b2.h.XPath(queryResultInstance, 'descendant-or-self::query_status_type/name')[0].firstChild.nodeValue;
+                    if(queryResultInstanceStatus === "TIMEDOUT"){
+                        hasErrors = false;
+                    }
+                }
+            }
         }
     }
 
