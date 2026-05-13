@@ -109,7 +109,7 @@ export default class NihEnrollCsv {
                         totalEthnicSex[colIdx] += parseInt(dataTree[race][sexKey][ethnicityKey].value);
                     }
                 }
-                obfuscateValues[idx] = i2b2.CRC.QueryStatus.obfuscateValue();
+                obfuscateValues[idx] = i2b2.CRC.QueryStatus.obfuscateValue().replaceAll('±', ' +/- ');
                 renderArray[idx][9] = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(count, 0, 0);
                 // fix issues with MS Excel's use of Microsoft-codepages
                 renderArray[idx][9] = renderArray[idx][9].replaceAll('±', ' +/- ');
@@ -125,7 +125,7 @@ export default class NihEnrollCsv {
                 totalEthnicSex[idx] = totalEthnicSex[idx].replaceAll('±', ' +/- ');
             }
             renderArray[7] = totalEthnicSex;
-            obfuscateValues[7] = i2b2.CRC.QueryStatus.obfuscateValue();
+            obfuscateValues[7] = i2b2.CRC.QueryStatus.obfuscateValue().replaceAll('±', ' +/- ');;
             // ==================================================================
             // render the template using the data
             if (typeof this.renderTemplate === 'undefined') return false;
