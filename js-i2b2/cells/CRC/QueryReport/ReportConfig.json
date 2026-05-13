@@ -68,7 +68,9 @@
     "PATHOGENTIMELINE": true
   },
   "PATIENT_ZIP_COUNT_XML": {},
-  "PATIENT_DIAG3_COUNT_XML": {},
+  "PATIENT_DIAG3_COUNT_XML": {
+    "TABLE": true
+  },
 
   "/^RPDO_/": {"DATAREQUESTSUPER": false},
   "/_REQUEST$/": {"DATAREQUESTSUPER": false}
