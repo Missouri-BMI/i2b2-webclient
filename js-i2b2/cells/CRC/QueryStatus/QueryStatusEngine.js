@@ -61,6 +61,21 @@ i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber = function(number, floorValue, 
     return parseInt(number).toLocaleString();
 };
 
+i2b2.CRC.QueryStatus.obfuscateValue = function(obfuscateValue) {
+    // apply obfuscation value
+    if (typeof obfuscateValue === "undefined" || (!obfuscateValue && obfuscateValue !== 0)) {
+        // deal with the obfuscate number
+        if (i2b2.PM.model.isObfuscated && i2b2.UI?.cfg?.obfuscatedDisplayNumber) {
+            return  "±" + parseInt(i2b2.UI.cfg.obfuscatedDisplayNumber).toLocaleString();
+        } else {
+            return "";
+        }
+    } else if (typeof obfuscateValue === "number" && obfuscateValue > 0) {
+        return "±" + parseInt(obfuscateValue).toLocaleString();
+    }
+    return "";
+};
+
 i2b2.CRC.QueryStatus.stopPolling = function() {
     i2b2.CRC.QueryStatus.haltPolling = true;
 };
