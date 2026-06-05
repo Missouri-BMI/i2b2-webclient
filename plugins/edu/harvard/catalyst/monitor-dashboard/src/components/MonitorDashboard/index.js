@@ -49,7 +49,7 @@ export const MonitorDashboard = () => {
                 >
                     <Tab value={ViewModeTypes.OVERVIEW} label="Overview"/>
                     <Tab value={ViewModeTypes.QUERY} label="Query" />
-                    <IconButton className={"help"} href="assets/i2B2_Admin_Help_Documentation_06_03_2026.pdf" target="_blank" variant="contained">
+                    <IconButton className={"help"} href="assets/i2B2_Admin_Help_Documentation_06_04_2026.pdf" target="_blank" variant="contained">
                         <HelpOutlineOutlinedIcon />
                     </IconButton>
                 </Tabs>

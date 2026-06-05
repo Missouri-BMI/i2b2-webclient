@@ -51,7 +51,7 @@ export const Header = () => {
                     <Tab value={ViewModeTypes.USERS} label="Users"/>
                     <Tab value={ViewModeTypes.PROJECTS} label="Projects" />
                     <Tab value={ViewModeTypes.HIVES} label="Hive" />
-                    <IconButton className={"help"} href="assets/i2B2_Admin_Help_Documentation_06_03_2026.pdf" target="_blank" variant="contained">
+                    <IconButton className={"help"} href="assets/i2B2_Admin_Help_Documentation_06_04_2026.pdf" target="_blank" variant="contained">
                         <HelpOutlineOutlinedIcon />
                     </IconButton>
                 </Tabs>
