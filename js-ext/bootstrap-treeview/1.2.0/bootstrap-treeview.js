@@ -456,7 +456,7 @@
                 }
             }
 
-            if ($.isArray(node.nodes) && node.nodes.length > 0) {
+            if (Array.isArray(node.nodes) && node.nodes.length > 0) {
                 // Expand a node
                 node.state.expanded = true;
                 if (!options.silent) {
@@ -1312,7 +1312,7 @@
             // deal with delete of optional function passing
             insertToRoot = true;
         }
-        if (!$.isArray(newNodes) && typeof newNodes === "object" && newNodes !== null) {
+        if (!Array.isArray(newNodes) && typeof newNodes === "object" && newNodes !== null) {
             newNodes = [newNodes];
         }
         // for each node in the array try to add it
@@ -1361,7 +1361,7 @@
 //        }, this));
 
         var _this = this;
-        if (!$.isArray(targetNodes)) {
+        if (!Array.isArray(targetNodes)) {
             targetNodes = [targetNodes];
         }
 
@@ -1379,7 +1379,7 @@
             var deletedNodeIds = [];
             if (targetIds.includes(subtreeNode.nodeId)) {
                 // this node is targeted for deletion
-                if ($.isArray(subtreeNode.nodes)) {
+                if (Array.isArray(subtreeNode.nodes)) {
                     // build a list of ids for all child nodes
                     var childIds = [];
                     subtreeNode.nodes.forEach(function(childNode) {
@@ -1413,7 +1413,7 @@
 
         // delete any references to targeted nodes from "nodes" array in other (parent) nodes, also reset dynamic loading
         Array.from(_this.nodes.values()).forEach(function (node) {
-            if ($.isArray(node.nodes)) {
+            if (Array.isArray(node.nodes)) {
                 var origChildCnt = node.nodes.length;
                 node.nodes = node.nodes.filter(function (childNode) {
                     return (!toDeleteNodes.includes(childNode.nodeId));
