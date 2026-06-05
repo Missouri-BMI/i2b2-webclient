@@ -59,8 +59,20 @@ i2b2.h.initPlugin = function(initData) {
 // =====================================================================================================================
 i2b2.h.getScript = function(url) {
     return new Promise((resolve, reject) => {
-        // SECURITY: Enforce same-origin urls
-        const safeUrl = new URL(url);
+        // SECURITY: Enforce same-origin http(s) script urls
+        let safeUrl;
+        try {
+            safeUrl = new URL(url);
+        } catch (e) {
+            console.error("SECURITY FAULT! Plugin was asked to load invalid script URL => " + url);
+            reject();
+            return;
+        }
+        if (safeUrl.protocol !== "http:" && safeUrl.protocol !== "https:") {
+            console.error("SECURITY FAULT! Plugin was asked to load script with disallowed protocol => " + url);
+            reject();
+            return;
+        }
         if (safeUrl.host !== document.location.host) {
             console.error("SECURITY FAULT! Plugin was asked to load non-orign script => " + url);
             reject();
@@ -72,7 +84,7 @@ i2b2.h.getScript = function(url) {
         let done 	= false;
 
         script.setAttribute("defer", ""); // this seems to prevent run conditions cause by scripts getting interpreted out of order
-        script.src	= url;
+        script.src	= safeUrl.href;
         script.onload = script.onreadystatechange = function() { // Attach handlers for all browsers
             if ( !done && (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") ) {
                 done = true;
