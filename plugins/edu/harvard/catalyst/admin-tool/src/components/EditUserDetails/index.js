@@ -6,18 +6,16 @@ import { User } from "models";
 import { UserInfo, EditUserParameters } from "components";
 
 import "./EditUserDetails.scss";
-import {
-    clearSelectedUser,
-    getAllUserParams,
-} from "actions";
 import {Tab, Tabs} from "@mui/material";
+import {clearSelectedUser, getAllUserParams} from "../../reducers/editUserInfoSlice";
 
 
 export const EditUserDetails = ({user, setIsEditingUser, setIsCreatingUser, isCreatingUser}) => {
     const selectedUser = useSelector((state) => state.selectedUser );
     const [updatedUser, setUpdatedUser] = useState(selectedUser.user);
     const [updatedParams, setUpdatedParams] = useState(selectedUser.params);
-    const [paginationModel, setPaginationModel] = useState({ pageSize: 5, page: 0});
+    const [paginationModel, setPaginationModel] = useState({ pageSize: 10, page: 0});
+    const [showDeletedParams, setShowDeletedParams] = useState(false);
 
     const dispatch = useDispatch();
     const EditDetails = {
@@ -81,6 +79,8 @@ export const EditUserDetails = ({user, setIsEditingUser, setIsCreatingUser, isCr
                     updateParams={setUpdatedParams}
                     paginationModel={paginationModel}
                     setPaginationModel={setPaginationModel}
+                    showDeletedParams = {showDeletedParams}
+                    setShowDeletedParams = {setShowDeletedParams}
                 />
             }
        </div>

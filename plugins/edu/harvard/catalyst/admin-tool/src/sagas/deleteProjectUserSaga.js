@@ -29,6 +29,10 @@ export function* doDeleteProjectUser(action) {
             rolesToDelete.push(EDITOR_ROLE);
         }
 
+        if(user.customRoles.length > 0){
+            rolesToDelete = rolesToDelete.concat(user.customRoles);
+        }
+
         //delete current user roles
         let deletedProjectUserRoleResponse= yield all(rolesToDelete.map((role) => {
             return call(deleteProjectUserRoleRequest, selectedProject.project.internalId, user.username, role);

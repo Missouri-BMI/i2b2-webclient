@@ -31,7 +31,7 @@ i2b2.sdx.TypeControllers.PR.RenderData = function(sdxData, options) {
     // === tvNodeState
     if (options === undefined) { options = {}; }
     // default PR icons
-    if (!$.isArray(options.icon)) {
+    if (!Array.isArray(options.icon)) {
         if (typeof options.icon === 'string') {
             let t = options.icon;
             options.icon = {

@@ -17,6 +17,7 @@ i2b2.PM.setUserAccountInfo = function(){
     userInfo.find(".project").text(i2b2.PM.model.login_projectname);
     userInfo.find(".userRole").text(i2b2.PM.model.userRoles.join(", "));
     userInfo.find(".versionNum").text(i2b2.ClientVersion);
+    userInfo.find(".serverVersionNum").text(i2b2.ServerVersion);
 
     if (!i2b2.PM.model.otherAuthMethod) {
         $('#changePasswordLink').removeClass("hidden").prev().removeClass("hidden");
@@ -55,6 +56,53 @@ i2b2.PM.doLoginDialog = function() {
             $("#PM-login-modal input[name='loginpass']").val(i2b2.UI.cfg.loginDefaultPassword);
         } catch(e) {}
 
+        try {
+            $("#PM-login-modal #loginmessage").text(i2b2.UI.cfg.loginDefaultMessage);
+        } catch(e) {}
+
+        $("#PM-login-modal .showLoginPwd").click(function(){
+            const showPasswordLink = $("#PM-login-modal .showLoginPwd");
+            const hidePasswordLink = $("#PM-login-modal .hideLoginPwd");
+            let selectedDomain = i2b2.PM.model.Domains[$('#logindomain').val()];
+
+            if (showPasswordLink.is(':visible')) {
+                $("#loginpass").prop('type', 'text');
+                if (selectedDomain.ignorePasswordMgrs === true) {
+                    $("#PM-login-modal input[name='loginpass']").removeClass("ignorePasswordMgrs");
+                }
+            } else {
+                $("#loginpass").prop('type', 'password');
+                if (selectedDomain.ignorePasswordMgrs === true) {
+                    $("#PM-login-modal input[name='loginpass']").addClass("ignorePasswordMgrs");
+                }
+            }
+
+            showPasswordLink.toggle();
+            hidePasswordLink.toggle();
+        });
+
+        $("#PM-login-modal .hideLoginPwd").click(function(){
+            const showPasswordLink = $("#PM-login-modal .showLoginPwd");
+            const hidePasswordLink = $("#PM-login-modal .hideLoginPwd");
+            let selectedDomain = i2b2.PM.model.Domains[$('#logindomain').val()];
+
+
+            if (showPasswordLink.is(':visible')) {
+                $("#loginpass").prop('type', 'text');
+                if (selectedDomain.ignorePasswordMgrs === true) {
+                    $("#PM-login-modal input[name='loginpass']").removeClass("ignorePasswordMgrs");
+                }
+            } else {
+                $("#loginpass").prop('type', 'password');
+                if (selectedDomain.ignorePasswordMgrs === true) {
+                    $("#PM-login-modal input[name='loginpass']").addClass("ignorePasswordMgrs");
+                }
+            }
+
+            showPasswordLink.toggle();
+            hidePasswordLink.toggle();
+        }).hide();
+
         // clear any domains
         $('#logindomain option').remove();
         // load the domains into dropdown
@@ -66,7 +114,14 @@ i2b2.PM.doLoginDialog = function() {
         });
         // attach the onClick/onSubmit handlers
         $("#PM-login-modal .login-button").click(function(event) {
-            let selectedDomain = i2b2.PM.model.Domains[$('#logindomain').val()];
+            const targetElClasses = event.target.classList;
+            if (targetElClasses.contains("disabled")) return;
+            // UX animation to show that the button was clicked
+            targetElClasses.add("clicked");
+            targetElClasses.add("disabled");
+
+            // start login process
+            const selectedDomain = i2b2.PM.model.Domains[$('#logindomain').val()];
             if (selectedDomain.ignorePasswordMgrs === true) {
                 // prevent the browser's password save option from saving/checking the password
                 event.preventDefault();
@@ -82,7 +137,16 @@ i2b2.PM.doLoginDialog = function() {
         });
 
         // attach event handlers for the SSO buttons
-        let func_lauchSaml = (evt) => { i2b2.PM.doSamlLogin($(evt.currentTarget).data('service')); };
+        const func_lauchSaml = (evt) => {
+            // UX animation to show that the button was clicked
+            evt.currentTarget.classList.add("clicked");
+            setTimeout(() => {
+                // remove UX treatment in case user closes popup and looks to login again
+                evt.currentTarget.classList.remove("clicked");
+                evt.currentTarget.blur();
+            }, 4000);
+            i2b2.PM.doSamlLogin($(evt.currentTarget).data('service'));
+        };
         $('.sso-button').on('click', func_lauchSaml);
         $('.sso-button').on('keyup', (evt) => {
             if (evt.which === 13) func_lauchSaml(evt);
@@ -113,9 +177,11 @@ i2b2.PM.view.updateProjectSelection = function(projectSelElem){
 
 i2b2.PM.view.showAnnouncements = function() {
     try {
-        let announcement = Object.entries(i2b2.PM.model.projects[i2b2.PM.model.login_project].details).find(([key, detail]) => detail.name.toUpperCase() === "ANNOUNCEMENT");
-        if (announcement.length > 0 && announcement[1].status.toUpperCase() === "A") {
-            i2b2.PM.view.modal.announcementDialog.showAnnouncement(announcement[1].value);
+        let announcements = Object.entries(i2b2.PM.model.projects[i2b2.PM.model.login_project].details)
+            .filter(([key, detail]) => (detail.name.toUpperCase() === "ANNOUNCEMENT" && detail.status === 'A'))
+            .map(ann => ann.length > 1 ? ann[1].value : "");
+        if (announcements.length > 0) {
+            i2b2.PM.view.modal.announcementDialog.showAnnouncement(announcements);
             return;
         }
     } catch(e) {
@@ -178,11 +244,16 @@ i2b2.PM.doChangeDomain = function() {
         $("#PM-login-modal input[name='loginpass']").attr('type', 'text');
         $("#PM-login-modal input[name='loginpass']").attr('autocomplete', 'off');
         $("#PM-login-modal input[name='loginusr']").attr('autocomplete', 'off');
+        $("#PM-login-modal input[name='loginpass']").addClass("ignorePasswordMgrs");
     } else {
         $("#PM-login-modal input[name='loginpass']").attr('type', 'password');
         $("#PM-login-modal input[name='loginpass']").removeAttr('autocomplete', '');
         $("#PM-login-modal input[name='loginusr']").removeAttr('autocomplete', '');
+        $("#PM-login-modal input[name='loginpass']").removeClass("ignorePasswordMgrs");
     }
+
+    $("#PM-login-modal .showLoginPwd").show();
+    $("#PM-login-modal .hideLoginPwd").hide();
 
     let loginElements = $(".login-user, .login-password, .login-button");
     if (selectedDomain.saml !== undefined) {
@@ -198,7 +269,7 @@ i2b2.PM.doChangeDomain = function() {
 };
 // ================================================================================================== //
 i2b2.PM.view.modal.announcementDialog = {
-    showAnnouncement: function(msg) {
+    showAnnouncement: function(msgs) {
         let pmAnnouncementMsgDialogModal = $("#pmAnnouncementMsgDialogModal");
         if (pmAnnouncementMsgDialogModal.length === 0) {
             $("body").append("<div id='pmAnnouncementMsgDialogModal'/>");
@@ -208,7 +279,7 @@ i2b2.PM.view.modal.announcementDialog = {
 
         let data = {
             "title": i2b2.PM.model.login_project + " Announcements",
-            "msg": msg,
+            "msgs": msgs,
         };
         $(i2b2.PM.view.template.announcementMsgDialog(data)).appendTo(pmAnnouncementMsgDialogModal);
         $("#pmAnnouncementMsgDialogModal div:eq(0)").modal('show');
@@ -279,6 +350,10 @@ i2b2.PM.view.changePassword = {
         }
         i2b2.PM.view.changePassword.onSuccess = successCallback;
         changePasswordModal.load('js-i2b2/cells/PM/assets/modalChangePassword.html', function(){
+            $(".changePasswordModal .btn-primary").keydown(function(e) {
+                if (e.keyCode == 27) return false;
+            });
+
             if(disableCancel){
                 $(".changePasswordModal .btn-cancel").hide();
             }
@@ -304,8 +379,14 @@ i2b2.PM.view.changePassword = {
             let curpass = $('#curpass').val();
             let newpass = $('#newpass').val();
             let retypepass = $('#retypepass').val();
+            $(".changePasswordModal .curpass").removeClass("error");
+            $(".changePasswordModal .newpass").removeClass("error");
 
-            if(!newpass){
+            if(!curpass){
+                $(".changePasswordModal .errorMsg").text("Current password cannot be blank");
+                $(".changePasswordModal .curpass").addClass("error");
+            }
+            else if(!newpass){
                 $(".changePasswordModal .errorMsg").text("New password cannot be blank");
                 $(".changePasswordModal .newpass").addClass("error");
             }

@@ -4,6 +4,7 @@
   .AddParam {
     margin-top: 0.7em;
     margin-bottom: 0.7em;
+    float: left;
   }
 
   .MuiDataGrid-columnHeaders{
@@ -53,4 +54,37 @@
   .tableListingOverlay{
     padding: 0.6em;
   }
+
+  .ParameterOptions {
+    float: right;
+    margin-top: 1.2em;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+
+  .ParametersTable {
+    clear: both;
+  }
+}
+
+.ParamValuePreview {
+  pre {
+    font-family: "Arial", Courier, monospace;
+    color: black;
+  }
+
+  .ParamValuePreviewContent {
+    padding: 0.4em;
+    padding-top: 0;
+  }
+
+  .MuiDialogContent-root {
+    padding-top: 0;
+  }
+}
+
+.ParameterNameAutoSuggest {
+  background-color: #f8f8fa !important;
+  border: 1px solid blue;
 }

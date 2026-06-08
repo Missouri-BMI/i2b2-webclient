@@ -133,7 +133,7 @@ i2b2.ONT.view.info = {
 
         // render what we have and make the tab active if asked to do so
         i2b2.ONT.view.info.render();
-        if (display) i2b2.ONT.view.info.model.lm_view.parent.parent.setActiveContentItem(i2b2.ONT.view.info.model.lm_view.parent);
+        if (display) i2b2.layout.selectTab("i2b2.ONT.view.info");
     },
     load: function(sdxConcept, display){
         let termInfoCallback = function(response) {
@@ -209,14 +209,15 @@ i2b2.events.afterCellInit.add((cell) => {
                 container.on("tab", funcRetitle);
 
 
-                $.ajax("js-i2b2/cells/ONT/templates/OntologyTermInfo.html", {
-                    success: (template) => {
-                        i2b2.ONT.view.info.model.template = Handlebars.compile(template);
+                i2b2.h.safeLoadTemplate("js-i2b2/cells/ONT/templates/OntologyTermInfo.html", true)
+                    .then((hbTemplate)=> {
+                        i2b2.ONT.view.info.model.template = hbTemplate;
                         $(container).empty();
                         $(i2b2.ONT.view.info.model.template({})).appendTo($('.i2b2OntInfo', container._contentElement)[0]);
-                    },
-                    error: (error) => { console.error("Could not retrieve template: OntologyTermInfo.html"); }
-                });
+                    })
+                    .catch((err) => {
+                        console.error("Could not retrieve template: OntologyTermInfo.html");
+                    });
                 i2b2.ONT.view.info.model.viewport = $('<div class="i2b2OntInfo"></div>').appendTo(container._contentElement);
             }).bind(this)
         );

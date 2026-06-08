@@ -1,32 +1,24 @@
 import { useDispatch, useSelector} from "react-redux";
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import AddIcon from "@mui/icons-material/Add";
 import Button from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import {DataGrid, GridActionsCellItem, gridClasses, useGridApiRef} from "@mui/x-data-grid";
 import PersonIcon from '@mui/icons-material/Person';
 import {EditProjectDetails, Loader, StatusUpdate} from "components";
 import {Project} from "models";
-import {deleteProject, deleteProjectStatusConfirmed, getAllProjects} from "actions";
+import {getAllProjects} from "actions";
 import "./AllProjectsTable.scss";
 
 export const AllProjectsTable = ({paginationModel,
                                   setPaginationModel
 })=> {
     const allProjects = useSelector((state) => state.allProjects );
-    const deletedProject = useSelector((state) => state.deletedProject);
     const [projectRows, setProjectRows] = useState(allProjects.projects);
     const[selectedProject, setSelectedProject] = useState(null);
     const[isEditingProject, setIsEditingProject] = useState(false);
     const[isEditUsers, setIsEditUsers] = useState(false);
-    const [showBackdrop, setSaveBackdrop] = useState(false);
-    const [showStatus, setShowStatus] = useState(false);
-    const [statusMsg, setStatusMsg] = useState("");
-    const [statusSeverity, setStatusSeverity] = useState("info");
     const apiRef = useGridApiRef();
-
 
     const dispatch = useDispatch();
 
@@ -82,12 +74,6 @@ export const AllProjectsTable = ({paginationModel,
                         onClick={handleEditUsersClick(id)}
                         color="inherit"
                     />,
-                    <GridActionsCellItem
-                        icon={<DeleteIcon/>}
-                        label="Delete"
-                        onClick={handleDeleteClick(id)}
-                        color="inherit"
-                    />,
                 ];
             },
         },
@@ -117,11 +103,6 @@ export const AllProjectsTable = ({paginationModel,
         }
     };
 
-    const handleDeleteClick = (id) => () => {
-        const project = projectRows.filter((project) => project.id === id).reduce((acc, item) => acc);
-        dispatch(deleteProject({project}))
-    };
-
     const displayProjectsTable = () => {
         return (
             <DataGrid
@@ -133,6 +114,11 @@ export const AllProjectsTable = ({paginationModel,
                 onPaginationModelChange={setPaginationModel}
                 onSortModelChange={(model) => {
                     apiRef.current.setPage(0);
+                }}
+                initialState={{
+                    sorting: {
+                        sortModel: [{field:'name',sort:'asc'}]
+                    },
                 }}
                 pageSizeOptions={[5, 10, 25]}
                 sx={{
@@ -160,22 +146,6 @@ export const AllProjectsTable = ({paginationModel,
         }
     }, [allProjects]);
 
-    useEffect(() => {
-        if(deletedProject.status === "SUCCESS") {
-            dispatch(deleteProjectStatusConfirmed());
-            setStatusMsg("Deleted project " + deletedProject.project.name);
-            setShowStatus(true);
-            setStatusSeverity("success");
-        }
-        if(deletedProject.status === "FAIL") {
-            dispatch(deleteProjectStatusConfirmed());
-            setStatusMsg("Error: There was an error deleting project " + deletedProject.project.name);
-            setShowStatus(true);
-            setStatusSeverity("success");
-        }
-    }, [deletedProject]);
-
-
 
     return (
         <div className="AllProjects">
@@ -188,7 +158,6 @@ export const AllProjectsTable = ({paginationModel,
             { isEditingProject && <EditProjectDetails project={selectedProject} setIsEditingProject={setIsEditingProject}
                                                       isEditUsers={isEditUsers}
             />}
-            <StatusUpdate isOpen={showStatus} setIsOpen={setShowStatus} severity={statusSeverity} message={statusMsg}/>
         </div>
     );
 };

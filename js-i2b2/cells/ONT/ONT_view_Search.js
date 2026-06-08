@@ -80,16 +80,19 @@ i2b2.ONT.view.search.clearSearchInput = function(){
 
 i2b2.ONT.view.search.initSearch = function(container){
     // Load the finder template
-    $.ajax("js-i2b2/cells/ONT/assets/OntologyFinder.html", {
-        success: (template) => {
-            let finderTemplate = Handlebars.compile(template);
+    i2b2.h.safeLoadTemplate("js-i2b2/cells/ONT/assets/OntologyFinder.html", true)
+        .then((finderTemplate) => {
             $(finderTemplate({})).prependTo(container);
 
             //init search result tooltip
             $(".srTooltip").tooltip();
-        },
-        error: (error) => { console.error("Could not retrieve template: OntologyFinder.html"); }
-    });
+            let temp = "A maximum of " + i2b2.ONT.view.nav.params.max + " records per category will be returned.";
+            $('.srTooltip').attr('data-bs-original-title', temp);
+        })
+        .catch((err) => {
+            console.error("Could not retrieve template: OntologyFinder.html");
+        });
+
     // add the status DIV
     let status = $('<div id="i2b2OntSearchStatus"></div>').prependTo(container);
     status.hide();
@@ -286,15 +289,14 @@ i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
 //================================================================================================== //
 
 i2b2.ONT.view.search.initSearchOptions = function(){
-    $.ajax("js-i2b2/cells/ONT/templates/OntologyFinderFilterOptions.html", {
-        success: (template) => {
+    i2b2.h.safeLoadTemplate("js-i2b2/cells/ONT/templates/OntologyFinderFilterOptions.html")
+        .then((submenuOptions) => {
             // generate a list of categories
-            let submenuOptions = Handlebars.compile(template);
             let categories = [];
             categories.push({
                 name: "-Any Category-",
-                    value: "ANY",
-                    filterType: "category"
+                value: "ANY",
+                filterType: "category"
             });
             for (let i=0; i<i2b2.ONT.model.Categories.length; i++) {
                 let cat = i2b2.ONT.model.Categories[i];
@@ -337,14 +339,14 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                 let newDisplayText = liItem.addClass("active").text();
                 let filterValue = liItem.addClass("active").data("searchFilterValue");
                 let filterType = liItem.data("searchFilterType");
-                if(filterValue === "ANY"){                 
+                if(filterValue === "ANY"){
                     // Reset dropdown menu settings
                     $("#searchFilterText").text("Any Category");
                     $("#searchFilter").data("selectedFilterValue", "ALL CATEGORIES").data("selectedFilterType", "category");
-               } else{             
+                } else{
                     $("#searchFilterText").text(newDisplayText).prop('title', newDisplayText);
                     $("#searchFilter").data("selectedFilterValue", filterValue).data("selectedFilterType", filterType);
-               }
+                }
             });
 
             $("#searchActions .reset").click(function() {
@@ -366,10 +368,10 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                     if ($("#submitTermSearch").attr('disabled') === undefined) i2b2.ONT.ctrlr.Search.clickSearch();
                 }
             });
-
-        },
-        error: (error) => { console.error("Could not retrieve template: OntologyFinderFilterOption.html"); }
-    });
+        })
+        .catch((error) => {
+            console.error("Could not retrieve template: OntologyFinderFilterOption.html");
+        });
 
     $('#i2b2FinderOnt .navbar-nav').on('show.bs.dropdown', function () {
         $(".submenu").hide();

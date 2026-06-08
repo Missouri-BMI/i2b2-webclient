@@ -16,12 +16,20 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { InputAdornment} from "@mui/material";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import {saveUser, saveUserStatusConfirmed} from "actions";
+import {deleteUser, deleteUserStatusConfirmed} from "actions";
+
 import { SelectedUser } from "models";
+import {getAllAuthConfigs} from "../../reducers/allAuthenticationConfigsSlice";
 import "./UserInfo.scss";
+import {AUTHENTICATION_METHODS} from "../../models";
+import {Confirmation} from "../index";
+import {saveUser, saveUserStatusConfirmed} from "../../reducers/editUserInfoSlice";
 
 export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isNewUser}) => {
     const allUsers = useSelector((state) => state.allUsers );
+    const authenticationConfigs = useSelector((state) => state.allAuthenticationConfigs);
+    const deletedUser = useSelector((state) => state.deletedUser );
+
     const [showSaveBackdrop, setShowSaveBackdrop] = useState(false);
     const [showSaveStatus, setShowSaveStatus] = useState(false);
     const [saveStatusMsg, setSaveStatusMsg] = useState("");
@@ -39,6 +47,15 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
     const [passwordNotValidError, setPasswordNotValidError] = useState("");
     const [doPasswordsNotMatch, setDoPasswordsNotMatch] = useState(false);
     const [passwordsDoNotMatchError, setPasswordsDoNotMatchError] = useState("");
+    const [newAuthMethod, setNewAuthMethod] = useState("");
+    const [isAuthMethodNotValid, setIsAuthMethodNotValid] = useState(false);
+    const [authMethodNotValidError, setAuthMethodNotValidError] = useState("");
+    const [showDeleteUserConfirm, setShowDeleteUserConfirm] = useState(false);
+    const [deleteUserConfirmMsg, setDeleteUserConfirmMsg] = useState("");
+    const [showStatus, setShowStatus] = useState(false);
+    const [statusMsg, setStatusMsg] = useState("");
+    const [statusSeverity, setStatusSeverity] = useState("info");
+
     const dispatch = useDispatch();
 
     const handleClickShowPassword = () => {
@@ -94,27 +111,39 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
             setEmailNotValidError("");
         }
 
+        if(isNewUser && newAuthMethod.length === 0){
+            setIsAuthMethodNotValid(true);
+            setAuthMethodNotValidError("Select an authentication config");
+            isValid = false;
+
+        }else{
+            setIsAuthMethodNotValid(false);
+            setAuthMethodNotValidError("");
+
+        }
+
         //if this is a new user check the password fields
-        updatedUser.password = updatedUser.password.trim();
-        if(isNewUser && updatedUser.password.length === 0) {
+        if(newAuthMethod === AUTHENTICATION_METHODS.I2B2.name) {
+            updatedUser.password = updatedUser.password.trim();
+            if (updatedUser.password.length === 0) {
                 setIsPasswordNotValid(true);
                 setPasswordNotValidError("Password is required");
                 isValid = false;
-        } else {
-            setIsPasswordNotValid(false);
-            setPasswordNotValidError("");
+            } else {
+                setIsPasswordNotValid(false);
+                setPasswordNotValidError("");
+            }
+
+
+            if (updatedUser.password !== updatedUser.passwordVerify) {
+                setDoPasswordsNotMatch(true);
+                setPasswordsDoNotMatchError("Passwords do not match");
+                isValid = false;
+            } else {
+                setDoPasswordsNotMatch(false);
+                setPasswordsDoNotMatchError("");
+            }
         }
-
-
-        if (isNewUser && updatedUser.password !== updatedUser.passwordVerify) {
-            setDoPasswordsNotMatch(true);
-            setPasswordsDoNotMatchError("Passwords do not match");
-            isValid = false;
-        } else {
-            setDoPasswordsNotMatch(false);
-            setPasswordsDoNotMatchError("");
-        }
-
         return isValid;
     }
 
@@ -126,7 +155,12 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
                 updatedUser.username = updatedUser.username.trim();
             }
 
-            dispatch(saveUser({user: updatedUser}));
+            let authConfig = null;
+            if(newAuthMethod !== AUTHENTICATION_METHODS.I2B2.name){
+                authConfig = authenticationConfigs.authConfigs.find((ac)=> ac.name === newAuthMethod);
+            }
+
+            dispatch(saveUser({user: updatedUser, authConfig: authConfig, userParams: selectedUser.params}));
         }
     };
 
@@ -138,7 +172,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
 
         updateUser(newUser);
 
-        if(JSON.stringify(newUser) !== JSON.stringify(selectedUser.user)){
+        if(JSON.stringify(newUser) !== JSON.stringify(selectedUser.user) || newAuthMethod !== ""){
             setIsDirty(true);
         }else{
             setIsDirty(false);
@@ -156,6 +190,20 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
         }
 
         setShowSaveStatus(false);
+
+        setStatusMsg("");
+        setShowStatus(false);
+    };
+
+    const handleDeleteUser = () => {
+        setDeleteUserConfirmMsg("");
+        setShowDeleteUserConfirm(false);
+        dispatch(deleteUser({user: selectedUser.user}))
+    };
+
+    const confirmDeleteUser = () => {
+        setDeleteUserConfirmMsg("Are you sure you want to delete user " + selectedUser.user.username + "?");
+        setShowDeleteUserConfirm(true);
     };
 
     useEffect(() => {
@@ -178,8 +226,29 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
     useEffect(() => {
         if(JSON.stringify(updatedUser) !== JSON.stringify(selectedUser.user)){
             setIsDirty(true);
+        }else{
+            setIsDirty(false);
         }
     }, [updatedUser]);
+
+    useEffect(() => {
+        dispatch(getAllAuthConfigs());
+    }, []);
+
+
+    useEffect(() => {
+        if(deletedUser.status === "SUCCESS") {
+            dispatch(deleteUserStatusConfirmed());
+            cancelEdit();
+        }
+
+        if(deletedUser.status === "FAIL") {
+            dispatch(deleteUserStatusConfirmed());
+            setStatusMsg("Error: There was an error deleting user " + deletedUser.user.username);
+            setShowStatus(true);
+            setStatusSeverity("success");
+        }
+    }, [deletedUser]);
 
     return (
         <Box  className="UserInfo" sx={{ width: '100%' }}>
@@ -239,7 +308,59 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
                 </div>
                 <div className={"mainField"}>
                     <TextField
+                        select
+                        className={"inputField"}
+                        label="Is Admin"
+                        value={updatedUser.isAdmin}
+                        onChange={(event) => handleUpdate("isAdmin", event.target.value === "true")}
+                        variant="standard"
+                        InputLabelProps={{ shrink: true }}
+                    >
+                        <MenuItem value={"false"}>No</MenuItem>
+                        <MenuItem value={"true"}>Yes</MenuItem>
+                    </TextField>
+                </div>
+                <div className={"mainField"}>
+                    <TextField
+                        select
                         required={isNewUser}
+                        className={"inputField"}
+                        label="Authentication Config"
+                        value={newAuthMethod}
+                        error={isAuthMethodNotValid}
+                        helperText={authMethodNotValidError}
+                        onChange={(event) => {
+                                const newValue = event.target.value;
+                                let newUser = {
+                                    ...updatedUser
+                                }
+                                newUser["password"] = "";
+                                newUser["passwordVerify"] = "";
+                                newUser["authMethod"] = newValue;
+
+                                updateUser(newUser);
+
+                                if(newValue.length > 0){
+                                    setIsDirty(true);
+                                }
+
+                                setNewAuthMethod(newValue);
+                            }
+                        }
+                        variant="standard"
+                        helperText={selectedUser.user.username.length > 0 ? "Current Authentication Method: " + selectedUser.user.authMethod: ""}
+                        InputLabelProps={{ shrink: true }}
+                    >
+                        <MenuItem value={AUTHENTICATION_METHODS.I2B2.name}>{AUTHENTICATION_METHODS.I2B2.name}</MenuItem>
+                        { authenticationConfigs.authConfigs.map((authConfig) => {
+                            return < MenuItem value={authConfig.name}> {authConfig.name}</MenuItem>
+                            })
+                        }
+                    </TextField>
+                </div>
+                { newAuthMethod === AUTHENTICATION_METHODS.I2B2.name && <div className={"passwordFields"}><div className={"mainField"}>
+                    <TextField
+                        required={selectedUser.user.authMethod !== AUTHENTICATION_METHODS.I2B2.value && newAuthMethod === AUTHENTICATION_METHODS.I2B2.name}
                         className="inputField"
                         label="Password"
                         type={showPassword ? "text" : "password"}
@@ -266,7 +387,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
                 </div>
                 <div className={"mainField"}>
                     <TextField
-                        required={isNewUser}
+                        required={newAuthMethod === AUTHENTICATION_METHODS.I2B2.name}
                         className="inputField"
                         label="Verify Password"
                         type={showPasswordVerify ? "text" : "password"}
@@ -291,26 +412,20 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
                         }}
                     />
                 </div>
-                <div className={"mainField"}>
-                    <TextField
-                        select
-                        className={"inputField"}
-                        label="Is Admin"
-                        value={updatedUser.isAdmin}
-                        onChange={(event) => handleUpdate("isAdmin", event.target.value)}
-                        variant="standard"
-                        InputLabelProps={{ shrink: true }}
-                    >
-                        <MenuItem value={"false"}>No</MenuItem>
-                        <MenuItem value={"true"}>Yes</MenuItem>
-                    </TextField>
                 </div>
+              }
             </Stack>
             <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
                 <BottomNavigation className={"EditUserActions"}>
+                    {!isNewUser && <div className="EditUserActionSecondary">
+                        <Button className={"DeleteUser"} variant="outlined" onClick={confirmDeleteUser}>Delete User</Button>
+                    </div>}
+
                     <div  className="EditUserActionSecondary">
                         <Button onClick={cancelEdit} variant="outlined"> Cancel </Button>
+
                     </div>
+
                     <div className="EditUserActionPrimary">
                         <Button  variant="outlined" onClick={saveUserInfo} disabled={!isDirty}> Save </Button>
                     </div>
@@ -335,6 +450,12 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
                     {saveStatusMsg}
                 </Alert>
             </Snackbar>
+
+            { showDeleteUserConfirm && <Confirmation
+                text={deleteUserConfirmMsg}
+                onOk={handleDeleteUser}
+                onCancel={() => setShowDeleteUserConfirm(false)}
+            />}
         </Box>
     );
 };

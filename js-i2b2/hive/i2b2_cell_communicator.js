@@ -28,7 +28,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
             console.error("Attempt to build communicator call [" + name + "] failed because it is a protected name");
             return false;
         }
-        if (!$.isArray(escapeless_params)) { escapeless_params = []; }
+        if (!Array.isArray(escapeless_params)) { escapeless_params = []; }
         escapeless_params.push("proxy_info");
         escapeless_params.push("sec_pass_node");
         this._commData[name] = {
@@ -125,7 +125,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
         }
         if (commOptions.project !== undefined) {
             sMsgValues.sec_project = commOptions.project;
-        } else {
+        }  else if (sMsgValues.sec_project === undefined) {
             sMsgValues.sec_project = i2b2.h.getProject();
         }
         if (commOptions.msg_id !== undefined) {
@@ -213,22 +213,36 @@ i2b2.hive.communicatorFactory = function(cellCode){
                           $("body").removeClass("pendingRequest");
                       }
                       // Message logging for debug purposes
+                      const responseText = xhr.responseText !== undefined ? String(xhr.responseText) : String(o.responseText);
+
                       snifferPackage.status = xhr.status;
                       snifferPackage.msgRecv = {
                           when: new Date(),
-                          msg: String(xhr.responseText)
+                          msg: responseText,
+                          hasErrors: i2b2.h.checkXmlResponseForErrors(responseText, true)
                       }
-                      if (i2b2.hive.msgSniffer) i2b2.hive.msgSniffer.add(snifferPackage);
 
-                      /* success handler code */
+                      if (i2b2.hive.msgSniffer) i2b2.hive.msgSniffer.add(snifferPackage);
+                      i2b2.hive.errorMsgDisplay.show(snifferPackage);
+
                       if (typeof o !== "object") {
-                          alert("There is a problem contacting the server!");
-                          return false;
+                          /* error handler code */
+                          let retObj = {
+                              request: {
+                                  options: {
+                                      i2b2_execBubble: commOptions.i2b2_execBubble
+                                  }
+                              },
+                              responseText: o
+                          };
+                          retCommObj._defaultCallbackFAIL(retObj);
+                      } else {
+                          /* success handler code */
+                          o.request = {};
+                          o.request.options = {};
+                          o.request.options.i2b2_execBubble = commOptions.i2b2_execBubble;
+                          retCommObj._defaultCallbackOK(o);
                       }
-                      o.request = {};
-                      o.request.options = {};
-                      o.request.options.i2b2_execBubble = commOptions.i2b2_execBubble;
-                      retCommObj._defaultCallbackOK(o);
                   },
                   failure: function(o, status, xhr) {
                       pendingAsyncRequestCount = pendingAsyncRequestCount-1;
@@ -238,12 +252,16 @@ i2b2.hive.communicatorFactory = function(cellCode){
                           $("body").removeClass("pendingRequest");
                       }
                       // Message logging for debug purposes
+                      const responseText = xhr.responseText !== undefined ? String(xhr.responseText) : String(o.responseText);
+
                       snifferPackage.status = xhr.status;
                       snifferPackage.msgRecv = {
                           when: new Date(),
-                          msg: String(xhr.responseText)
+                          msg: responseText,
+                          hasErrors: i2b2.h.checkXmlResponseForErrors(responseText, true)
                       }
                       if (i2b2.hive.msgSniffer) i2b2.hive.msgSniffer.add(snifferPackage);
+                      i2b2.hive.errorMsgDisplay.show(snifferPackage);
 
                       /* failure handler code */
                       o.request = {};

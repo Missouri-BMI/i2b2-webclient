@@ -155,6 +155,7 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
 
             return SelectedProject({
                 ...state,
+                users: [],
                 project,
                 isFetchingUserRoles: true,
             });
@@ -163,18 +164,23 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
         case  GET_ALL_PROJECT_USERS_ACTION.GET_ALL_PROJECT_USERS_SUCCEEDED: {
             const  { users }  = action.payload;
 
+            let customRoles = [];
             users.map((user) => {
                 ProjectUser({
                     username: user.username,
                     adminPath: user.adminPath,
                     dataPath: user.dataPath,
-                    editorPath: user.editorPath
+                    editorPath: user.editorPath,
+                    customRoles: user.customRoles
                 });
+
+                customRoles =[...customRoles, ...user.customRoles];
             });
 
             return SelectedProject({
                 ...state,
                 users,
+                customRoles: [...new Set(customRoles)],
                 isFetchingUsers: false,
             });
         }
@@ -245,13 +251,26 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
         }
 
         case  SAVE_PROJECT_USER_ACTION.SAVE_PROJECT_USER_SUCCEEDED: {
-            const  { selectedProject, projectUser }  = action.payload;
+            const {selectedProject, projectUser, newCustomRoles} = action.payload;
 
-            const users = selectedProject.users.map((user) => (user.username === projectUser.username ? projectUser : user));
+            const existingUser = selectedProject.users.filter((user) => user.username === projectUser.username).length > 0;
+            let users = [...selectedProject.users];
+
+            if (existingUser) {
+                users.map((user) => (user.username === projectUser.username ? projectUser : user));
+            } else {
+                users.push(projectUser);
+            }
+
+            let customRoles = state.customRoles;
+            if (newCustomRoles){
+                customRoles = [...customRoles, ...newCustomRoles];
+            }
 
             return SelectedProject({
                 ...state,
                 users,
+                customRoles,
                 isFetching: false,
                 userStatus: UserStatusInfo({
                     status: "SAVE_SUCCESS",

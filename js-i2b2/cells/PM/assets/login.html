@@ -3,47 +3,67 @@
 <body>
 <div id="PM-login-modal" class="modal">
     <form class="modal-content" method="post">
-        <div class="container" style="background-color:#f1f1f1; font-weight: bold; font-size: 15px;"><div>i2b2 Login</div></div>
+        <div class="container modal-header"><div>i2b2 Login</div></div>
         <div class="imgcontainer">
-            <img src="assets/images/logo.png" alt="i2b2 transmart logo" class="logo">
+            <img src="assets/images/i2b2transmart_logo.jpg" alt="i2b2 transmart logo" class="logo">
         </div>
 
-        <div class="container">
-            <div class="form-group">
-                <label for="logindomain"><b>i2b2 Host</b></label>
-                <select class="form-select" id="logindomain">
-                    <option value="0">Loading...</option>
-                </select>
+        <div>
+            <div style="float:left;width:50%">
+                <div class="container">
+                    <div class="form-group">
+                        <label for="logindomain"><b>i2b2 Host</b></label>
+                        <select class="form-select" id="logindomain">
+                            <option value="0">Loading...</option>
+                        </select>
+                    </div>
+
+
+                    <div class="form-group login-user">
+                        <label for="loginusr"><b>Username</b></label>
+                        <input type="text" placeholder="Enter Username" name="loginusr" id="loginusr" required class="form-control">
+                    </div>
+
+                    <div class="form-group login-password">
+                        <label for="loginpass"><b>Password</b></label>
+                        <div class="input-group mb-3">
+                            <input type="password" placeholder="Enter Password" name="loginpass" id="loginpass" required class="form-control">
+                            <span class="input-group-text">
+                                <a href="#"><i class="hideLoginPwd bi bi-eye-fill"></i></a>
+                                <a href="#"><i class="showLoginPwd bi bi-eye-slash-fill"></i></a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group login-user">
-                <label for="loginusr"><b>Username</b></label>
-                <input type="text" placeholder="Enter Username" name="loginusr" id="loginusr" required class="form-control">
-            </div>
-            <div class="form-group login-password">
-                <label for="loginpass"><b>Password</b></label>
-                <input type="password" placeholder="Enter Password" name="loginpass" id="loginpass" required class="form-control">
+            <div style="float:left;width:50%">
+                <div class="container">
+                    <label for="loginmessage"><b>Message</b></label>
+                    <div id="loginmessage" class="login-message"></div>
+                    <div style="display: flex;justify-content:center;align-items:center">
+                        <button type="submit" style="width:60%" class="btn btn-primary btn-sm login-button">Login to i2b2</button>
+                    </div>
+                </div>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-sm login-button">Login</button>
-
-            <a class="btn sso-button btn-sm" data-service="okta" style="display: none" tabindex="0">
-                <img src="assets/images/sso/okta.png" />
-                <div>Sign in with Okta</div>
-            </a>
-            <a class="btn sso-button btn-sm" data-service="shibboleth" style="display: none" tabindex="0">
-                <img src="assets/images/sso/shibboleth.png" />
-                <div>Sign in with Shibboleth</div>
-            </a>
+            <div class="sso-group">
+                <a class="btn sso-button btn-sm" data-service="okta" style="display: none" tabindex="0">
+                    <img src="assets/images/sso/okta.png" />
+                    <div>Sign in with Okta</div>
+                </a>
+                <a class="btn sso-button btn-sm" data-service="shibboleth" style="display: none" tabindex="0">
+                    <img src="assets/images/sso/shibboleth.png" />
+                    <div>Sign in with Shibboleth</div>
+                </a>
+            </div>
 
         </div>
-
-        <div class="container" style="background-color:#f1f1f1">
+        <!--<div class="container  modal-footer">
             <div>Forgot <a href="#">password?</a></div>
             <div class="classic">For classic i2b2 webclient click <a href="#">here</a></div>
-        </div>
+        </div>-->
     </form>
 </div>
-
 </body>
 </html>

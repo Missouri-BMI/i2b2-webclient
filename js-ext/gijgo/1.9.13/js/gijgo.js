@@ -169,7 +169,7 @@ gj.widget.prototype.reload = function (params) {
         gj[type].methods.useHtmlDataSource(this, data);
     }
     $.extend(data.params, params);
-    if ($.isArray(data.dataSource)) {
+    if (Array.isArray(data.dataSource)) {
         result = gj[type].methods.filter(this);
         gj[type].methods.render(this, result);
     } else if (typeof(data.dataSource) === 'string') {
@@ -4532,10 +4532,10 @@ gj.grid.methods = {
         var records = [],
             totalRecords = 0,
             data = $grid.data();
-        if ($.isArray(response)) {
+        if (Array.isArray(response)) {
             records = response;
             totalRecords = response.length;
-        } else if (data && data.mapping && $.isArray(response[data.mapping.dataField])) {
+        } else if (data && data.mapping && Array.isArray(response[data.mapping.dataField])) {
             records = response[data.mapping.dataField];
             totalRecords = response[data.mapping.totalRecordsField];
             if (!totalRecords || isNaN(totalRecords)) {
@@ -4919,7 +4919,7 @@ gj.grid.methods = {
         data.totalRecords = $grid.data('totalRecords') + 1;
         gj.grid.events.dataBinding($grid, [record]);
         data.records.push(record);
-        if ($.isArray(data.dataSource)) {
+        if (Array.isArray(data.dataSource)) {
             data.dataSource.push(record);
         }
         if (data.totalRecords === 1) {
@@ -4936,7 +4936,7 @@ gj.grid.methods = {
         var $row = gj.grid.methods.getRowById($grid, id),
             data = $grid.data(), position;
         data.records[$row.data('position') - 1] = record;
-        if ($.isArray(data.dataSource)) {
+        if (Array.isArray(data.dataSource)) {
             position = gj.grid.methods.getRecVPosById($grid, id);
             data.dataSource[position] = record;
         }
@@ -4950,7 +4950,7 @@ gj.grid.methods = {
             $row = gj.grid.methods.getRowById($grid, id);
 
         gj.grid.events.rowRemoving($grid, $row, id, $grid.getById(id));
-        if ($.isArray(data.dataSource)) {
+        if (Array.isArray(data.dataSource)) {
             position = gj.grid.methods.getRecVPosById($grid, id);
             data.dataSource.splice(position, 1);
         }
@@ -5981,7 +5981,7 @@ gj.grid.plugins.expandCollapseRows = {
         keepSelection: function($grid, id) {
             var data = $grid.data();
             if (data.keepExpandedRows) {
-                if ($.isArray(data.expandedRows)) {
+                if (Array.isArray(data.expandedRows)) {
                     if (data.expandedRows.indexOf(id) == -1) {
                         data.expandedRows.push(id);
                     }
@@ -5993,7 +5993,7 @@ gj.grid.plugins.expandCollapseRows = {
 
         removeSelection: function ($grid, id) {
             var data = $grid.data();
-            if (data.keepExpandedRows && $.isArray(data.expandedRows) && data.expandedRows.indexOf(id) > -1) {
+            if (data.keepExpandedRows && Array.isArray(data.expandedRows) && data.expandedRows.indexOf(id) > -1) {
                 data.expandedRows.splice(data.expandedRows.indexOf(id), 1);
             }
         },
@@ -6204,7 +6204,7 @@ gj.grid.plugins.expandCollapseRows = {
             });
             $grid.on('dataBound', function () {
                 var i, $cell, $row, position, data = $grid.data();
-                if (data.keepExpandedRows && $.isArray(data.expandedRows)) {
+                if (data.keepExpandedRows && Array.isArray(data.expandedRows)) {
                     for (i = 0; i < data.expandedRows.length; i++) {
                         $row = gj.grid.methods.getRowById($grid, data.expandedRows[i]);
                         if ($row && $row.length) {
@@ -7684,7 +7684,7 @@ gj.grid.plugins.pagination = {
     public: {
         getAll: function (includeAllRecords) {
             var limit, page, start, data = this.data();
-            if ($.isArray(data.dataSource)) {
+            if (Array.isArray(data.dataSource)) {
                 if (includeAllRecords) {
                     return data.dataSource;
                 } else if (data.params[data.paramNames.limit] && data.params[data.paramNames.page]) {                    
@@ -14948,7 +14948,7 @@ gj.datepicker.methods = {
 
         if (result) {
             if (data.disableDates) {
-                if ($.isArray(data.disableDates)) {
+                if (Array.isArray(data.disableDates)) {
                     for (i = 0; i < data.disableDates.length; i++) {
                         if (data.disableDates[i] instanceof Date && data.disableDates[i].getTime() === date.getTime()) {
                             result = false;
@@ -14960,7 +14960,7 @@ gj.datepicker.methods = {
                     result = data.disableDates(date);
                 }
             }
-            if ($.isArray(data.disableDaysOfWeek) && data.disableDaysOfWeek.indexOf(date.getDay()) > -1) {
+            if (Array.isArray(data.disableDaysOfWeek) && data.disableDaysOfWeek.indexOf(date.getDay()) > -1) {
                 result = false;
             }
         }

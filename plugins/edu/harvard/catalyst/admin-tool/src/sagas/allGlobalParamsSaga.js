@@ -1,9 +1,12 @@
 import { call, takeLatest, put} from "redux-saga/effects";
 import {
-    GET_ALL_GLOBAL_PARAMS_ACTION,
+    GET_ALL_GLOBAL_PARAMS,
+} from "../actions";
+import {
     getAllGlobalParamsFailed,
     getAllGlobalParamsSucceeded,
-} from "actions";
+} from "../reducers/allHivesSlice";
+
 import {DataType, ParamStatus} from "models";
 import {decodeHTML} from "../utilities";
 import {parseXml} from "../utilities/parseXml";
@@ -29,7 +32,10 @@ const parseParamsXml = (allGlobalParamsXml) => {
         let name = param.attributes['name'].nodeValue;
         let value = param.childNodes[0].nodeValue;
         let dataType = param.attributes['datatype'].nodeValue;
-        let status = param.attributes['status'].nodeValue;
+        let status = 'A';
+        if(param.attributes['status']) {
+            status = param.attributes['status'].nodeValue;
+        }
 
         if(name && dataType) {
             dataType = DataType[dataType];
@@ -70,5 +76,5 @@ export function* doGetAllGlobalParameters(action) {
 }
 
 export function* allGlobalParamsSaga() {
-    yield takeLatest(GET_ALL_GLOBAL_PARAMS_ACTION.GET_ALL_GLOBAL_PARAMS, doGetAllGlobalParameters);
+    yield takeLatest(GET_ALL_GLOBAL_PARAMS, doGetAllGlobalParameters);
 }

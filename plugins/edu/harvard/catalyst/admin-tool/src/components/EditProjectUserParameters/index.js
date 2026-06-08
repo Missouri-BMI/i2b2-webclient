@@ -1,12 +1,12 @@
 import { useDispatch } from "react-redux";
 import React, { useState, useEffect } from "react";
 import {
-    getAllProjectUserParamsStatusConfirmed,
     saveProjectUserParam,
     saveProjectUserParamStatusConfirmed,
 } from "../../actions";
 import {EditParameters} from "../EditParameters";
 import "./EditProjectUserParameters.scss";
+import {getAllProjectUserParamsStatusConfirmed} from "../../reducers/editUserInfoSlice";
 
 export const EditProjectUserParameters = ({selectedProject,
                                           projectUser,
@@ -15,9 +15,12 @@ export const EditProjectUserParameters = ({selectedProject,
                                           updateParams,
                                           title,
                                           paginationModel,
-                                          setPaginationModel
+                                          setPaginationModel,
+                                          showDeletedParams,
+                                          setShowDeletedParams
 }) => {
     const [saveStatus, setSaveStatus] = useState("");
+
     const dispatch = useDispatch();
 
     const saveParam = (param) => {
@@ -58,6 +61,9 @@ export const EditProjectUserParameters = ({selectedProject,
                 saveStatusConfirm={saveStatusConfirm}
                 paginationModel={paginationModel}
                 setPaginationModel={setPaginationModel}
+                paramTableName={"PM_PROJECT_USER_PARAMS"}
+                showDeletedParams = {showDeletedParams}
+                setShowDeletedParams = {setShowDeletedParams}
             />
         </div>
     );

@@ -2,10 +2,8 @@ import { useDispatch, useSelector} from "react-redux";
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { User } from "models";
-import { ProjectUserInfo, EditProjectUserParameters } from "components";
-import {
-    getAllProjectUserParams, saveProjectUserStatusConfirmed, saveProjectUserParam,
-} from "actions";
+import {ProjectUserInfo, EditProjectUserParameters} from "components";
+
 import {Tab, Tabs} from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
@@ -13,14 +11,16 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from "@mui/material/Button";
 import "./EditProjectUser.scss";
+import {getAllProjectUserParams} from "../../reducers/editUserInfoSlice";
 
 
 export const EditProjectUser = ({project, user,  setIsEditingUser}) => {
     const selectedUser = useSelector((state) => state.selectedUser );
     const [updatedUser, setUpdatedUser] = useState(user);
     const [updatedParams, setUpdatedParams] = useState(selectedUser.params);
-    const [paginationModel, setPaginationModel] = useState({ pageSize: 5, page: 0});
+    const [paginationModel, setPaginationModel] = useState({ pageSize: 10, page: 0});
     const [open, setOpen] = useState(true);
+    const [showDeletedParams, setShowDeletedParams] = useState(false);
 
     const dispatch = useDispatch();
     const EditDetails = {
@@ -105,6 +105,8 @@ export const EditProjectUser = ({project, user,  setIsEditingUser}) => {
                             updateParams={setUpdatedParams}
                             paginationModel={paginationModel}
                             setPaginationModel={setPaginationModel}
+                            showDeletedParams = {showDeletedParams}
+                            setShowDeletedParams = {setShowDeletedParams}
                         />
                     }
                 </div>

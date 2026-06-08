@@ -1,10 +1,8 @@
 import { useDispatch, useSelector} from "react-redux";
 import React, { useState, useEffect } from "react";
 import {Tab, Tabs} from "@mui/material";
-import {
-    getAllGlobalParams,
-    getAllHives,
-} from "actions";
+import { getAllGlobalParams, getAllHives} from "../../reducers/allHivesSlice";
+
 import {Loader, DomainSettings, EditGlobalParameters} from "components";
 import "./AllHives.scss";
 
@@ -13,7 +11,7 @@ export const AllHives = () => {
     const isI2b2LibLoaded = useSelector((state) => state.isI2b2LibLoaded );
     const [updatedDomainSettings, setUpdatedDomainSettings ] = useState(allHives.hiveDomains);
     const [updatedParams, setUpdatedParams] = useState(allHives.params);
-    const [paginationModel, setPaginationModel] = useState({ pageSize: 5, page: 0});
+    const [paginationModel, setPaginationModel] = useState({ pageSize: 10, page: 0});
 
     const AllHives = {
         DOMAIN: "DOMAIN",

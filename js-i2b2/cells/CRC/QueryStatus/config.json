@@ -1,0 +1,118 @@
+{
+  "displayComponents": {
+    "SUMMARY": {
+      "source": "Summary/Summary.js",
+      "CSS": "Summary/Summary.css",
+      "alwaysShow": true,
+      "noFrameTemplate": true,
+      "notInReport": true,
+      "showQueryButton": false
+    },
+    "COUNT": {
+      "source": "Count/Count.js",
+      "CSS": "Count/Count.css",
+      "class": "patient-count",
+      "alwaysShow": true,
+      "noFrameTemplate": true
+    },
+    "BARS": {
+      "name": "Bar Chart",
+      "source": "BarGraph/BarGraph.js",
+      "CSS": "BarGraph/BarGraph.css",
+      "iconClass": "bi bi-bar-chart-line",
+      "default": true,
+      "displayOrder": 1,
+      "displayForUnregistered": true,
+      "class": "bargraph"
+    },
+    "PIECHART": {
+      "name": "Pie Chart",
+      "source": "PieChart/PieChart.js",
+      "CSS": "PieChart/PieChart.css",
+      "iconClass": "bi bi-pie-chart",
+      "displayOrder": 2
+    },
+    "TABLE": {
+      "name": "Table Summary",
+      "source": "Table/Table.js",
+      "CSS": "Table/Table.css",
+      "iconClass": "bi bi-table",
+      "displayOrder": 100,
+      "displayForUnregistered": true
+    },
+    "TABLEBARCHART": {
+      "name": "Table Bar Chart",
+      "source": "TableBarChart/TableBarChart.js",
+      "CSS": "TableBarChart/TableBarChart.css",
+      "iconClass": "bi bi-bar-chart-steps",
+      "displayOrder": 10,
+      "displayForUnregistered": true,
+      "notInReport": true
+    },
+    "DATAREQUESTSUPER": {
+      "name": "Data Request",
+      "source": "DataRequestSuper/DataRequestSuper.js",
+      "CSS": "DataRequestSuper/DataRequestSuper.css",
+      "iconClass": "bi bi-table",
+      "displayOrder": 100,
+      "displayForUnregistered": false,
+      "superModule": {
+        "capture": ["/^RPDO_/", "/_REQUEST$/"]
+      }
+    },
+    "DOWNLOAD": {
+      "name": "CSV Download",
+      "source": "Download/Download.js",
+      "iconClass": "bi bi-filetype-csv",
+      "displayOrder": 500,
+      "displayForUnregistered": true,
+      "notInReport": true
+    },
+    "MULTIZIPCODEMAP": {
+      "name": "Map View",
+      "source": "MultiZipcodeMap/MultiZipcodeMap.js",
+      "CSS": "MultiZipcodeMap/MultiZipcodeMap.css",
+      "iconClass": "bi bi-globe2"
+    },
+    "PATHOGENTIMELINE": {
+      "name": "Pathogen Timeline",
+      "source": "PathogenTimeline/PathogenTimeline.js",
+      "CSS": "PathogenTimeline/PathogenTimeline.css",
+      "iconClass": "bi-graph-up-arrow",
+      "displayOrder": 3,
+      "class": "pathogen-timeline",
+      "displayForUnregistered": false
+    },
+    "NIHENROLLTABLE": {
+      "name": "Enrollment Form",
+      "source": "NihEnrollTable/Table.js",
+      "CSS": "NihEnrollTable/Table.css",
+      "iconClass": "bi bi-grid-3x3",
+      "displayOrder": 1
+    },
+    "NIHENROLLCSV": {
+      "name": "Enrollment Form CSV",
+      "source": "NihEnrollCsv/Download.js",
+      "iconClass": "bi bi-filetype-csv",
+      "displayOrder": 100,
+      "notInReport": true
+    }
+  },
+  "displayOrder": [
+    "INTERNAL_SUMMARY",
+    "PATIENT_COUNT_XML",
+    "/^RPDO_/"
+  ],
+  "haltPollingOnStatus": [
+    "COMPLETED",
+    "PROCESSING",
+    "FINISHED",
+    "ERROR",
+    "INCOMPLETE",
+    "TIMEOUT"
+  ],
+  "hideVisualizationsOn": [
+    "ERROR"
+  ],
+  "realtimePolling": false
+}

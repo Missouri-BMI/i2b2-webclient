@@ -31,11 +31,14 @@ const deleteProjectUserRoleRequest = (projectId, username, role) => {
 };
 
 export function* doSaveProjectUser(action) {
-    const { user, selectedProject, isNew, isEditor } = action.payload;
+    const { user, selectedProject, isNew, isEditor, customRolesToSave, customRolesToDelete } = action.payload;
 
     console.log("saving user " + user.username + " in project " + selectedProject.project.name + "...");
     try {
         let rolesToSave = [user.adminPath.name, user.dataPath.name];
+        if(customRolesToSave?.length > 0) {
+            rolesToSave = rolesToSave.concat(customRolesToSave);
+        }
         let rolesToDelete = [ADMIN_ROLES.USER.name, DATA_ROLES.DATA_OBFSC.name];
 
         if(user.editorPath === "true" && !isEditor){
@@ -56,15 +59,23 @@ export function* doSaveProjectUser(action) {
 
         const deletedProjectUserRolesErrors = deletedProjectUserRoleResponse.filter(result => result.msgType === "AJAX_ERROR");
 
+        let customRolesProjectUserRolesErrors = [];
+        if(customRolesToDelete?.length > 0) {
+            const customRolesToDeleteResponse = yield all(customRolesToDelete.map((role) => {
+                return call(deleteProjectUserRoleRequest, selectedProject.project.internalId, user.username, role);
+            }));
+            customRolesProjectUserRolesErrors = customRolesToDeleteResponse.filter(result => result.msgType === "AJAX_ERROR");
+        }
+
         if(isNew || deletedProjectUserRolesErrors.length === 0){
             const projectUserRoleResponse = yield all(rolesToSave.map((role) => {
                 return call(saveProjectUserRoleRequest, selectedProject.project.internalId, user.username, role);
             }));
 
             const projectUserRolesResults = projectUserRoleResponse.filter(result => result.msgType === "AJAX_ERROR");
-            if(projectUserRolesResults.length === 0) {
+            if(projectUserRolesResults.length === 0 && customRolesProjectUserRolesErrors.length === 0) {
                 yield put(getAllProjectUsers({project: selectedProject.project}));
-                yield put(saveProjectUserSucceeded({projectUser: user, selectedProject}));
+                yield put(saveProjectUserSucceeded({projectUser: user, selectedProject, newCustomRoles: customRolesToSave}));
             }
             else{
                 yield put(saveProjectUserFailed({projectUser: user, selectedProject}));

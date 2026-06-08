@@ -6,9 +6,10 @@ import { Project } from "models";
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
+import StepButton from '@mui/material/StepButton';
 import Typography from '@mui/material/Typography';
 import "./EditProjectDetails.scss";
-import {EditProjectDataSources, EditProjectParameters, EditProjectUserAssociations, ProjectInfo} from "components";
+import {EditProjectDataSources, EditProjectParameters, EditProjectUserAssociations, ProjectInfo, StatusUpdate} from "components";
 import Paper from "@mui/material/Paper";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import Button from "@mui/material/Button";
@@ -16,17 +17,29 @@ import {
     getAllProjectParams,
     getAllProjectUsers,
     clearSelectedProject,
-    getAllProjectDataSources
+    getAllProjectDataSources,
+    deleteProject,
+    deleteProjectStatusConfirmed
 } from "actions";
+import {Confirmation} from "../index";
+
 
 export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) => {
     const selectedProject = useSelector((state) => state.selectedProject );
     const [updatedParams, setUpdatedParams] = useState(selectedProject.params);
+    const deletedProject = useSelector((state) => state.deletedProject);
     const [activeStep, setActiveStep] = useState(0);
     const steps = ['Project Details', 'Parameters', 'Data Sources', "User Associations"];
     const [doSave, setDoSave] = useState(false);
     const [saveCompleted, setSaveCompleted] = useState(null);
-    const [paginationModel, setPaginationModel] = useState({ pageSize: 5, page: 0});
+    const [paginationModel, setPaginationModel] = useState({ pageSize: 10, page: 0});
+    const [showDeleteProjectConfirm, setShowDeleteProjectConfirm] = useState(false);
+    const [deleteProjectConfirmMsg, setDeleteProjectConfirmMsg] = useState("");
+    const [showStatus, setShowStatus] = useState(false);
+    const [statusMsg, setStatusMsg] = useState("");
+    const [statusSeverity, setStatusSeverity] = useState("info");
+    const isExistingProject = (project && project.internalId.length > 0);
+    const [showDeletedParams, setShowDeletedParams] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -35,6 +48,10 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
     };
 
     const handleNext = () => {
+        setActiveStep((prevActiveStep) => prevActiveStep +1);
+    };
+
+    const handleSave = () => {
         setDoSave(true);
     };
 
@@ -45,6 +62,18 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
     const cancelEdit = () => {
         setIsEditingProject(false);
     }
+
+    const handleDeleteProject = () => {
+        setDeleteProjectConfirmMsg("");
+        setShowDeleteProjectConfirm(false);
+
+        dispatch(deleteProject({project}))
+    };
+
+    const confirmDeleteProject = () => {
+        setDeleteProjectConfirmMsg("Are you sure you want to delete project " + project.name + "?");
+        setShowDeleteProjectConfirm(true);
+    };
 
     useEffect(() => {
 
@@ -87,11 +116,51 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
         setUpdatedParams(selectedProject.params);
     }, [selectedProject.params]);
 
+    useEffect(() => {
+        if(deletedProject.status === "SUCCESS") {
+            dispatch(deleteProjectStatusConfirmed());
+            setStatusMsg("Deleted project " + deletedProject.project.name);
+            setShowStatus(true);
+            setStatusSeverity("success");
+            cancelEdit();
+        }
+        if(deletedProject.status === "FAIL") {
+            dispatch(deleteProjectStatusConfirmed());
+            setStatusMsg("Error: There was an error deleting project " + deletedProject.project.name);
+            setShowStatus(true);
+            setStatusSeverity("success");
+        }
+    }, [deletedProject]);
+
+    const handleStep = (step) => () => {
+        setActiveStep(step);
+    };
+
     return (
         <div className={"EditProjectDetails"}>
             <Link  className="BackToUsers" component="button" onClick={cancelEdit}>back to All Projects</Link>
 
-            <Stepper activeStep={activeStep}>
+            { isExistingProject && <Stepper nonLinear activeStep={activeStep}>
+                    {steps.map((label, index) => {
+                        const stepProps = {};
+                        const labelProps = {};
+                        if (isStepOptional(index)) {
+                            labelProps.optional = (
+                                <Typography variant="caption">Optional</Typography>
+                            );
+                        }
+
+                        return (
+                            <Step key={label} {...stepProps}>
+                                <StepButton {...labelProps} onClick={handleStep(index)}>
+                                    {label}
+                                </StepButton>
+                            </Step>
+                        );
+                    })}
+                </Stepper>
+            }
+            {!isExistingProject && <Stepper activeStep={activeStep}>
                 {steps.map((label, index) => {
                     const stepProps = {};
                     const labelProps = {};
@@ -108,6 +177,7 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
                     );
                 })}
             </Stepper>
+            }
 
             { activeStep===0 && <ProjectInfo
                 selectedProject={selectedProject}
@@ -126,6 +196,8 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
                     setSaveCompleted={setSaveCompleted}
                     paginationModel={paginationModel}
                     setPaginationModel={setPaginationModel}
+                    showDeletedParams = {showDeletedParams}
+                    setShowDeletedParams = {setShowDeletedParams}
                 />
             }
 
@@ -146,10 +218,22 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
                     <div  className="EditProjectActionSecondary">
                         <Button onClick={cancelEdit} variant="outlined"> Exit </Button>
                     </div>
+                    {isExistingProject && <div className="EditProjectActionSecondary">
+                         <Button className={"DeleteProject"} variant="outlined" onClick={confirmDeleteProject}>Delete Project</Button>
+                    </div>}
+
                     <div className="EditProjectActionPrimary">
-                        <Button  variant="outlined" onClick={handleNext}>
-                            {activeStep === 3 ? "Save and Exit" : "Save and Continue"} </Button>
+                        {((activeStep < 3 && isExistingProject) || (activeStep == 1)) &&  <Button  variant="outlined" onClick={handleNext}>
+                            Continue
+                        </Button>}
                     </div>
+
+                    {(activeStep === 0 || activeStep === 2) &&
+                        <div className="EditProjectActionPrimary">
+                            <Button  variant="outlined" onClick={handleSave}> Save </Button>
+                        </div>
+                    }
+
                     {activeStep > 0 && <div className="EditProjectActionPrimary">
                         <Button  variant="outlined" onClick={handlePrevious}>
                             Previous
@@ -157,6 +241,14 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
                     </div>}
                 </BottomNavigation>
             </Paper>
+
+            <StatusUpdate isOpen={showStatus} setIsOpen={setShowStatus} severity={statusSeverity} message={statusMsg}/>
+
+            { showDeleteProjectConfirm && <Confirmation
+                text={deleteProjectConfirmMsg}
+                onOk={handleDeleteProject}
+                onCancel={() => setShowDeleteProjectConfirm(false)}
+            />}
         </div>
     );
 };

@@ -1,11 +1,9 @@
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import "./EditProjectDataSources.scss";
 import {
     saveProjectDataSources,
     saveProjectDataSourcesStatusConfirmed,
-    saveProjectStatusConfirmed
 } from "../../actions";
 
 import CircularProgress from "@mui/material/CircularProgress";
@@ -292,14 +290,18 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
             ...newDataSources[CELL_ID.CRC],
             projectPath: newDataSources[CELL_ID.CRC].projectPath ? newDataSources[CELL_ID.CRC].projectPath : selectedProject.project.path,
             jndiDataSource:  newDataSources[CELL_ID.CRC].jndiDataSource.replace(/^java\:\//g, "")
-
         };
+
+        //remove leading "/" in ONT datasource only, due to server side quirk
+        //in ontology datasource project path where the leading "/" must be omitted
+        const ontProjectPath = selectedProject.project.path.replace(/^\//, "") + "/";
         newDataSources[CELL_ID.ONT] = {
             ...newDataSources[CELL_ID.ONT],
-            projectPath: newDataSources[CELL_ID.ONT].projectPath ? newDataSources[CELL_ID.ONT].projectPath : selectedProject.project.path,
+            projectPath: newDataSources[CELL_ID.ONT].projectPath ? newDataSources[CELL_ID.ONT].projectPath : ontProjectPath,
             jndiDataSource:  newDataSources[CELL_ID.ONT].jndiDataSource.replace(/^java\:\//g, "")
 
         };
+
         newDataSources[CELL_ID.WORK] = {
             ...newDataSources[CELL_ID.WORK],
             projectPath: newDataSources[CELL_ID.WORK].projectPath ? newDataSources[CELL_ID.WORK].projectPath : selectedProject.project.path,
@@ -307,7 +309,6 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
         };
 
         setUpdatedDataSources(newDataSources);
-
     }, [selectedProject]);
 
     useEffect(() => {

@@ -114,6 +114,7 @@ i2b2.PM.ctrlr.SamlLogin = function(username, session, isPassword) {
         project: i2b2.PM.model.login_project
     };
     i2b2.PM.ajax.getUserAuth("PM:Login", parameters, callback, transportOptions);
+    i2b2.PM.ajax.geti2b2Version("PM:Version", parameters, new i2b2_scopedCallback(i2b2.PM._setServerVersion, i2b2.PM), transportOptions);
 };
 
 // ================================================================================================== //
@@ -176,14 +177,31 @@ i2b2.PM.doLogin = function() {
     };
     if(!input_errors){
         i2b2.PM.ajax.getUserAuth("PM:Login", parameters, callback, transportOptions);
+        i2b2.PM.ajax.geti2b2Version("PM:Version", parameters, new i2b2_scopedCallback(i2b2.PM._setServerVersion, i2b2.PM), transportOptions);
     } else {
         alert(e);
     }
 };
-
-
+// ================================================================================================== //
+i2b2.PM._setServerVersion = function(data) {
+    let xml = data.refXML;
+    let s = i2b2.h.XPath(xml, 'descendant::i2b2_version');
+    if (s.length > 0) {
+        s = s[0].firstChild.nodeValue;
+        i2b2.ServerVersion = s;
+    }
+}
 // ================================================================================================== //
 i2b2.PM._processUserConfig = function (data) {
+    // clear the UX treatment 6 seconds after the login button was clicked
+    setTimeout(() => {
+        const clickedLoginBtns = document.querySelectorAll(".clicked");
+        clickedLoginBtns.forEach((el) => {
+            el.classList.remove("clicked");
+        });
+    }, 5000);
+    $("#PM-login-modal .login-button").removeClass("disabled");
+
     console.group("PROCESS Login XML");
     console.debug(" === run the following command in console to view message sniffer: i2b2.hive.MsgSniffer.show() ===");
 
@@ -199,6 +217,7 @@ i2b2.PM._processUserConfig = function (data) {
         if (ua.indexOf("Trident/4.0") > -1) ieInCompatibilityMode = true;
     }
     if (!(window.ActiveXObject) && "ActiveXObject" in window) browserIsIE11 = true;
+
 
     let xml = data.refXML;
     if (data.error === true) {
@@ -238,7 +257,7 @@ i2b2.PM._processUserConfig = function (data) {
     i2b2.PM.model.isAdmin = false;
     try {
         var t = i2b2.h.XPath(data.refXML, '//user/full_name')[0];
-        i2b2.PM.model.login_fullname = i2b2.h.Xml2String(t);
+        i2b2.PM.model.login_fullname = t.textContent;
     } catch(e) {}
     try {
         var t = i2b2.h.XPath(data.refXML, '//user/is_admin')[0];
@@ -401,11 +420,30 @@ i2b2.PM.extendUserSession = function() {
 };
 
 // ================================================================================================== //
-i2b2.PM.doLogout = function() {
+i2b2.PM.doLogout = function(allSessions) {
     // must reload page to avoid dirty data from lingering
     const logoutUri = i2b2.PM.model?.samlConfig?.logout;
     if (logoutUri === undefined) {
-        window.location.reload();
+        let callback = new i2b2_scopedCallback(function(response){
+            if(!response.error) {
+                window.location.reload();
+            }
+            else{
+                console.error("Error logging out user.");
+                window.location.reload();
+            }
+        }, i2b2.PM);
+        let parameters = {
+            username: i2b2.PM.model.login_username,
+        };
+
+        if(allSessions){
+            parameters.password = `<password>@</password>`;
+        }else{
+            parameters.password = i2b2.PM.model.login_password ;
+        }
+
+        i2b2.PM.ajax.logoutUser("PM:Logout", parameters, callback);
     } else {
         window.location.href = logoutUri;
     }
@@ -525,12 +563,20 @@ i2b2.PM._processLaunchFramework = function() {
                         }
                     }
                 }
-                // params
+                // cell params
                 let x = i2b2.h.XPath(oXML, "//cell_data[@id='"+cellKey+"']/param[@name]");
                 for (let i = 0; i < x.length; i++) {
                     let n = i2b2.h.XPath(x[i], "attribute::name")[0].nodeValue;
                     cellRef.params[n] = x[i].innerHTML;
+                   // cellRef.paramsStatus[n] = x[i].innerHTML;
                 }
+                // project params
+                x = i2b2.h.XPath(oXML, "//user/project[@id='"+i2b2.PM.model.login_project+"']/param[@name]");
+                for (let i = 0; i < x.length; i++) {
+                    let n = i2b2.h.XPath(x[i], "attribute::name")[0].nodeValue;
+                    cellRef.params[n] = x[i].innerHTML;
+                }
+
                 // do not save cell info unless the URL attribute has been set (exception is PM cell)
                 if (cellRef.url === "" && cellKey !== "PM") {
                     deleteKeys[cellKey] = true;

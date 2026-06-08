@@ -176,6 +176,59 @@ i2b2.h.Unescape = function(inStrValue) {
 
 
 // ================================================================================================== //
+i2b2.h.safeLoadTemplate = function(url, allowJS, noTemplate) {
+    return new Promise(function(resolve, reject) {
+        var safeUrl;
+        try {
+            safeUrl = new URL(url, document.location.href);
+        } catch (e) {
+            console.error("SECURITY FAULT! Asked to load invalid template URL => " + url);
+            reject(e);
+            return;
+        }
+        if (safeUrl.protocol !== "http:" && safeUrl.protocol !== "https:") {
+            console.error("SECURITY FAULT! Asked to load template with disallowed protocol => " + url);
+            reject(new Error("Disallowed template URL protocol"));
+            return;
+        }
+        if (safeUrl.host !== document.location.host) {
+            console.error("SECURITY FAULT! Asked to load non-origin template => " + url);
+            reject(new Error("Cross-origin template URL"));
+            return;
+        }
+
+        fetch(safeUrl.href, { credentials: "same-origin" })
+            .then(function(response) {
+                if (!response.ok) {
+                    throw new Error("Failed to load template (" + response.status + "): " + safeUrl.href);
+                }
+                return response.text();
+            })
+            .then(function(templateText) {
+                var safeTemplate = templateText;
+                if (!allowJS) {
+                    if (typeof DOMPurify === "undefined") {
+                        throw new Error("DOMPurify is required for safe template loading");
+                    }
+                    safeTemplate = DOMPurify.sanitize(templateText);
+                }
+                if (noTemplate) {
+                    resolve(safeTemplate);
+                } else {
+                    resolve(Handlebars.compile(safeTemplate));
+                }
+            })
+            .catch(function(err) {
+                console.error("Failed to load or compile template => " + url, err);
+                reject(err);
+            });
+    });
+};
+
+
+
+
+// ================================================================================================== //
 i2b2.h.EscapeTemplateVars = function(refTemplateVals, arryIgnoreVars) {
     for (var vname in refTemplateVals) {
         var ignore = false;
@@ -328,3 +381,52 @@ i2b2.h.StripCRLF = function(input) {
     let ret = String(input).replace(/\r/g, ">");
     return ret.replace(/\n/g, ">");
 };
+
+// ================================================================================================== //
+i2b2.h.checkXmlResponseForErrors = function(msg, includeAll) {
+    let hasErrors = false;
+
+    if(msg && msg?.length > 0) {
+        const parsedMsg = i2b2.h.parseXml(msg);
+        const statusElems = parsedMsg.getElementsByTagName('status');
+        const faultString = parsedMsg.getElementsByTagName('faultstring');
+
+        for (let s = 0; s < statusElems.length; s++) {
+            const status = statusElems[s];
+            const condition = i2b2.h.XPath(status, 'descendant::condition');
+
+
+            if ((status.attributes['type'] && status.attributes['type'].nodeValue.toUpperCase() === "ERROR"
+                    && (status.textContent !== "MAX_EXCEEDED" || includeAll))
+                || (condition.length > 0 && condition[0].attributes['type']
+                    && condition[0].attributes['type'].nodeValue.toUpperCase() === "ERROR")
+                    && (condition[0].textContent !== 'For input string: "QUERY_INSTANCE_ID_UNKNOWN"' || includeAll)
+            ) {
+
+                hasErrors = true;
+            }
+        }
+
+        if(faultString.length > 0){
+            hasErrors = true;
+        }
+
+        //work around for filtering queued queries status being set to ERROR
+        const queryInstanceElems = parsedMsg.getElementsByTagName('query_instance');
+        if(queryInstanceElems.length > 0){
+            const queryInstanceStatus = i2b2.h.XPath(queryInstanceElems[0], 'descendant-or-self::query_status_type/name')[0].firstChild.nodeValue;
+            if(queryInstanceStatus === "ERROR"){
+                const queryResultInstanceElems = parsedMsg.getElementsByTagName('query_result_instance');
+                for (let q = 0; q < queryResultInstanceElems.length; q++) {
+                    const queryResultInstance = queryResultInstanceElems[q];
+                    const queryResultInstanceStatus = i2b2.h.XPath(queryResultInstance, 'descendant-or-self::query_status_type/name')[0].firstChild.nodeValue;
+                    if(queryResultInstanceStatus === "TIMEDOUT"){
+                        hasErrors = false;
+                    }
+                }
+            }
+        }
+    }
+
+    return hasErrors;
+}

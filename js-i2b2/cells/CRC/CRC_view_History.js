@@ -577,10 +577,10 @@ i2b2.events.afterCellInit.add((cell) => {
                     // THIS IS THE MASTER FUNCTION THAT IS USED TO INITIALIZE THE WORK CELL'S MAIN VIEW
                     i2b2.CRC.view.history.lm_view = container;
 
-                    // Load the finder templatee
-                    $.ajax("js-i2b2/cells/CRC/assets/QueryHistoryBar.html", {
-                        success: (template) => {
-                            cell.view.history.template.finder = Handlebars.compile(template);
+                    // Load the finder template
+                    i2b2.h.safeLoadTemplate("js-i2b2/cells/CRC/assets/QueryHistoryBar.html", true)
+                        .then((hbTemplate) => {
+                            cell.view.history.template.finder = hbTemplate;
                             // Render the template into place
                             $(cell.view.history.template.finder({})).prependTo(container._contentElement);
 
@@ -626,16 +626,16 @@ i2b2.events.afterCellInit.add((cell) => {
                                 }
                             });
                             $(el).on("keyup", function(evt){
-                                if(evt.keyCode === 13){
+                                if (evt.keyCode === 13){
                                     $(this).datepicker().close();
-                                }else{
+                                } else {
                                     let date = $(this).val().trim();
                                     let isValidDate = i2b2.CRC.view.QT.isValidDate(date);
 
-                                    if(isValidDate){
+                                    if (isValidDate){
                                         $(this).datepicker().open();
                                         $("#i2b2QueryHistoryBar .dateError").hide();
-                                    }else{
+                                    } else {
                                         $("#i2b2QueryHistoryBar .dateError").show();
                                         $(this).datepicker().close();
                                     }
@@ -649,9 +649,11 @@ i2b2.events.afterCellInit.add((cell) => {
                             $("#i2b2QueryHistoryBar .dateListingCancel").on('click', i2b2.CRC.view.history.showBrowseView);
 
                             i2b2.CRC.view.history.showBrowseView();
-                        },
-                        error: (error) => { console.error("Could not retrieve template: QueryHistoryBar.html"); }
-                    });
+                        })
+                        .catch((err) => {
+                            console.error("Could not retrieve template: QueryHistoryBar.html");
+                        });
+
 
                     $('<div id="i2b2QueryHistoryFinderMessage"></div>').prependTo(container._contentElement).hide();
 

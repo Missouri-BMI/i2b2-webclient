@@ -45,68 +45,6 @@ export const GET_ALL_PROJECTS_ACTION = {
 export const getAllProjects =  createAction(GET_ALL_PROJECTS_ACTION.GET_ALL_PROJECTS);
 export const getAllProjectsSucceeded = createAction(GET_ALL_PROJECTS_ACTION.GET_ALL_PROJECTS_SUCCEEDED);
 export const getAllProjectsFailed = createNamedArgsAction(GET_ALL_PROJECTS_ACTION.GET_ALL_PROJECTS_FAILED);
-
-//================================================================================================== //
-
-export const GET_ALL_HIVES_ACTION = {
-    GET_ALL_HIVES: "GET_ALL_HIVES",
-    GET_ALL_HIVES_SUCCEEDED:  "GET_ALL_HIVES_SUCCEEDED",
-    GET_ALL_HIVES_FAILED: "GET_ALL_HIVES_FAILED"
-};
-export const getAllHives =  createAction(GET_ALL_HIVES_ACTION.GET_ALL_HIVES);
-export const getAllHivesSucceeded = createAction(GET_ALL_HIVES_ACTION.GET_ALL_HIVES_SUCCEEDED);
-export const getAllHivesFailed = createNamedArgsAction(GET_ALL_HIVES_ACTION.GET_ALL_HIVES_FAILED);
-
-//================================================================================================== //
-
-export const GET_ALL_USER_PARAMS_ACTION = {
-    GET_ALL_USER_PARAMS: "GET_ALL_USER_PARAMS",
-    GET_ALL_USER_PARAMS_SUCCEEDED:  "GET_ALL_USER_PARAMS_SUCCEEDED",
-    GET_ALL_USER_PARAMS_FAILED: "GET_ALL_USER_PARAMS_FAILED",
-    GET_ALL_USER_PARAMS_STATUS_CONFIRMED: "GET_ALL_USER_PARAMS_STATUS_CONFIRMED"
-};
-export const getAllUserParams =  createAction(GET_ALL_USER_PARAMS_ACTION.GET_ALL_USER_PARAMS);
-export const getAllUserParamsSucceeded = createAction(GET_ALL_USER_PARAMS_ACTION.GET_ALL_USER_PARAMS_SUCCEEDED);
-export const getAllUserParamsFailed = createNamedArgsAction(GET_ALL_USER_PARAMS_ACTION.GET_ALL_USER_PARAMS_FAILED);
-export const getAllUserParamsStatusConfirmed = createAction(GET_ALL_USER_PARAMS_ACTION.GET_ALL_USER_PARAMS_STATUS_CONFIRMED);
-//================================================================================================== //
-
-export const SAVE_USER_ACTION = {
-    SAVE_USER: "SAVE_USER_DETAILS",
-    SAVE_USER_SUCCEEDED:  "SAVE_USER_SUCCEEDED",
-    SAVE_USER_FAILED: "SAVE_USER_FAILED",
-    SAVE_USER_STATUS_CONFIRMED: "SAVE_USER_STATUS_CONFIRMED"
-};
-export const saveUser =  createAction(SAVE_USER_ACTION.SAVE_USER);
-export const saveUserSucceeded = createAction(SAVE_USER_ACTION.SAVE_USER_SUCCEEDED);
-export const saveUserFailed = createNamedArgsAction(SAVE_USER_ACTION.SAVE_USER_FAILED);
-export const saveUserStatusConfirmed = createAction(SAVE_USER_ACTION.SAVE_USER_STATUS_CONFIRMED);
-
-//================================================================================================== //
-
-export const SAVE_USER_PARAM_ACTION = {
-    SAVE_USER_PARAM: "SAVE_USER_PARAM",
-    SAVE_USER_PARAM_SUCCEEDED:  "SAVE_USER_PARAM_SUCCEEDED",
-    SAVE_USER_PARAM_FAILED: "SAVE_USER_PARAM_FAILED",
-    SAVE_USER_PARAM_STATUS_CONFIRMED: "SAVE_USER_PARAM_STATUS_CONFIRMED"
-};
-export const saveUserParam =  createAction(SAVE_USER_PARAM_ACTION.SAVE_USER_PARAM);
-export const saveUserParamSucceeded = createAction(SAVE_USER_PARAM_ACTION.SAVE_USER_PARAM_SUCCEEDED);
-export const saveUserParamFailed = createAction(SAVE_USER_PARAM_ACTION.SAVE_USER_PARAM_FAILED);
-export const saveUserParamStatusConfirmed = createAction(SAVE_USER_PARAM_ACTION.SAVE_USER_PARAM_STATUS_CONFIRMED);
-//================================================================================================== //
-
-export const DELETE_USER_PARAM_ACTION = {
-    DELETE_USER_PARAM: "DELETE_USER_PARAM",
-    DELETE_USER_PARAM_SUCCEEDED:  "DELETE_USER_PARAM_SUCCEEDED",
-    DELETE_USER_PARAM_FAILED: "DELETE_USER_PARAM_FAILED",
-    DELETE_USER_PARAM_STATUS_CONFIRMED: "DELETE_USER_PARAM_STATUS_CONFIRMED"
-};
-export const deleteUserParam =  createAction(DELETE_USER_PARAM_ACTION.DELETE_USER_PARAM);
-export const deleteUserParamSucceeded = createAction(DELETE_USER_PARAM_ACTION.DELETE_USER_PARAM_SUCCEEDED);
-export const deleteUserParamFailed = createNamedArgsAction(DELETE_USER_PARAM_ACTION.DELETE_USER_PARAM_FAILED);
-export const deleteUserParamStatusConfirmed = createAction(DELETE_USER_PARAM_ACTION.DELETE_USER_PARAM_STATUS_CONFIRMED);
-
 //================================================================================================== //
 export const DELETE_PROJECT_ACTION = {
     DELETE_PROJECT: "DELETE_PROJECT",
@@ -118,52 +56,6 @@ export const deleteProject =  createAction(DELETE_PROJECT_ACTION.DELETE_PROJECT)
 export const deleteProjectSucceeded = createAction(DELETE_PROJECT_ACTION.DELETE_PROJECT_SUCCEEDED);
 export const deleteProjectFailed = createNamedArgsAction(DELETE_PROJECT_ACTION.DELETE_PROJECT_FAILED, "projectName");
 export const deleteProjectStatusConfirmed = createAction(DELETE_PROJECT_ACTION.DELETE_PROJECT_STATUS_CONFIRMED);
-
-//================================================================================================== //
-export const SAVE_HIVE_DOMAIN_ACTION = {
-    SAVE_HIVE_DOMAIN: "SAVE_HIVE_DOMAIN",
-    SAVE_HIVE_DOMAIN_SUCCEEDED:  "SAVE_HIVE_DOMAIN_SUCCEEDED",
-    SAVE_HIVE_DOMAIN_FAILED: "SAVE_HIVE_DOMAIN_FAILED",
-    SAVE_HIVE_DOMAIN_STATUS_CONFIRMED: "SAVE_HIVE_DOMAIN_STATUS_CONFIRMED"
-};
-export const saveHiveDomain =  createAction(SAVE_HIVE_DOMAIN_ACTION.SAVE_HIVE_DOMAIN);
-export const saveHiveDomainSucceeded = createAction(SAVE_HIVE_DOMAIN_ACTION.SAVE_HIVE_DOMAIN_SUCCEEDED);
-export const saveHiveDomainFailed = createNamedArgsAction(SAVE_HIVE_DOMAIN_ACTION.SAVE_HIVE_DOMAIN_FAILED);
-export const saveHiveDomainStatusConfirmed = createAction(SAVE_HIVE_DOMAIN_ACTION.SAVE_HIVE_DOMAIN_STATUS_CONFIRMED);
-
-//================================================================================================== //
-export const GET_ALL_GLOBAL_PARAMS_ACTION = {
-    GET_ALL_GLOBAL_PARAMS: "GET_ALL_GLOBAL_PARAMS",
-    GET_ALL_GLOBAL_PARAMS_SUCCEEDED:  "GET_ALL_GLOBAL_PARAMS_SUCCEEDED",
-    GET_ALL_GLOBAL_PARAMS_FAILED: "GET_ALL_GLOBAL_PARAMS_FAILED",
-    GET_ALL_GLOBAL_PARAMS_STATUS_CONFIRMED: "GET_ALL_GLOBAL_PARAMS_STATUS_CONFIRMED"
-};
-export const getAllGlobalParams =  createAction(GET_ALL_GLOBAL_PARAMS_ACTION.GET_ALL_GLOBAL_PARAMS);
-export const getAllGlobalParamsSucceeded = createAction(GET_ALL_GLOBAL_PARAMS_ACTION.GET_ALL_GLOBAL_PARAMS_SUCCEEDED);
-export const getAllGlobalParamsFailed = createAction(GET_ALL_GLOBAL_PARAMS_ACTION.GET_ALL_GLOBAL_PARAMS_FAILED);
-export const getAllGlobalParamsStatusConfirmed = createAction(GET_ALL_GLOBAL_PARAMS_ACTION.GET_ALL_GLOBAL_PARAMS_STATUS_CONFIRMED);
-//================================================================================================== //
-export const SAVE_GLOBAL_PARAM_ACTION = {
-    SAVE_GLOBAL_PARAM: "SAVE_GLOBAL_PARAM",
-    SAVE_GLOBAL_PARAM_SUCCEEDED:  "SAVE_GLOBAL_PARAM_SUCCEEDED",
-    SAVE_GLOBAL_PARAM_FAILED: "SAVE_GLOBAL_PARAM_FAILED",
-    SAVE_GLOBAL_PARAM_STATUS_CONFIRMED: "SAVE_GLOBAL_PARAM_STATUS_CONFIRMED"
-};
-export const saveGlobalParam =  createAction(SAVE_GLOBAL_PARAM_ACTION.SAVE_GLOBAL_PARAM);
-export const saveGlobalParamSucceeded = createAction(SAVE_GLOBAL_PARAM_ACTION.SAVE_GLOBAL_PARAM_SUCCEEDED);
-export const saveGlobalParamFailed = createNamedArgsAction(SAVE_GLOBAL_PARAM_ACTION.SAVE_GLOBAL_PARAM_FAILED, "param");
-export const saveGlobalParamStatusConfirmed = createAction(SAVE_GLOBAL_PARAM_ACTION.SAVE_GLOBAL_PARAM_STATUS_CONFIRMED);
-//================================================================================================== //
-export const DELETE_GLOBAL_PARAM_ACTION = {
-    DELETE_GLOBAL_PARAM: "DELETE_GLOBAL_PARAM",
-    DELETE_GLOBAL_PARAM_SUCCEEDED:  "DELETE_GLOBAL_PARAM_SUCCEEDED",
-    DELETE_GLOBAL_PARAM_FAILED: "DELETE_GLOBAL_PARAM_FAILED",
-    DELETE_GLOBAL_PARAM_STATUS_CONFIRMED: "DELETE_GLOBAL_PARAM_STATUS_CONFIRMED"
-};
-export const deleteGlobalParam =  createAction(DELETE_GLOBAL_PARAM_ACTION.DELETE_GLOBAL_PARAM);
-export const deleteGlobalParamSucceeded = createAction(DELETE_GLOBAL_PARAM_ACTION.DELETE_GLOBAL_PARAM_SUCCEEDED);
-export const deleteGlobalParamFailed = createNamedArgsAction(DELETE_GLOBAL_PARAM_ACTION.DELETE_GLOBAL_PARAM_FAILED, "param");
-export const deleteGlobalParamStatusConfirmed = createAction(DELETE_GLOBAL_PARAM_ACTION.DELETE_GLOBAL_PARAM_STATUS_CONFIRMED);
 //================================================================================================== //
 export const SAVE_PROJECT_ACTION = {
     SAVE_PROJECT: "SAVE_PROJECT",
@@ -248,17 +140,6 @@ export const updateAllProjectDataSourcesUrl = createAction(UPDATE_ALL_PROJECT_DA
 
 
 //================================================================================================== //
-export const GET_ALL_PROJECT_USER_PARAMS_ACTION = {
-    GET_ALL_PROJECT_USER_PARAMS: "GET_ALL_PROJECT_USER_PARAMS",
-    GET_ALL_PROJECT_USER_PARAMS_SUCCEEDED:  "GET_ALL_PROJECT_USER_PARAMS_SUCCEEDED",
-    GET_ALL_PROJECT_USER_PARAMS_FAILED: "GET_ALL_PROJECT_USER_PARAMS_FAILED",
-    GET_ALL_PROJECT_USER_PARAMS_STATUS_CONFIRMED: "GET_ALL_PROJECT_USER_PARAMS_STATUS_CONFIRMED"
-};
-export const getAllProjectUserParams =  createAction(GET_ALL_PROJECT_USER_PARAMS_ACTION.GET_ALL_PROJECT_USER_PARAMS);
-export const getAllProjectUserParamsSucceeded = createAction(GET_ALL_PROJECT_USER_PARAMS_ACTION.GET_ALL_PROJECT_USER_PARAMS_SUCCEEDED);
-export const getAllProjectUserParamsFailed = createAction(GET_ALL_PROJECT_USER_PARAMS_ACTION.GET_ALL_PROJECT_USER_PARAMS_FAILED);
-export const getAllProjectUserParamsStatusConfirmed = createAction(GET_ALL_PROJECT_USER_PARAMS_ACTION.GET_ALL_PROJECT_USER_PARAMS_STATUS_CONFIRMED);
-//================================================================================================== //
 export const SAVE_PROJECT_USER_ACTION = {
     SAVE_PROJECT_USER: "SAVE_PROJECT_USER",
     SAVE_PROJECT_USER_SUCCEEDED:  "SAVE_PROJECT_USER_SUCCEEDED",
@@ -308,10 +189,66 @@ export const CLEAR_SELECTED_PROJECT_ACTION = {
     CLEAR_SELECTED_PROJECT: "CLEAR_SELECTED_PROJECT",
 };
 export const clearSelectedProject =  createAction(CLEAR_SELECTED_PROJECT_ACTION.CLEAR_SELECTED_PROJECT);
+
 //================================================================================================== //
-export const CLEAR_SELECTED_USER_ACTION = {
-    CLEAR_SELECTED_USER: "CLEAR_SELECTED_USER",
-};
-export const clearSelectedUser =  createAction(CLEAR_SELECTED_USER_ACTION.CLEAR_SELECTED_USER);
+//Please use pattern below for new actions and slices
+//Please update any existing action to use the new pattern when possible
+//================================================================================================== //
+
+export const AUTHENTICATION_CONFIG_INFO = "authConfigInfo";
+export const GET_ALL_AUTH_CONFIGS = `${AUTHENTICATION_CONFIG_INFO}/getAllAuthConfigs`;
+
+//================================================================================================== //
+
+export const ALL_HIVES = "allHivesInfo";
+export const GET_ALL_HIVES = `${ALL_HIVES}/getAllHives`;
+export const SAVE_HIVE_DOMAIN = `${ALL_HIVES}/saveHiveDomain`;
+export const GET_ALL_GLOBAL_PARAMS = `${ALL_HIVES}/getAllGlobalParams`;
+export const SAVE_GLOBAL_PARAM = `${ALL_HIVES}/saveGlobalParam`;
+export const DELETE_GLOBAL_PARAM = `${ALL_HIVES}/deleteGlobalParam`;
 
 
+//================================================================================================== //
+
+export const ALL_USERS = "allUsersInfo";
+export const GET_ALL_USERS = `${ALL_USERS}/getAllUsers`;
+export const TERMINATE_USER_SESSION = `${ALL_USERS}/terminateUserSession`;
+export const UNLOCK_OUT_USER = `${ALL_USERS}/unlockOutUser`;
+
+//================================================================================================== //
+
+export const USER_PROJECT_ROLES = "userProjectRolesInfo";
+export const GET_USER_PROJECT_ROLES = `${USER_PROJECT_ROLES}/getUserProjectRoles`;
+
+//================================================================================================== //
+
+export const EDIT_USER = "editUsersInfo";
+export const GET_ALL_USER_PARAMS = `${EDIT_USER}/getAllUserParams`;
+export const GET_ALL_USER_PARAMS_SUCCEEDED = `${EDIT_USER}/getAllUserParamsSucceeded`;
+export const GET_ALL_USER_PARAMS_FAILED = `${EDIT_USER}/getAllUserParamsFailed`;
+export const GET_ALL_USER_PARAMS_STATUS_CONFIRMED = `${EDIT_USER}/getAllUserParamsStatusConfirmed`;
+
+export const SAVE_USER = `${EDIT_USER}/saveUser`;
+export const SAVE_USER_SUCCEEDED = `${EDIT_USER}/saveUserSucceeded`;
+export const SAVE_USER_FAILED = `${EDIT_USER}/saveUserFailed`;
+export const SAVE_USER_STATUS_CONFIRMED = `${EDIT_USER}/saveUserStatusConfirmed`;
+
+export const SAVE_USER_PARAM = `${EDIT_USER}/saveUserParam`;
+export const SAVE_USER_PARAM_SUCCEEDED = `${EDIT_USER}/saveUserParamSucceeded`;
+export const SAVE_USER_PARAM_FAILED = `${EDIT_USER}/saveUserParamFailed`;
+export const SAVE_USER_PARAM_STATUS_CONFIRMED = `${EDIT_USER}/saveUserParamStatusConfirmed`;
+
+export const DELETE_USER_PARAM= `${EDIT_USER}/deleteUserParam`;
+export const DELETE_USER_PARAM_SUCCEEDED = `${EDIT_USER}/deleteUserParamSucceeded`;
+export const DELETE_USER_PARAM_FAILED = `${EDIT_USER}/deleteUserParamFailed`;
+export const DELETE_USER_PARAM_STATUS_CONFIRMED = `${EDIT_USER}/deleteUserParamStatusConfirmed`;
+
+
+export const GET_ALL_PROJECT_USER_PARAMS = `${EDIT_USER}/getAllProjectUserParams`;
+export const GET_ALL_PROJECT_USER_PARAMS_SUCCEEDED = `${EDIT_USER}/getAllProjectUserParamsSucceeded`;
+export const GET_ALL_PROJECT_USER_PARAMS_FAILED = `${EDIT_USER}/getAllProjectUserParamsFailed`;
+export const GET_ALL_PROJECT_USER_PARAMS_STATUS_CONFIRMED = `${EDIT_USER}/getAllProjectUserParamsStatusConfirmed`;
+
+export const CLEAR_SELECTED_USER = `${EDIT_USER}/clearSelectedUser`;
+
+//================================================================================================== //

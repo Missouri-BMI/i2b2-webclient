@@ -171,6 +171,7 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
                 processRowUpdate={processRowUpdate}
                 onProcessRowUpdateError={onProcessRowUpdateError}
                 columns={columns}
+                isCellEditable={(params) => params.row.username !== "AGG_SERVICE_ACCOUNT"}
                 disableRowSelectionOnClick
                 sx={{
                     [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]: {
@@ -194,10 +195,12 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
     };
 
     const handleEditClick = (username) => () => {
-        let user = selectedProject.users.filter((user) => user.username === username);
-        if(user.length === 1) {
-            setSelectedUser(user[0]);
-            setIsEditingUser(true);
+        if(username !== "AGG_SERVICE_ACCOUNT") {
+            let user = selectedProject.users.filter((user) => user.username === username);
+            if (user.length === 1) {
+                setSelectedUser(user[0]);
+                setIsEditingUser(true);
+            }
         }
     };
 
@@ -257,11 +260,21 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
     }
 
     useEffect(() => {
+        if(selectedUser) {
+            let updatedSelectedUser = selectedProject.users.filter((user) => user.username === selectedUser.username);
+            if(updatedSelectedUser.length > 0) {
+                setSelectedUser(updatedSelectedUser[0]);
+            }
+        }
+
+        setRows(selectedProject.users);
+
         if(selectedProject.userStatus.status === "SAVE_SUCCESS"){
+            dispatch(saveProjectUserStatusConfirmed());
             setSaveStatusMsg("Saved user " + selectedProject.userStatus.username + " to project");
             setShowSaveStatus(true);
             setSaveStatusSeverity("success");
-            dispatch(saveProjectUserStatusConfirmed());
+            handleEditClick(searchedUsername.username)();
         }
         if(selectedProject.userStatus.status === "SAVE_FAIL"){
             dispatch(saveProjectUserStatusConfirmed());
@@ -283,13 +296,6 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
             setShowSaveStatus(true);
             setSaveStatusSeverity("error");
         }
-
-       if(selectedUser) {
-            let updatedSelectedUser = selectedProject.users.filter((user) => user.username === selectedUser.username).reduce((acc, item) => acc);
-            setSelectedUser(updatedSelectedUser);
-        }
-
-        setRows(selectedProject.users);
 
     }, [selectedProject]);
 

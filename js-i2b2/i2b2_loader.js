@@ -17,8 +17,8 @@ if (undefined==i2b2.hive.cfg) { i2b2.hive.cfg = {}; }
 if (undefined==i2b2.h) { i2b2.h = {}; }
 if (undefined==i2b2.hive.base_classes) { i2b2.hive.base_classes = {}; }
 
-i2b2.ClientVersion = "1.8.2";
-
+i2b2.ClientVersion = "1.8.3";
+i2b2.ServerVersion = "---";
 
 // ================================================================================================== //
 i2b2.Init = function() {
@@ -55,6 +55,13 @@ i2b2.Init = function() {
     }
 
 
+    function isSafeHiveScriptPath(file) {
+        if (typeof file !== "string" || !file.endsWith(".js")) return false;
+        if (/[\\]/.test(file) || file.includes("..")) return false;
+        if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(file)) return false;
+        return /^[A-Za-z0-9_./-]+$/.test(file);
+    }
+
     function promise_i2b2_hive_load() {
         var no_cache = '?____=' + Math.floor(Math.random() * 50000) + 10000;
         return $.getJSON(
@@ -68,9 +75,13 @@ i2b2.Init = function() {
             });
 
             var frameworkFiles = hive_cfg_json.files.map(function(file) {
-                $.Deferred(function( defer ) {
+                if (!isSafeHiveScriptPath(file)) {
+                    console.error("SECURITY FAULT! Rejected unsafe hive framework file => " + file);
+                    return $.Deferred().reject().promise();
+                }
+                return $.Deferred(function( defer ) {
                     i2b2.h.getScript( t + "hive/" + file ).then( defer.resolve, defer.reject );
-                });
+                }).promise();
             });
 
             return $.when(
@@ -145,12 +156,32 @@ i2b2.events.afterAllCellsLoaded = $.Callbacks("once memory unique");
 // ================================================================================================== //
 i2b2.h.getScript = function(url) {
     return $.Deferred(function( defer ) {
+        // SECURITY: Enforce same-origin http(s) script urls
+        var safeUrl;
+        try {
+            safeUrl = new URL(url, document.location.href);
+        } catch (e) {
+            console.error("SECURITY FAULT! Asked to load invalid script URL => " + url);
+            defer.reject();
+            return;
+        }
+        if (safeUrl.protocol !== "http:" && safeUrl.protocol !== "https:") {
+            console.error("SECURITY FAULT! Asked to load script with disallowed protocol => " + url);
+            defer.reject();
+            return;
+        }
+        if (safeUrl.host !== document.location.host) {
+            console.error("SECURITY FAULT! Asked to load non-origin script => " + url);
+            defer.reject();
+            return;
+        }
+
         var head	= document.getElementsByTagName("head")[0];
         var script	= document.createElement("script");
         var done 	= false;
 
         script.setAttribute("defer", ""); // this seems to prevent run conditions cause by scripts getting interpreted out of order
-        script.src	= url;
+        script.src	= safeUrl.href;
         script.onload = script.onreadystatechange = function() { // Attach handlers for all browsers
             if ( !done && (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") ) {
                 done = true;

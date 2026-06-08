@@ -13,9 +13,9 @@ i2b2.CRC.view.QueryMgr = new i2b2Base_cellViewController(i2b2.CRC, 'QueryMgr');
 
 i2b2.CRC.view.QueryMgr.updateStatus = function() {
     // this function does the initial render of the query run status
-    let statusDiv = $("#infoQueryStatus", i2b2.CRC.view.QueryMgr.containerDiv).empty();
-    $((Handlebars.compile("{{> QueryResultStatus}}"))(i2b2.CRC.model.runner)).appendTo(statusDiv);
 
+    // update the INTERNAL_SUMMARY data and update display of the Query Summary visualization module in the QueryStatus engine
+    i2b2.CRC.QueryStatus.updateFromQueryMgr();
 
     // in the Query Tool: hide/show run and cancel buttons
     if (i2b2.CRC.model.runner.finished || i2b2.CRC.model.runner.queued) {
@@ -25,18 +25,22 @@ i2b2.CRC.view.QueryMgr.updateStatus = function() {
         $(".CRC_QT_runbar .button-run").hide();
         $(".CRC_QT_runbar .button-cancel").show();
     }
-
-
 };
 
 
 i2b2.CRC.view.QueryMgr.clearStatus = function() {
-    if (!i2b2.CRC.model.runner.isLoading) {
+    if (!i2b2.CRC.model.runner.isLoading && !i2b2.CRC.model.runner.finished) {
         i2b2.CRC.ctrlr.QueryMgr.stopQuery();
         i2b2.CRC.ctrlr.QueryMgr.tick();
     }
-    $("#infoQueryStatus", i2b2.CRC.view.QueryMgr.containerDiv).empty();
-    $("#infoQueryReport", i2b2.CRC.view.QueryMgr.containerDiv).empty();
+
+    // deal with hiding cancel and showing run buttons
+    $(".CRC_QT_runbar .button-run").show();
+    $(".CRC_QT_runbar .button-cancel").hide();
+
+
+    // clear the query status window
+    i2b2.CRC.QueryStatus.clear();
 }
 
 
@@ -51,51 +55,10 @@ i2b2.events.afterCellInit.add((cell) => {
                     // THIS IS THE MASTER FUNCTION THAT IS USED TO INITIALIZE THE WORK CELL'S MAIN VIEW
                     cell.view.QueryMgr.lm_view = container;
 
-                    // add the cellWhite flare
+                    // add the root DIV for display
                     cell.view.QueryMgr.containerDiv = $('<div class="CRC_QS_view"></div>').appendTo(container._contentElement);
-                    cell.view.QueryMgr.containerDiv.append('<div id="infoQueryStatus"></div>');
-                    cell.view.QueryMgr.containerDiv.append('<div id="infoQueryReport"></div>');
-
-                    container.on('resize',function() {
-                        // rerender result graphs if needed
-                        if (i2b2.CRC.view.QueryReport.breakdowns) i2b2.CRC.view.graphs.rerenderGraphs();
-                    });
-
-
-
-                    // Show initial screen
                 }).bind(this)
             );
-
-            // load the templates (TODO: Refactor this to loop using a varname/filename list)
-
-            $.ajax("js-i2b2/cells/CRC/templates/QueryResultStatus.html", {
-                success: (template, status, req) => {
-                    Handlebars.registerPartial("QueryResultStatus", req.responseText);
-                },
-                error: (error) => { console.error("Error (retrieval or structure) with template: QueryResultStatus.html"); }
-            });
-
-            $.ajax("js-i2b2/cells/CRC/templates/QueryResult.html", {
-                success: (template, status, req) => {
-                    Handlebars.registerPartial("QueryResult", req.responseText);
-                },
-                error: (error) => { console.error("Error (retrieval or structure) with template: QueryResult.html"); }
-            });
-
-            $.ajax("js-i2b2/cells/CRC/templates/QueryDataExportResult.html", {
-                success: (template, status, req) => {
-                    Handlebars.registerPartial("QueryDataExportResult", req.responseText);
-                },
-                error: (error) => { console.error("Error (retrieval or structure) with template:QueryDataExportResult.html"); }
-            });
-
-            $.ajax("js-i2b2/cells/CRC/templates/QueryResultBreakdownGraph.html", {
-                success: (template, status, req) => {
-                    Handlebars.registerPartial("QueryResultBreakdownGraph", req.responseText);
-                },
-                error: (error) => { console.error("Error (retrieval or structure) with template: QueryResultBreakdownGraph.html"); }
-            });
         }
     }
 );

@@ -1,17 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {DataGrid, GridActionsCellItem, gridClasses, GridRowModes, useGridApiRef,useGridApiContext} from "@mui/x-data-grid";
 import AddIcon from "@mui/icons-material/Add";
 import Button from '@mui/material/Button';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
+import InfoIcon from '@mui/icons-material/Info';
 import CancelIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField/TextField';
 import {GridRowEditStopReasons} from '@mui/x-data-grid';
-import { StatusUpdate } from "components";
+import { StatusUpdate, SplitButton } from "components";
 import {DataType, ParamStatus} from "models";
-
+import IconButton from '@mui/material/IconButton';
+import {
+    Autocomplete, DialogActions,
+    DialogContent,
+    DialogContentText,
+    FormControlLabel,
+    FormGroup,
+    Switch,
+    Tooltip,
+    Typography
+} from "@mui/material";
+import Paper from "@mui/material/Paper";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import DialogTitle from '@mui/material/DialogTitle';
+import Dialog from '@mui/material/Dialog';
+import Box from '@mui/material/Box';
+import OpenInFullIcon from '@mui/icons-material/OpenInFull';
 import "./EditParameters.scss";
-import { Typography} from "@mui/material";
+
 
 export const EditParameters = ({
                                    rows,
@@ -22,49 +39,254 @@ export const EditParameters = ({
                                    allParamStatus,
                                    saveStatusConfirm,
                                    paginationModel,
-                                   setPaginationModel
-}) => {
+                                   setPaginationModel,
+                                   customActions,
+                                   customActionsHandler,
+                                   customActionsBtnOption,
+                                   predefinedParams,
+                                   paramTableName,
+                                   showDeletedParams,
+                                   setShowDeletedParams
+                               }) => {
     const [rowModesModel, setRowModesModel] = useState({});
     const [showStatus, setShowStatus] = useState(false);
     const [statusMsg, setStatusMsg] = useState("");
     const [statusSeverity, setStatusSeverity] = useState("info");
     const [inValidCells, setInValidCells] = useState({});
+    const autosuggestParams = predefinedParams ? predefinedParams : [];
+    const [paramValuePreview, setParamValuePreview] = React.useState({text: "", title: ""});
+    const [openParamValuePreview, setOpenParamValuePreview] = React.useState(false);
+
+    const handleOpenParamValuePreview = (title, text) => {
+        setParamValuePreview({title, text});
+        setOpenParamValuePreview(true);
+    };
+
+    const handleCloseParamValuePreview = () => {
+        setOpenParamValuePreview(false);
+    };
 
     const apiRef = useGridApiRef();
 
+    const getPredefParamTooltipComponent = (description) => {
+        const CustomActionComponent = ({ label, onClick, icon }) => (
+            <Tooltip title={description}>
+                <IconButton>
+                    <InfoOutlinedIcon />
+                </IconButton>
+            </Tooltip>
+        );
+
+        return CustomActionComponent;
+    };
+
+    const OverflowExpandCell = (params) => {
+        const { value } = params;
+        const textElementRef = useRef(null);
+        const [showTooltip, setShowTooltip] = useState(false);
+
+        const handleShouldShowTooltip = () => {
+            if (textElementRef.current) {
+                // Check if scrollWidth (total content width) is greater than clientWidth (visible width)
+                setShowTooltip(textElementRef.current.scrollWidth > textElementRef.current.clientWidth);
+            }
+        };
+
+        useEffect(() => {
+            handleShouldShowTooltip(); // Check on initial render
+            window.addEventListener('resize', handleShouldShowTooltip); // Re-check on resize
+            return () => {
+                window.removeEventListener('resize', handleShouldShowTooltip); // Clean up
+            };
+        }, [value]); // Re-check if cell value changes
+
+        return (
+            <Tooltip describeChild title={showTooltip ? params.value : ""}>
+            <Box className={"OverFlowExpandCell"}
+                sx={{
+                    alignItems: 'center',
+                    lineHeight: '24px',
+                    width: '100%',
+                    height: '100%',
+                    position: 'relative',
+                    display: 'flex',
+                }}
+            >
+                <Box
+                    sx={{
+                        height: '100%',
+                        width: '100%',
+                        display: 'block',
+                        position: 'absolute',
+                        top: 0,
+                    }}
+                />
+                <Box
+                    ref={textElementRef}
+                     sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                >
+                    {params.value}
+                </Box>
+                { showTooltip && <IconButton
+                    aria-label={'preview value'}
+                    size={"small"}
+                    onClick={() => handleOpenParamValuePreview(params.row.name, params.value)}
+                >
+                    <OpenInFullIcon fontSize="small"/>
+                </IconButton>
+                }
+            </Box>
+            </Tooltip>
+        );
+    }
+
     const columns = [
-        { field: 'name',
-            headerName: 'Name',
-            flex: 2,
-            editable: true,
-        },
         {
-            field: 'value',
-            headerName: 'Value',
+            field: 'name',
+            headerName: 'Parameter Name',
             flex: 2,
             editable: true,
             renderEditCell: (params) => {
                 const {id, value, field} = params;
                 const apiRefContext = useGridApiContext();
 
-                const handleValueChange = (event) => {
-                    const newValue = event.target.value;
+                const handleValueChange = (event, value) => {
+                    let newValue = event.target.value;
+
+                    if(value && value.label) {
+                        if(value.dataType){
+                            apiRefContext.current.setEditCellValue({id, field: "dataType", value: value.dataType});
+                        }
+
+                        if(value.dataType === DataType.B) {
+                            apiRefContext.current.setEditCellValue({id, field: "value", value: "true"});
+                        }else{
+                            apiRefContext.current.setEditCellValue({id, field: "value", value: ""});
+                        }
+
+                        if(value.defaultValue){
+                            apiRefContext.current.setEditCellValue({id, field: "value", value: value.defaultValue});
+                        }
+
+                        newValue = value.label;
+                    }
                     apiRefContext.current.setEditCellValue({id, field, value: newValue});
                 };
 
                 return (
-                     <TextField
-                        className={"ParameterValueTextField"}
-                        multiline={params.row.dataType !== DataType.N
-                            && params.row.dataType !== DataType.D
-                            && params.row.dataType !== DataType.I
-                            && params.row.dataType !== DataType.B}
-                        value={value}
+                    <Autocomplete
+                        freeSolo
+                        disableClearable
+                        options={autosuggestParams}
                         onChange={handleValueChange}
+                        style={{ width: "100%" }}
+                        PaperComponent={props => (
+                            <Paper {...props} className={"ParameterNameAutoSuggest"} />
+                        )}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                onChange={handleValueChange}
+                                placeholder={autosuggestParams.length > 0 ? "Select a name or enter": ""}
+                                slotProps={{
+                                    shrink: true
+                                }}
+                            />
+                        )}
                     />
                 );
 
             },
+        },
+        {
+            field: 'value',
+            headerName: 'Parameter Value',
+            flex: 2,
+            editable: true,
+            renderEditCell: (params) => {
+                const {id, value, field} = params;
+                const apiRefContext = useGridApiContext();
+
+                const handleValueChange = (event, value) => {
+                    let newValue = event.target.value;
+
+                    if(value) {
+                        newValue = value;
+                    }
+                    apiRefContext.current.setEditCellValue({id, field, value: newValue});
+                };
+
+                if(params.row.dataType === DataType.B){
+                    const valueSuggestions = ["true", "false"];
+                    const predefTermsUIParam = predefinedParams && predefinedParams.find(p => p.label === params.row.name
+                     && p.label.startsWith("Terms Options:"));
+
+                    const freeSoloMode = predefTermsUIParam === undefined;
+
+                    if(freeSoloMode){
+                        return (
+                            <Autocomplete
+                                freeSolo
+                                disableClearable
+                                options={valueSuggestions}
+                                onChange={handleValueChange}
+                                value={value}
+                                style={{width: "100%"}}
+                                PaperComponent={props => (
+                                    <Paper {...props} className={"ParameterValueTextField"}/>
+                                )}
+                                renderInput={(textParams) => (
+                                    <TextField
+                                        {...textParams}
+                                        onChange={handleValueChange}
+                                        slotProps={{
+                                            shrink: true
+                                        }}
+                                    />
+                                )}
+                            />
+                        );
+                    }
+                    else {
+                        return (
+                            <Autocomplete
+                                disableClearable
+                                options={valueSuggestions}
+                                onChange={handleValueChange}
+                                value={value}
+                                style={{width: "100%"}}
+                                PaperComponent={props => (
+                                    <Paper {...props} className={"ParameterValueTextField"}/>
+                                )}
+                                renderInput={(textParams) => (
+                                    <TextField
+                                        {...textParams}
+                                        onChange={handleValueChange}
+                                        slotProps={{
+                                            shrink: true
+                                        }}
+                                    />
+                                )}
+                            />
+                        );
+                    }
+                }
+                else {
+                    return (
+                        <TextField
+                            className={"ParameterValueTextField"}
+                            multiline={params.row.dataType !== DataType.N
+                                && params.row.dataType !== DataType.D
+                                && params.row.dataType !== DataType.I
+                                && params.row.dataType !== DataType.B}
+                            value={value}
+                            onChange={handleValueChange}
+                        />
+                    );
+                }
+
+            },
+            renderCell: (params) => <OverflowExpandCell {...params} />,
         },
         {
             field: 'dataType',
@@ -73,37 +295,69 @@ export const EditParameters = ({
             editable: true,
             filterable: false,
             type: 'singleSelect',
-            valueOptions: [{
-                label: 'Text',
-                value: DataType.T
-            }, {
-                label: 'Numeric',
-                value: DataType.N
-            }, {
-                label: 'Date',
-                value: DataType.D
-            }, {
-                label: 'Integer',
-                value: DataType.I
-            }, {
-                label : 'Boolean',
-                value: DataType.B
-            }, {
-                label : 'Reference Binary',
-                value: DataType.C
-            },{
-                label: 'RTF',
-                value: DataType.RTF
-            }, {
-                label: 'Word',
-                value: DataType.DOC
-            }, {
-                label: 'Excel',
-                value: DataType.XLS
-            }, {
-                label : 'XML',
-                value: DataType.XML
-            }]
+            valueOptions: (params) => {
+                const predefParam = predefinedParams && params.row && predefinedParams.find(p => p.label === params.row.name);
+
+                if(predefParam && params.row?.dataType === DataType.B){
+                    return  [{
+                        label: 'Boolean',
+                        value: DataType.B
+                    }]
+                }
+                else if(predefParam && params.row?.dataType === DataType.T){
+                    return  [{
+                        label: 'Text',
+                        value: DataType.T
+                    }]
+                }
+                else if(predefParam && params.row?.dataType === DataType.N){
+                    return  [{
+                        label: 'Numeric',
+                        value: DataType.N
+                    }]
+                }
+                else if(predefParam && params.row?.dataType === DataType.I){
+                    return  [{
+                        label: 'Integer',
+                        value: DataType.I
+                    }]
+                }
+                else {
+                    return (
+                        [{
+                            label: 'Text',
+                            value: DataType.T
+                        }, {
+                            label: 'Numeric',
+                            value: DataType.N
+                        }, {
+                            label: 'Date',
+                            value: DataType.D
+                        }, {
+                            label: 'Integer',
+                            value: DataType.I
+                        }, {
+                            label: 'Boolean',
+                            value: DataType.B
+                        }, {
+                            label: 'Reference Binary',
+                            value: DataType.C
+                        }, {
+                            label: 'RTF',
+                            value: DataType.RTF
+                        }, {
+                            label: 'Word',
+                            value: DataType.DOC
+                        }, {
+                            label: 'Excel',
+                            value: DataType.XLS
+                        }, {
+                            label: 'XML',
+                            value: DataType.XML
+                        }]
+                    );
+                }
+            }
         },
         {
             field: 'status',
@@ -133,8 +387,22 @@ export const EditParameters = ({
             getActions: ({ id, row }) => {
                 const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
+                const predefParam = predefinedParams && predefinedParams.find(p => p.label === row.name);
+
+                let infoAction = null;
+                if(predefParam?.description){
+                    infoAction = <GridActionsCellItem
+                        icon={<InfoIcon />}
+                        label="Info"
+                        component={getPredefParamTooltipComponent(predefParam.description)}
+                        sx={{
+                            color: 'primary.main',
+                        }}
+                        onClick={handleSaveClick(predefParam.description)}
+                    />;
+                }
                 if (isInEditMode) {
-                    return [
+                    const editModeActions =  [
                         <GridActionsCellItem
                             icon={<SaveIcon />}
                             label="Save"
@@ -151,9 +419,14 @@ export const EditParameters = ({
                             color="inherit"
                         />,
                     ];
+                    if(infoAction) {
+                        editModeActions.push(infoAction);
+                    }
+
+                    return editModeActions;
                 }
 
-                return [
+                const noEditModeActions = [
                     <GridActionsCellItem
                         icon={<EditIcon />}
                         label="Edit"
@@ -162,6 +435,11 @@ export const EditParameters = ({
                         color="inherit"
                     />
                 ];
+
+                if(infoAction) {
+                    noEditModeActions.push(infoAction);
+                }
+                return noEditModeActions;
             },
         },
     ];
@@ -173,6 +451,21 @@ export const EditParameters = ({
     const processRowUpdate = (newRow) => {
         if(newRow.name.length > 0 && newRow.value.length > 0){
             const updatedRow = {...newRow, isNew: false};
+
+            let predefParam = null;
+            if(predefinedParams){
+                predefParam = predefinedParams.find(p => {
+                    const name = p.label ? p.label : p;
+                    return name === newRow.name
+                });
+            }
+
+            if(predefParam && predefParam.dataType){
+                const dataType = DataType[predefParam.dataType];
+                if(dataType) {
+                    updatedRow.dataType = dataType;
+                }
+            }
 
             let newRows = rows.map((row) => (row.id === newRow.id ? updatedRow : row));
             updateParams(newRows);
@@ -201,6 +494,7 @@ export const EditParameters = ({
     };
 
     const onProcessRowUpdateError = (error) => {
+        console.error("Process update error is " + error);
         console.error("Process update error rows is " + JSON.stringify(rows));
     };
 
@@ -236,13 +530,20 @@ export const EditParameters = ({
     };
 
     const isCellEditable = (params) => {
-        return  (params.field !== "name" || (params.field === "name" && !params.row.internalId));
+        const notExistingParam = (params.field !== "name" || (params.field === "name" && !params.row.internalId));
+        const notPredefinedParam = (params.field !== "dataType" ||  !predefinedParams || (predefinedParams && predefinedParams.filter(p => {
+            const name = p.label ? p.label: p;
+            return name === params.row.name
+        }).length === 0));
+
+        return  notExistingParam && notPredefinedParam;
     }
     const displayParamsTable = () => {
         return (
             <DataGrid
+                className={"ParametersTable"}
                 autoHeight
-                rows={rows}
+                rows={showDeletedParams ? rows : rows.filter(row => row.status === ParamStatus.A)}
                 columns={columns}
                 getRowId={getRowId}
                 editMode="row"
@@ -275,7 +576,7 @@ export const EditParameters = ({
                 onSortModelChange={(model) => {
                     apiRef.current.setPage(0);
                 }}
-                pageSizeOptions={[5, 10, 25]}
+                pageSizeOptions={[10, 25, 50]}
                 sx={{
                     [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]: {
                         outline: 'none',
@@ -332,20 +633,93 @@ export const EditParameters = ({
 
     const handleStatusClose = () => {
         saveStatusConfirm();
-        //allParamsStatusConfirm();
         setShowStatus(false);
     };
 
+    const handleCustomActionsClick = (actionName) => {
+        if(actionName === "Add") {
+            handleAddParam();
+        }
+        else{
+            customActionsHandler(actionName);
+        }
+    }
+    const customActionButtons = () => {
+        const addParamWithCustomOptions= [
+            ...customActions,
+            "Add"
+        ];
+        return <div className="AddParam">
+                <SplitButton  optionsList={addParamWithCustomOptions} handleClick={handleCustomActionsClick} customActionsBtnOption={customActionsBtnOption} />
+        </div>;
+    }
+
+    const handleToggleDeletedParams = (event) => {
+        if(event.target.checked){
+            setShowDeletedParams(true);
+        }else{
+            setShowDeletedParams(false);
+        }
+    }
+
     return (
         <div className="EditParameters" >
-            <Typography> {title} </Typography>
-            <Button className="AddParam" variant="contained" startIcon={<AddIcon />} onClick={handleAddParam}>
-                Add
-            </Button>
+            <div>
+                <Typography> {title}</Typography>
+                    {customActions?.length > 0 && customActionsHandler ? customActionButtons() :
+                        <Button className="AddParam" variant="contained" startIcon={<AddIcon/>} onClick={handleAddParam}>
+                            Add
+                        </Button>
+                    }
 
+                <FormGroup className={"ParameterOptions"}>
+                    <FormControlLabel
+                        onChange={handleToggleDeletedParams}
+                        control={<Switch defaultChecked />
+                    } checked={showDeletedParams} label={"Show inactive parameters"}/>
+
+                    <Tooltip title={"Referenced table is " + paramTableName} className={"P1aramTableInfoTooltip"}>
+                        <IconButton>
+                            <InfoOutlinedIcon />
+                        </IconButton>
+                    </Tooltip>
+                </FormGroup>
+
+            </div>
             {displayParamsTable()}
 
             <StatusUpdate isOpen={showStatus} setIsOpen={handleStatusClose} severity={statusSeverity} message={statusMsg}/>
+
+            <Dialog
+                className={"ParamValuePreview"}
+                open={openParamValuePreview}
+                onClose={handleCloseParamValuePreview}
+                scroll={"paper"}
+                fullWidth={true}
+                maxWidth={'md'}
+                PaperProps={{
+                    sx: {
+                        minHeight: '60%',
+                        maxHeight: '60%'
+                    }
+                }}
+            >
+                <DialogTitle>
+                    {paramValuePreview.title}
+                </DialogTitle>
+                <DialogContent dividers>
+                    <DialogContentText className={"ParamValuePreviewContent"}>
+                        <pre>
+                            {paramValuePreview.text}
+                        </pre>
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseParamValuePreview} autoFocus>
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 

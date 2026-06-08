@@ -29,7 +29,7 @@ i2b2.sdx.TypeControllers.PRS.RenderData = function(sdxData, options) {
     // === tvNodeState
     if (options === undefined) { options = {}; }
     // default ENS icons
-    if (!$.isArray(options.icon)) {
+    if (!Array.isArray(options.icon)) {
         let t = 'sdx_CRC_PRS.svg';
         if (typeof options.icon === 'string') t = options.icon;
         options.icon = {

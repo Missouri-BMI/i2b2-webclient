@@ -4,12 +4,14 @@ export const ProjectUser = ({
     username = null,
     adminPath = ADMIN_ROLES.USER,
     dataPath = DATA_ROLES.DATA_OBFSC,
-    editorPath = false
+    editorPath = false,
+    customRoles = []
 } = {}) => ({
     username,
     adminPath,
     dataPath,
     editorPath,
+    customRoles
 });
 
 export const ADMIN_ROLES = {
@@ -43,7 +45,7 @@ export const DATA_ROLES = {
     DATA_OBFSC: {
         name: "DATA_OBFSC",
         order: 5
-    }
+    },
 };
 
 export const EDITOR_ROLE = "EDITOR";

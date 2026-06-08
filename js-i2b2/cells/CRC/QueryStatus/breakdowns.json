@@ -1,0 +1,166 @@
+{
+  "INTERNAL_SUMMARY": {
+    "SUMMARY": true
+  },
+  "PATIENT_COUNT_XML": {
+    "COUNT": true
+  },
+  "PATIENT_COUNT_SHRINE_XML": {
+    "COUNT": true
+  },
+  "/^RPDO_/": { "DATAREQUESTSUPER": false },
+  "/_REQUEST$/": { "DATAREQUESTSUPER": false },
+  "PATIENT_GENDER_COUNT_XML": {
+    "BARS": true,
+    "TABLE": true,
+    "DOWNLOAD": true
+  },
+  "PATIENT_SEX_COUNT_SHRINE_XML": {
+    "BARS": true,
+    "TABLE": true,
+    "DOWNLOAD": true
+  },
+  "PATIENT_VITALSTATUS_COUNT_XML": {
+    "BARS": true,
+    "TABLE": true,
+    "DOWNLOAD": true
+  },
+  "PATIENT_VITALSTATUS_COUNT_SHRINE_XML": {
+    "BARS": true,
+    "TABLE": true,
+    "DOWNLOAD": true
+  },
+  "PATIENT_RACE_COUNT_XML": {
+    "BARS": true,
+    "TABLE": true,
+    "DOWNLOAD": true
+  },
+  "PATIENT_RACE_COUNT_SHRINE_XML": {
+    "BARS": true,
+    "TABLE": true,
+    "DOWNLOAD": true
+  },
+  "PATIENT_AGE_COUNT_XML": {
+    "PIECHART": true,
+    "BARS": {
+      "maxLabelLength": 15
+    },
+    "TABLE": true,
+    "DOWNLOAD": true
+  },
+  "PATIENT_AGE_COUNT_SHRINE_XML": {
+    "BARS": {
+      "maxLabelLength": 15
+    },
+    "TABLE": true,
+    "DOWNLOAD": true
+  },
+  "PATIENT_LOS_XML": {
+    "BARS": true,
+    "TABLE": true,
+    "DOWNLOAD": true
+  },
+  "PATIENT_SHRINE_LOS_XML": {
+    "TABLE": true,
+    "DOWNLOAD": true
+  },
+  "PATIENT_TOP20MEDS_XML": {
+    "BARS": true,
+    "TABLE": {
+      "forceInitialDisplay": true
+    },
+    "DOWNLOAD": true
+  },
+  "PATIENT_TOP20DIAG_XML": {
+    "BARS": true,
+    "TABLE": {
+      "forceInitialDisplay": true
+    },
+    "DOWNLOAD": true
+  },
+  "PATIENT_DIAG3_COUNT_XML": {
+    "TABLE": true,
+    "TABLEBARCHART": true,
+    "DOWNLOAD": true
+  },
+  "PATIENT_INOUT_XML": {
+    "BARS": true,
+    "TABLE": true,
+    "DOWNLOAD": true
+  },
+  "PATIENT_PATHOGEN_TIMELINE_SHRINE_XML": {
+    "TABLE": true,
+    "DOWNLOAD": true,
+    "PATHOGENTIMELINE": true
+  },
+  "PATIENT_PATHOGEN_TIMELINE_XML": {
+    "DOWNLOAD": true,
+    "PATHOGENTIMELINE": true
+  },
+  "PATIENT_NIH_ENROLLMENT_XML": {
+    "NIHENROLLTABLE": true,
+    "NIHENROLLCSV": true
+  },
+  "PATIENT_ZIP_COUNT_XML": {
+    "TABLE": true,
+    "MULTIZIPCODEMAP": {
+      "clickBox": {
+        "options": {
+          "closeButton": "true",
+          "className": "onclick-box",
+          "autoClose": false,
+          "closeOnClick": false
+        },
+        "template": "<b>[{{text}}] - {{name}}</b><br/>{{display}} patients"
+      },
+      "hoverBox": {
+        "position": "topright",
+        "className": "onhover-box",
+        "default": "<h4>Patient Count</h4>Hover over an area",
+        "template": "<h4>Patient Count</h4><div><b>{{name}}</b></div><div>Zip Code: {{zipcode}}</div><span>{{display}} patients</span>"
+      },
+      "legendBox": {
+        "position": "bottomright",
+        "options": {},
+        "templates": {
+          "root": "<div class='map-title'><h4>Patient Count</h4></div><div class='map-entries'><div>{{entries}}</div></div>",
+          "auto": "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min|2}}&ndash;{{~max|2}}</span></div>",
+          "min-max": "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min}}&ndash;{{~max}}</span></div>",
+          "no-min": "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>&lt;{{~max}}</span></div>",
+          "no-max": "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min}}+</span></div>"
+        }
+      },
+      "map": {
+        "tiles": "http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png",
+        "labelTiles": "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
+        "maxZoom": 18,
+        "aggKeyName": "aggKey",
+        "colors": [
+          {"color": "#d73027"},
+          {"color": "#f46d43"},
+          {"color": "#fdae61"},
+          {"color": "#fee090"},
+          {"color": "#ffffbf"},
+          {"color": "#e0f3f8"},
+          {"color": "#abd9e9"},
+          {"color": "#74add1"},
+          {"color": "#4575b4"}
+        ],
+        "styles": {
+          "norm": {
+            "weight": 1,
+            "opacity": 1,
+            "color": "#000",
+            "fillOpacity": 0.25
+           },
+          "hover": {
+            "weight": 3,
+            "_dashArray": "4,6",
+            "color": "#F00",
+            "fillOpacity": 0.5
+          }
+        }
+      }
+    }
+  }
+}

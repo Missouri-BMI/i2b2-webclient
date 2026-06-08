@@ -4,8 +4,7 @@
 <div id="top-bar">
     <table id="topBarTable">
         <tr>
-            <!--<td class="logo"><img src="https://www.i2b2.org/webclient/assets/images/title.gif" alt="" /></td>-->
-            <td class="logo"> <h5><strong>i2b2 </strong>Query & Analysis Tool</h5> </td>
+            <td class="logo"> <h5 style="margin:0;"><strong>i2b2 </strong>Query & Analysis Tool</h5> </td>
             <td>
                 <div id="headerOptions" class="fs-4 mb-3">
                     <a href="#" onclick="window.open('help/index.html','_blank', 'toolbar=no,resizable=yes,scrollbars=yes,height=490,width=800', false)" title="Help Page"><i class="bi bi-question-circle"></i></a>
@@ -37,11 +36,17 @@
                                 <div class="userRole"></div>
                             </li>
                             <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <h6 class="dropdown-header">Version</h6>
-                            </li>
                             <li class="dropdown-item static">
-                                <span class="versionNum"></span>
+                                <div class="versionData">
+                                    <div class="clientVersion">
+                                        <div>Version</div>
+                                        <div class="versionNum"></div>
+                                    </div>
+                                    <div class="serverVersion">
+                                        <div>Server</div>
+                                        <div class="serverVersionNum"></div>
+                                    </div>
+                                </div>
                             </li>
                             <li><hr class="dropdown-divider"></li>
                             <li class="center">
@@ -56,8 +61,9 @@
                                 <a href="#" title="Message Log" class="messageLogLnk" onclick="i2b2.hive.msgSniffer.show();">Message Log</a>
                             </li>
                             <li><hr class="dropdown-divider"></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li class="center">
-                                <button class="logout btn btn-primary btn-sm" onClick="i2b2.PM.doLogout()">Logout</button>
+                                <button class="logout gradient-button gradient-button-red" onClick="i2b2.PM.doLogout()">Logout</button>
                             </li>
                         </ul>
                     </div>
@@ -69,6 +75,19 @@
 
 <div class="goldenLayout" id="goldenLayoutId1"></div>
 <div class="goldenLayout goldenLayoutCol" id="goldenLayoutId2"></div>
+
+<div class="toast position-fixed top-0 end-0 p-3" data-bs-delay="10000" role="alert" aria-live="assertive" aria-atomic="true" >
+    <div class="toast-header">
+        <strong class="me-auto header-title">[i2b2-url] says:</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+        <p>An error has occurred.</p>
+        <div>Click  <a href="#" title="Message Log" class="messageLogLnk" onclick="i2b2.hive.msgSniffer.show();">here</a>
+            to view the message log for details.</div>
+    </div>
+</div>
+
 <div id="footer-bar"></div>
 </body>
 </html>

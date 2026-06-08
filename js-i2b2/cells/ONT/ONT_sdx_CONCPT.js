@@ -43,7 +43,7 @@ i2b2.ONT.model.icons = {
 // *********************************************************************************
 i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
     // this function extracts the datatype from the SDX's original XML object and relies upon it's
-    // original SDX type controller to retreve the render data
+    // original SDX type controller to retrieve the render data
     if (options === undefined) { options = {}; }
     // default CONCPT icons
     if (typeof options.icon !== "object") {
