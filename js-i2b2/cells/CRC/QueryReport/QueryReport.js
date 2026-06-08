@@ -69,7 +69,7 @@ i2b2.CRC.QueryReport.generateReport = () => {
             for (const event of group.events) {
                 for (const concept of event.concepts) {
                     // check for matching concept
-                    if (concept.sdxInfo.sdxKeyValue === panelConcept.key) {
+                    if (concept.sdxInfo.sdxKeyValue === i2b2.h.Unescape(panelConcept.key)) {
                         // check for matching lab values
                         if (concept.LabValues) {
                             let isMatch = true;
@@ -106,7 +106,7 @@ i2b2.CRC.QueryReport.generateReport = () => {
             let sdxKey = panelItem.key.substring(panelItem.key.lastIndexOf(':')+1);
             panelItem.moreInfo = concepts[sdxKey];
         } else {
-            let sdxKey =i2b2.h.Unescape(panelItem.key);
+            let sdxKey = i2b2.h.Unescape(panelItem.key);
             let conceptKey = sdxKey;
 
             if(panelItem.isSynonym === "true" || panelItem.modKey){
