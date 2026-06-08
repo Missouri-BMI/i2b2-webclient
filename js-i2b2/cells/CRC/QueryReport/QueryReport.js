@@ -9,8 +9,8 @@ i2b2.CRC.QueryReport.show = () => {
     let queryReportModal = $('body #queryReportModal');
     if (queryReportModal.length === 0) {
         queryReportModal = $("<div id='queryReportModal'/>").appendTo("body");
-        $.ajax("js-i2b2/cells/CRC/QueryReport/QueryReportModal.html", {
-            success: (content) => {
+        i2b2.h.safeLoadTemplate("js-i2b2/cells/CRC/QueryReport/QueryReportModal.html", true, true)
+            .then((content) => {
                 queryReportModal.html(content);
 
                 // Attach print function
@@ -22,11 +22,10 @@ i2b2.CRC.QueryReport.show = () => {
                     reportWindow.print();
                 });
                 queueMicrotask(i2b2.CRC.QueryReport.generateReport);
-            },
-            error: () => {
+            })
+            .catch((err) => {
                 alert("Error: cannot load report template!");
-            }
-        });
+            });
     } else {
         queueMicrotask(i2b2.CRC.QueryReport.generateReport);
     }

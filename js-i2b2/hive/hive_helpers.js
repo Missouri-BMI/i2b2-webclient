@@ -176,6 +176,59 @@ i2b2.h.Unescape = function(inStrValue) {
 
 
 // ================================================================================================== //
+i2b2.h.safeLoadTemplate = function(url, allowJS, noTemplate) {
+    return new Promise(function(resolve, reject) {
+        var safeUrl;
+        try {
+            safeUrl = new URL(url, document.location.href);
+        } catch (e) {
+            console.error("SECURITY FAULT! Asked to load invalid template URL => " + url);
+            reject(e);
+            return;
+        }
+        if (safeUrl.protocol !== "http:" && safeUrl.protocol !== "https:") {
+            console.error("SECURITY FAULT! Asked to load template with disallowed protocol => " + url);
+            reject(new Error("Disallowed template URL protocol"));
+            return;
+        }
+        if (safeUrl.host !== document.location.host) {
+            console.error("SECURITY FAULT! Asked to load non-origin template => " + url);
+            reject(new Error("Cross-origin template URL"));
+            return;
+        }
+
+        fetch(safeUrl.href, { credentials: "same-origin" })
+            .then(function(response) {
+                if (!response.ok) {
+                    throw new Error("Failed to load template (" + response.status + "): " + safeUrl.href);
+                }
+                return response.text();
+            })
+            .then(function(templateText) {
+                var safeTemplate = templateText;
+                if (!allowJS) {
+                    if (typeof DOMPurify === "undefined") {
+                        throw new Error("DOMPurify is required for safe template loading");
+                    }
+                    safeTemplate = DOMPurify.sanitize(templateText);
+                }
+                if (noTemplate) {
+                    resolve(safeTemplate);
+                } else {
+                    resolve(Handlebars.compile(safeTemplate));
+                }
+            })
+            .catch(function(err) {
+                console.error("Failed to load or compile template => " + url, err);
+                reject(err);
+            });
+    });
+};
+
+
+
+
+// ================================================================================================== //
 i2b2.h.EscapeTemplateVars = function(refTemplateVals, arryIgnoreVars) {
     for (var vname in refTemplateVals) {
         var ignore = false;
